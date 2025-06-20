@@ -27,7 +27,7 @@
 <meta property="og:description" content="UniswapUniswapV2Router02.sol路由合约swapTokensForExactTokens函数用户指定输入代币的精确数量，路由合约帮你按当前汇率和滑点计算能换到的最少输出代币数量，并完成兑换。 函数签名1234567function swapExactTokensForTokens(    uint amountIn,             &#x2F;&#x2F; 输入代币数量（精确）">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-06-12T12:24:09.000Z">
-<meta property="article:modified_time" content="2025-06-20T04:23:54.059Z">
+<meta property="article:modified_time" content="2025-06-20T15:58:52.946Z">
 <meta property="article:author" content="Wangxiaowang">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -248,7 +248,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.1k 字
+          2.8k 字
         
       </span>
     
@@ -259,7 +259,7 @@
         
         
         
-          18 分钟
+          24 分钟
         
       </span>
     
@@ -446,6 +446,36 @@
 
 <p>可以看到，这个时候我们已经通过调用链上的合约通过输入对应金额的方法来获取到了我们对应的回来的金额</p>
 <p>看到了01:03:05</p>
+<h1 id="3-创建币对"><a href="#3-创建币对" class="headerlink" title="3 创建币对"></a>3 创建币对</h1><p>创建币对交易池有两种方式，</p>
+<p>一种是通过路由合约创建，</p>
+<p>另一种是通过工厂合约创建，</p>
+<h2 id="路由合约创建"><a href="#路由合约创建" class="headerlink" title="路由合约创建"></a>路由合约创建</h2><p>路由合约创建的底层还是调用了工厂合约的创建方法</p>
+<p>路由合约创建币对池子源码———addLiquidity，如果没有对应的币对合约就创建一个</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs solidity">function addLiquidity(<br>    address tokenA,<br>    address tokenB,<br>    uint amountADesired,<br>    uint amountBDesired,<br>    uint amountAMin,<br>    uint amountBMin,<br>    address to,<br>    uint deadline<br>) external virtual override ensure(deadline) returns (uint amountA, uint amountB, uint liquidity) &#123;<br>    (amountA, amountB) = _addLiquidity(tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin);<br>    address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);// 这里<br>    // NOTE: trasfer of tokens before mint<br>    TransferHelper.safeTransferFrom(tokenA, msg.sender, pair, amountA);<br>    TransferHelper.safeTransferFrom(tokenB, msg.sender, pair, amountB);<br>    liquidity = IUniswapV2Pair(pair).mint(to);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="工厂合约创建币对源码"><a href="#工厂合约创建币对源码" class="headerlink" title="工厂合约创建币对源码"></a>工厂合约创建币对源码</h2><p>通过传入token A 和 token B两个地约地址，进行哈希后生成盐值再经过汇编生成对应的币对地址再创建币对合约</p>
+<p>这里有个小细节，关于两个token谁在前面 是通过对比大小而来的，</p>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p>这里可以留意一下，后面可能会用到，比如说后面查询某个币对池的时候，可以先行判断两个代币的大小后来预先知道哪个是WETH哪个是MeMe币</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs solidity">function createPair(address tokenA, address tokenB) external returns (address pair) &#123;<br>    require(tokenA != tokenB, &#x27;UniswapV2: IDENTICAL_ADDRESSES&#x27;);<br>    // NOTE: sort tokens by address<br>    // address &lt;-&gt; 20 bytes hexadecimal &lt;-&gt; 160 bit number<br>    // 0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97 &lt;-&gt; 412311598482915581890913355723629879470649597847<br>    // address(1), address(2)<br>    (address token0, address token1) = tokenA &lt; tokenB ? (tokenA, tokenB) : (tokenB, tokenA);<br>    require(token0 != address(0), &#x27;UniswapV2: ZERO_ADDRESS&#x27;);<br>    require(getPair[token0][token1] == address(0), &#x27;UniswapV2: PAIR_EXISTS&#x27;); // single check is sufficient<br>    // NOTE: creation code = runtime code + constructor args<br>    bytes memory bytecode = type(UniswapV2Pair).creationCode;<br>    // NOTE: deploy with create2 - UniswapV2Library.pairFor<br>    // NOTE: create2 addr &lt;- keccak256(creation bytecode) &lt;- constructor args<br>    // create2 addr = keccak256(0xff, deployer, salt, keccak256(creation bytecode))<br>    bytes32 salt = keccak256(abi.encodePacked(token0, token1));<br>    assembly &#123;<br>        // NOTE: pair = address(new UniswapV2Pair&#123;salt: salt&#125;());<br>        pair := create2(0, add(bytecode, 32), mload(bytecode), salt)<br>    &#125;<br>    // NOTE: call initialize to initialize contract without constructor args<br>    IUniswapV2Pair(pair).initialize(token0, token1);<br>    getPair[token0][token1] = pair;<br>    getPair[token1][token0] = pair; // populate mapping in the reverse direction<br>    allPairs.push(pair);<br>    emit PairCreated(token0, token1, pair, allPairs.length);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>通过go语言调用合约方法创建币对</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">CreatePair</span><span class="hljs-params">()</span></span> &#123;<br>	factoryInstance := getFactory()<br>	aunt := getAuth()<br>	<span class="hljs-comment">// CreatePair(opts *bind.TransactOpts, tokenA common.Address, tokenB common.Address) (*types.Transaction, error)</span><br>	WETH := common.HexToAddress(<span class="hljs-string">&quot;0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d&quot;</span>)<br>	USDT := common.HexToAddress(<span class="hljs-string">&quot;0x58278ebb4EbFA82ebF183E4CdEc1968391e59b6C&quot;</span>)<br><br>	tx, err := factoryInstance.CreatePair(aunt, WETH, USDT)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;Failed to create transactor: %v\n&quot;</span>, err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;Mint tx sent: https://sepolia.abscan.org/tx/%s\n&quot;</span>, tx.Hash().Hex())<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="4、添加流动性"><a href="#4、添加流动性" class="headerlink" title="4、添加流动性"></a>4、添加流动性</h1><p>同上 ，添加流动性可以通过调用路由合约的addLiquidity addLiquidityETH</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">AddLiquidityETH</span><span class="hljs-params">()</span></span> &#123;<br>	deadline := big.NewInt(time.Now().Add(<span class="hljs-number">1</span> * time.Minute).Unix())<br>	<span class="hljs-comment">//client.</span><br>	routerInstance := getRouter()<br>	auth := getAuth()<br>	<span class="hljs-comment">//WETH := common.HexToAddress(&quot;0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d&quot;)</span><br>	USDT := common.HexToAddress(<span class="hljs-string">&quot;0x58278ebb4EbFA82ebF183E4CdEc1968391e59b6C&quot;</span>)<br>	routerAddress := common.HexToAddress(<span class="hljs-string">&quot;0x96ff7D9dbf52FdcAe79157d3b249282c7FABd409&quot;</span>)<br>	<span class="hljs-comment">//path := []common.Address&#123;WETH, targetTokenAddress&#125;</span><br><br>	amountTokenDesired := <span class="hljs-built_in">new</span>(big.Int).Mul(big.NewInt(<span class="hljs-number">1000</span>), big.NewInt(<span class="hljs-number">1e18</span>)) <span class="hljs-comment">// 1 // 想添加 1000 个代币</span><br>	amountTokenMin := <span class="hljs-built_in">new</span>(big.Int).Mul(big.NewInt(<span class="hljs-number">900</span>), big.NewInt(<span class="hljs-number">1e18</span>))      <span class="hljs-comment">//  最少接受 900 个代币，滑点保护</span><br>	amountETHMin := <span class="hljs-built_in">new</span>(big.Int).Mul(big.NewInt(<span class="hljs-number">1</span>), big.NewInt(<span class="hljs-number">1e17</span>))          <span class="hljs-comment">// 最少接受 0.1 个 ETH，滑点保护</span><br>	<span class="hljs-comment">// 先approve Router合约转出代币</span><br>	usdtInstance := getUsdt()<br>	txApprove, err := usdtInstance.Approve(auth, routerAddress, amountTokenDesired)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;txApprove failed: %v&quot;</span>, err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;txApprove tx sent: https://sepolia.abscan.org/tx/%s\n&quot;</span>, txApprove.Hash().Hex())<br><br>	<span class="hljs-comment">// 等待交易确认（示例用sleep，实际建议用事件监听）</span><br>	time.Sleep(<span class="hljs-number">5</span> * time.Second)<br>	auth.Value = amountETHMin<br>	<span class="hljs-comment">//AddLiquidityETH(opts *bind.TransactOpts, token common.Address, amountTokenDesired *big.Int, amountTokenMin *big.Int, amountETHMin *big.Int, to common.Address, deadline *big.Int) (*types.Transaction, error)</span><br>	tx, err := routerInstance.AddLiquidityETH(<br>		auth,<br>		USDT,<br>		amountTokenDesired,<br>		amountTokenMin,<br>		amountETHMin,<br>		auth.From,<br>		deadline,<br>	)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;AddLiquidityETH failed: %v&quot;</span>, err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;AddLiquidityETH tx sent: https://sepolia.abscan.org/tx/%s\n&quot;</span>, tx.Hash().Hex())<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="5、减少流动性"><a href="#5、减少流动性" class="headerlink" title="5、减少流动性"></a>5、减少流动性</h1><p>同上 ，减少流动性可以通过调用路由合约的removeLiquidity removeLiquidityETH</p>
+<p>不做演示了</p>
+<p>6、swap换币</p>
 
                 
               </div>
