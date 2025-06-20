@@ -1,0 +1,851 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Wangxiaowang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1.以太坊基础知识智能合约：Smart Contracts 是以太坊最重要的特性之一，智能合约让以太坊有更多的可能性，让链不仅仅是链，还可以做很多的应用，智能合约是一段存储在以太坊区块链上的代码，可以自动执行协议的条款。例如，可以创建一个智能合约来管理众筹活动，当众筹达到目标时，合约会自动将资金转给项目方。 单位换算1 Ether(ETH)&#x3D;1 x 10^3 Finney &#x3D;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="07-2 Ethereum 钱包开发流程">
+<meta property="og:url" content="http://example.com/2024/05/30/07-2Ethereum%E9%92%B1%E5%8C%85%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Wang">
+<meta property="og:description" content="1.以太坊基础知识智能合约：Smart Contracts 是以太坊最重要的特性之一，智能合约让以太坊有更多的可能性，让链不仅仅是链，还可以做很多的应用，智能合约是一段存储在以太坊区块链上的代码，可以自动执行协议的条款。例如，可以创建一个智能合约来管理众筹活动，当众筹达到目标时，合约会自动将资金转给项目方。 单位换算1 Ether(ETH)&#x3D;1 x 10^3 Finney &#x3D;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/web3/eth2.jpg">
+<meta property="article:published_time" content="2024-05-30T12:49:59.000Z">
+<meta property="article:modified_time" content="2025-06-20T04:23:54.057Z">
+<meta property="article:author" content="Wangxiaowang">
+<meta property="article:tag" content="block">
+<meta property="article:tag" content="概念">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/web3/eth2.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>07-2 Ethereum 钱包开发流程 - Wang</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"37fd8385820c4abc0e564a2c423b7511","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?37fd8385820c4abc0e564a2c423b7511";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Home</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/web3/bitcoin5.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="07-2 Ethereum 钱包开发流程"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-05-30 20:49" pubdate>
+          2024年5月30日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          44 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">07-2 Ethereum 钱包开发流程</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-以太坊基础知识"><a href="#1-以太坊基础知识" class="headerlink" title="1.以太坊基础知识"></a>1.以太坊基础知识</h1><h3 id="智能合约："><a href="#智能合约：" class="headerlink" title="智能合约："></a>智能合约：</h3><p>Smart Contracts 是以太坊最重要的特性之一，智能合约让以太坊有更多的可能性，让链不仅仅是链，还可以做很多的应用，智能合约是一段存储在以太坊区块链上的代码，可以自动执行协议的条款。例如，可以创建一个智能合约来管理众筹活动，当众筹达到目标时，合约会自动将资金转给项目方。</p>
+<h3 id="单位换算"><a href="#单位换算" class="headerlink" title="单位换算"></a>单位换算</h3><p>1 Ether(ETH)&#x3D;1 x 10^3 Finney &#x3D; 1 x 10^6 Szabo &#x3D; 1 x 10^9 Gwei &#x3D; 1 x 10^12 Wei</p>
+<h3 id="以太坊虚拟机（EVM）"><a href="#以太坊虚拟机（EVM）" class="headerlink" title="以太坊虚拟机（EVM）"></a>以太坊虚拟机（EVM）</h3><p>Ethereum Virtual Machine EVM 是以太坊的核心组件，EVM是一个图灵完备的虚拟机，他可以执行用以太坊脚本语言（Solidity）编写的任意代码。EVM使得智能合约的执行变得可能。也就是说你可以自己的代码放到EVM上去执行，</p>
+<h3 id="Dapps（去中心化应用）"><a href="#Dapps（去中心化应用）" class="headerlink" title="Dapps（去中心化应用）"></a>Dapps（去中心化应用）</h3><p>Decentralized Applications Dapps 是基于以太坊区块链和智能合约构建的应用程序，与传统应用不同，Dapps没有中央服务，数据和应用逻辑是分布式的，这使得他们更加透明和安全。</p>
+<h3 id="ERC标准"><a href="#ERC标准" class="headerlink" title="ERC标准"></a>ERC标准</h3><p>ERC标准是以太坊的技术规范，用于创建代币和其他合约，最著名的是ERC-20标准，他定义了一种通用的接口，使得代码可以在不同的DApp之间互操作。ERC 提案仅仅是以太坊社区的一些建议和规范，并没有强制执行的机制。开发者可以选择是否遵循这些标准，但遵循 ERC 标准通常会提高智能合约和代币的互操作性，并使其更易于与其他以太坊应用和工具进行集成。大家遵守这个标准之后，更便于代币的流通，</p>
+<p>ERC-721是另一种标准，用于创建非同质化代币（NFT）这些代码具有独特性和不可互换性</p>
+<p>ETH1.0和ETH2.0</p>
+<p>ETH1.0</p>
+<p>共识机制：工作量证明（proof of work PoW）：ETH1.0使用的是PoW共识机制，旷工通过解决复杂的数学问题来验证交易并添加区块，添加区块的旷工可以获得代币奖励，解决数学难题需要耗费巨大的GPU去运算，这个就是传统意义上的“挖矿”，这个过程能耗非常高，效率很低，且容易造成不平衡，就是拥有更多的显卡的人可以挖的更多的区块，</p>
+<p>性能：吞吐量： ETH1.0每秒只能处理大约15-30笔交易，存在拓展性瓶颈，尤其是在网络负载（交易量大）的高峰期，交易确认时间和手续费会显著增加。</p>
+<p>安全性：矿池集中化：PoW机制导致矿池的集中化问题，少数大型矿池控制了大部分的算力，有显卡的人就有算力，就可以挖掉区块。可能带来中心化风险</p>
+<p>智能合约和DApps：ETH1.0支持智能合约和去中心化应用（DApps），比如去中心化金融（DeFi）、游戏和供应量管理</p>
+<p>ETH-2.0</p>
+<ul>
+<li><p>共识机制： 权益证明（Proof of Stake, PoS）：ETH2.0 使用PoS共识机制，验证者通过质押ETH来获得验证区块的机会。PoS大幅减少能耗，提高了效率和安全性。比如说全网有10个验证者，每个人质押不同数量的代币来获得出块的<code>机会</code>，最后出块的人会奖励代币的</p>
+</li>
+<li><p>性能：</p>
+<ul>
+<li><p>分片链（Sharding chains ）：ETH2.0引入了分片技术，通过将区块链分成多个并行链（分片 shard），每个分片处理不同的交易和智能合约，从而显著提高了网络的吞吐量和处理能力</p>
+</li>
+<li><p>信标链（Beacon Chain）：ETH2.0的核心链，负责协调分片和验证者活动，确保整个网络的同步和共识，信标链负责验证和维护网络的共识，并引入了验证者角色。信标链通过随机性机制来选择验证者参与区块的提议和验证。这种随机性确保了公平性和安全性，并防止潜在的攻击行为。信标链还引入了轮次（Epoch）的概念，将时间划分为较长的周期，以便进行验证者的轮换和共识机制的调整</p>
+</li>
+</ul>
+</li>
+<li><p>安全性：去中心化和抗攻击性：PoS机制下，恶意攻击者需要持有大量的ETH，成本高昂，使得网络更安全，此外，前面说的信标链通过随机性机制来选择验证者参与区块提议，有随机性，进一步分散风险。</p>
+</li>
+<li><p>智能合约和DApps：ETH2.0保留了对智能合约的DApps的支持，同事通过更高的吞吐量和更低的交易费用，提升了用户体验和应用性能。</p>
+</li>
+<li><p>过渡过程：合并（The Merge）：ETH2.0并不是从零开始的新区块链，而是对ETH1.0的升级而来，合并将ETH1.0的现有链和ETH2.0的PoS链结合，实现无缝过渡。</p>
+</li>
+</ul>
+<p>主要改进和优点</p>
+<ul>
+<li>能耗：ETH2.0通过 PoS 机制大幅减少了能源消耗，相比 PoW 机制更环保（降交易费了）</li>
+<li>扩展性：分片技术和信标链的引入显著提高了网络的扩展性和吞吐量（大哥带小弟）</li>
+<li>去中心化：ETH2.0通过随机选择验证者和经济激励机制，增强了去中心化程度和安全性（随机验证者，叫你们挖挖挖矿，挖不到了吧）</li>
+<li>经济模型：ETH2.0引入了新的经济模型，通过质押和奖励机制，进一步激励网络参与者，提高网络的稳定性和安全性（验证者和抵押、奖励和惩罚、利息和通胀、质押和解之一，压币有收益，做恶有惩罚）</li>
+</ul>
+<p>1.3 ETH2.0中的Epoch,Slot,Block和Block状态</p>
+<p><img src="/img/web3/epoch.jpeg" srcset="/img/loading.gif" lazyload alt="epoch"></p>
+<ul>
+<li>ETH2.0 按照epoch 出块 （一个epoch一个纪元）</li>
+<li>每一个epoch有32个slot (slot 时隙)</li>
+<li>每一个slot 可以承载1个块</li>
+</ul>
+<h3 id="Slot（时隙）"><a href="#Slot（时隙）" class="headerlink" title="Slot（时隙）"></a>Slot（时隙）</h3><ul>
+<li>定义：Slot 是以太坊2.0中最基本的时间单位，每个slot 都有一个指定的时间长度。在每个slot 中，可能会有一个区块被提议并添加到链中。</li>
+<li>时间长度：一个slot 的长度为12秒。这意味着每12秒会有一个新的slot。</li>
+<li>功能：在每个slot 中，网络中的验证者将有机会提议一个新的区块。这些提议者是通过权益证明（PoS）随机选择的。</li>
+<li>block在slot里面，但是每个slot里面不一定都有block</li>
+</ul>
+<h3 id="Epoch（纪元）"><a href="#Epoch（纪元）" class="headerlink" title="Epoch（纪元）"></a>Epoch（纪元）</h3><ul>
+<li>定义：Epoch 是由多个连续的slot 组成的更长时间段。在Eth2.0中，Epoch 用于管理和组织验证者的活动。</li>
+<li>组成：一个Epoch 由 32个 slot 组成。</li>
+<li>时间长度：由于一个slot 是12秒，一个Epoch 的总长度就是12 * 32&#x3D;384秒（6.4分钟）</li>
+<li>功能：Epoch 是用来实现共识机制的一部分。在每个Epoch 结束时，网络会进行状态和共识的检查和调整，包括对验证者的奖励和惩罚。</li>
+</ul>
+<h3 id="Block（区块）"><a href="#Block（区块）" class="headerlink" title="Block（区块）"></a>Block（区块）</h3><ul>
+<li>定义：Block 区块一个是包含交易和其他所有相关数据的记录单元。所有的数据都会包在这个块中，在ETH2.0中，每个 slot 可能会有一个区块被提议，只是提议，但不能保证每个 slot 都有区块的。</li>
+<li>内容：一个区块包含<code>区块头</code>、<code>交易列表</code>、<code>状态根哈希</code>、<code>签名</code>等数据。</li>
+<li>创建过程：在每个slot <code>开始</code>时，网络会随机选出一个<code>验证者</code>来<code>提议</code>区块。该验证者将创建一个包含新交易和其他必要信息的区块，并广播到全网络上。</li>
+</ul>
+<h3 id="Safe-（安全）"><a href="#Safe-（安全）" class="headerlink" title="Safe （安全）"></a>Safe （安全）</h3><p><code>“Safe”</code>状态指的是一个区块已经被<strong>多数验证者接受和认可</strong>，并且他<strong>很可能</strong>会成为最终的区块，但还<strong>没有达到</strong>完全最终确定的状态。</p>
+<ul>
+<li>条件：一个区块在被认为是“safe”时，意味着它已经收到了足够多的验证者投票（attestations），通常超过了一个特定的阈值，但还没有达到最终确定的标准。</li>
+<li>安全性：在“safe”状态下，区块的存在是相对安全的，不太可能被回滚或者被另一个不同的区块链分支所替代，也就是说不太可能提议了另一个区块。</li>
+<li>作用：这个状态用来提高网络对区块的信任度，即是在它还没有被完全最终确定之前。它帮助节点和用户判断哪些区块在短期内是可信的，一个中间状态</li>
+</ul>
+<p>Finalized（最终确定）</p>
+<p>“Finalized”状态指的是一个区块已经被永久地添加到区块链中，并且不可能被回滚或替代。这是区块链中最强的确认状态。</p>
+<ul>
+<li>条件：一个区块被认为是“finalized”时，必须通过了严格的共识验证，通常需要超过2&#x2F;3的验证者投票同意。具体来说两个联系的epoch被最终确定时，意味着在这两个epoch之间的所有区块都被最终确定。</li>
+<li>安全性：一旦区块达到“finalized”的状态，它就不可逆转，保证了区块链的最终一致性和数据的永久性。这种状态防治了分叉和双花攻击的可能性。</li>
+<li>作用：最终确定的区块为用户和应用提供了最高级别的交易安全性和网络信任度。</li>
+</ul>
+<h3 id="1-4-以太坊钱包确认位"><a href="#1-4-以太坊钱包确认位" class="headerlink" title="1.4 以太坊钱包确认位"></a>1.4 以太坊钱包确认位</h3><p><img src="/img/web3/finalized.png" srcset="/img/loading.gif" lazyload alt="finalized"></p>
+<p>最终确认位之前的交易会被并入系统</p>
+<h1 id="2-离线地址生成"><a href="#2-离线地址生成" class="headerlink" title="2.离线地址生成"></a>2.离线地址生成</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> (<br>	<span class="hljs-string">&quot;encoding/hex&quot;</span><br>	<span class="hljs-string">&quot;fmt&quot;</span><br>	<span class="hljs-string">&quot;github.com/ethereum/go-ethereum/crypto&quot;</span><br>	<span class="hljs-string">&quot;github.com/tyler-smith/go-bip32&quot;</span><br>	<span class="hljs-string">&quot;github.com/tyler-smith/go-bip39&quot;</span><br>)<br><br><span class="hljs-comment">// 生成一个以太坊的钱包</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>	fmt.Println(<span class="hljs-string">&quot;开始&quot;</span>)<br>	<span class="hljs-comment">// 首先你可以生成一个随机熵，熵源助记词是BIP-39，</span><br>	entropy, _ := bip39.NewEntropy(<span class="hljs-number">128</span>)<br>	fmt.Println(<span class="hljs-string">&quot;entroy:&quot;</span>, entropy)<br>	<span class="hljs-comment">// 通过熵源生成助记词  ==&gt; 注意，不一定要有助记词才有种子，只是助记词方便备份，可以转成种子，你要直接由种子也行，但不好记</span><br>	mnemonic, _ := bip39.NewMnemonic(entropy)<br>	fmt.Println(<span class="hljs-string">&quot;mnemonic:&quot;</span>, mnemonic)<br>	<span class="hljs-comment">// 通过助记词生成种子Seed</span><br>	seed := bip39.NewSeed(mnemonic, <span class="hljs-string">&quot;&quot;</span>) <span class="hljs-comment">// password盐值不要加</span><br>	fmt.Println(<span class="hljs-string">&quot;seed&quot;</span>, seed)<br><br>	<span class="hljs-comment">// 接下来就是将种子恢复出主私钥 masterKey 这里进入到了BIP-32了 a</span><br>	masterKey, _ := bip32.NewMasterKey(seed)<br>	<span class="hljs-comment">// 注意，此时还是主私钥，接下来要派生子私钥，派生出来的子私钥才是真正的“私钥”才能对应链的公钥，才能解压缩出地址</span><br>	fmt.Println(<span class="hljs-string">&quot;masterKey&quot;</span>, masterKey)<br><br>	<span class="hljs-comment">// 现在要派生出对应以太坊的子私钥，遵循BIP-44</span><br>	<span class="hljs-comment">// 接下来进入BIP-44 完成派生,完成对应path参数 m / purpose&#x27; / coin_type&#x27; / account&#x27; / change / address_index</span><br>	<span class="hljs-comment">// 通过主私钥派生出子私钥,FirstHardenedChild = uint32(0x80000000) 是一个常量，对应强化派生范围</span><br>	key, _ := masterKey.NewChildKey(bip32.FirstHardenedChild + <span class="hljs-number">44</span>)  <span class="hljs-comment">// purpose&#x27; ： 44 是固定值，即BIP-44标准，强化派生</span><br>	key, _ = key.NewChildKey(bip32.FirstHardenedChild + <span class="hljs-type">uint32</span>(<span class="hljs-number">60</span>)) <span class="hljs-comment">// coin_type&#x27; ：60是以太坊标识&#x27;， 继续强化派生</span><br>	key, _ = key.NewChildKey(bip32.FirstHardenedChild + <span class="hljs-type">uint32</span>(<span class="hljs-number">0</span>))  <span class="hljs-comment">// account&#x27; : 0 标记账户类型，从0开始，强化派生</span><br>	key, _ = key.NewChildKey(<span class="hljs-type">uint32</span>(<span class="hljs-number">0</span>))                             <span class="hljs-comment">// change :0 外部可见地址， 1 找零地址（外部不可见），通常是 0，普通派生</span><br>	key, _ = key.NewChildKey(<span class="hljs-type">uint32</span>(<span class="hljs-number">0</span>))                             <span class="hljs-comment">// 地址索引 0 1 2 3 这样索引，普通派生</span><br>	<span class="hljs-comment">// 派生完毕，对应的path 就是 &quot; m/44&#x27;/60&#x27;/0&#x27;/0/0 &quot;</span><br><br>	<span class="hljs-comment">// 子私钥key 已经出来了，先打印私钥，key.Key就是私钥，注意要转化进制</span><br>	ethPrivateKey := hex.EncodeToString(key.Key) <span class="hljs-comment">// 编码成字符串 , 这里打印出来的私钥就可以</span><br>	fmt.Println(<span class="hljs-string">&quot;privateKey&quot;</span>, ethPrivateKey)<br>	<span class="hljs-comment">// 子私钥 key 里面就包含他对应的公钥属性，拿出来即可,因为公钥是私钥椭圆曲线加密得来的结果</span><br>	ethPublicKey := hex.EncodeToString(key.PublicKey().Key) <span class="hljs-comment">// 编码成字符串</span><br>	fmt.Println(<span class="hljs-string">&quot;ethPublicKey&quot;</span>, ethPublicKey)<br><br>	<span class="hljs-comment">// 现在拿到公钥了，先对公钥进行压缩 keccak256 压缩成 32 byte</span><br>	compressPubKey, _ := crypto.DecompressPubkey(key.PublicKey().Key)<br>	fmt.Println(<span class="hljs-string">&quot;compressPubKey&quot;</span>, compressPubKey)<br>	<span class="hljs-comment">// 压缩32字节后取最后 20 byte 就是地址了</span><br>	ethAddre := crypto.PubkeyToAddress(*compressPubKey).Hex() <span class="hljs-comment">// Hex是16进制转字符串</span><br>	fmt.Println(<span class="hljs-string">&quot;ethAddre&quot;</span>, ethAddre)                         <span class="hljs-comment">// ethAddre 0x38B59D6D4ef6A4991926Cf04c7c2092a0E86140F</span><br><br>	<span class="hljs-comment">// 最后把 ethPrivateKey 导入到 metaMask 里面去验证下，私钥和地址对上了没</span><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>用python写一遍</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> bip32utils <span class="hljs-keyword">import</span> BIP32Key<br><span class="hljs-keyword">from</span> bip32utils <span class="hljs-keyword">import</span> BIP32_HARDEN<br><span class="hljs-keyword">from</span> bip39 <span class="hljs-keyword">import</span> Mnemonic<br><span class="hljs-keyword">from</span> ethereum.utils <span class="hljs-keyword">import</span> privtoaddr<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">eth_wallet</span>():<br>    <span class="hljs-comment"># 生成助记词和种子</span><br>    entropy = Mnemonic().generate_entropy(<span class="hljs-number">128</span>)<br>    mnemonic = Mnemonic().to_mnemonic(entropy)<br>    seed = Mnemonic().to_seed(mnemonic)<br><br>    <span class="hljs-comment"># 派生主私钥</span><br>    bip32_key = BIP32Key.fromEntropy(seed)<br><br>    <span class="hljs-comment"># 派生以太坊子私钥</span><br>    path = <span class="hljs-string">&quot;m/44&#x27;/60&#x27;/0&#x27;/0/0&quot;</span><br>    key = bip32_key.ChildKey(<br>        BIP32_HARDEN + <span class="hljs-number">44</span><br>    ).ChildKey(<br>        BIP32_HARDEN + <span class="hljs-number">60</span><br>    ).ChildKey(<br>        BIP32_HARDEN + <span class="hljs-number">0</span><br>    ).ChildKey(<br>        <span class="hljs-number">0</span><br>    ).ChildKey(<br>        <span class="hljs-number">0</span><br>    )<br><br>    <span class="hljs-comment"># 获取以太坊私钥</span><br>    eth_private_key = key.WalletImportFormat()<br><br>    <span class="hljs-comment"># 获取以太坊地址</span><br>    eth_address = privtoaddr(key.PrivateKey().to_string()).<span class="hljs-built_in">hex</span>()<br><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;助记词:&quot;</span>, mnemonic)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;私钥:&quot;</span>, eth_private_key)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;地址:&quot;</span>, eth_address)<br><br>eth_wallet()<br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="3-离线交易签名"><a href="#3-离线交易签名" class="headerlink" title="3.离线交易签名"></a>3.离线交易签名</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> (<br>	<span class="hljs-string">&quot;context&quot;</span><br>	<span class="hljs-string">&quot;fmt&quot;</span><br>	<span class="hljs-string">&quot;github.com/ethereum/go-ethereum/common&quot;</span><br>	<span class="hljs-string">&quot;github.com/ethereum/go-ethereum/core/types&quot;</span><br>	<span class="hljs-string">&quot;github.com/ethereum/go-ethereum/crypto&quot;</span><br>	<span class="hljs-string">&quot;github.com/ethereum/go-ethereum/ethclient&quot;</span><br>	<span class="hljs-string">&quot;log&quot;</span><br>	<span class="hljs-string">&quot;math/big&quot;</span><br>)<br><br><span class="hljs-keyword">var</span> (<br>	PrivateKeyStr = <span class="hljs-string">&quot;c535faxxxxxxxxxxxxxxxxxxxxxxxxx&quot;</span>      <span class="hljs-comment">// go生成的账户 发送发私钥</span><br>	fromAddrStr   = <span class="hljs-string">&quot;0xa3856a939A623EdBde8f908037d3F33FceBC5408&quot;</span>                            <span class="hljs-comment">// 对应go生成的账户 发送方地址</span><br>	toAddrStr     = <span class="hljs-string">&quot;0x38B59D6D4ef6A4991926Cf04c7c2092a0E86140F&quot;</span>                            <span class="hljs-comment">// 接收方地址</span><br>	ethUrl        = <span class="hljs-string">&quot;https://eth-sepolia.g.alchemy.com/v2/fzgfj4QuLlNEyn2LrLZsseBAClGdMnyP&quot;</span> <span class="hljs-comment">//API URL</span><br>)<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br><br>	<span class="hljs-comment">// 把私钥个地址转码一下</span><br>	privateKey, _ := crypto.HexToECDSA(PrivateKeyStr)<br>	toAddr := common.HexToAddress(toAddrStr)<br><br>	<span class="hljs-comment">// 新建连接，连上以太坊</span><br>	client, err := ethclient.Dial(ethUrl)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br><br>	<span class="hljs-comment">// Get the balance of an account 第0步：查询账户余额，要先确认自己有没有钱</span><br>	fromAddr := common.HexToAddress(fromAddrStr)<br>	balance, err := client.BalanceAt(context.Background(), fromAddr, <span class="hljs-literal">nil</span>)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br><br>	fmt.Printf(<span class="hljs-string">&quot;Account balance: %d\n&quot;</span>, balance) <span class="hljs-comment">// 1008465873901900000</span><br><br>	<span class="hljs-comment">// Get the latest known block 第0步：获取最新块高，刷新</span><br>	block, err := client.BlockByNumber(context.Background(), <span class="hljs-literal">nil</span>)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br><br>	fmt.Printf(<span class="hljs-string">&quot;Latest block: %d\n&quot;</span>, block.Number().Uint64()) <span class="hljs-comment">//6055020</span><br><br>	<span class="hljs-comment">// 生成交易数据,这里注意fromAddr要转成 account common.Address对象</span><br><br>	<span class="hljs-comment">// 第一步拿nonce，这个拿nonce的的方法已经封装好了的，直接用就可，也可以去网站上copy url下来发请求，不过那样不优雅</span><br>	nonce, err := client.PendingNonceAt(context.Background(), fromAddr)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;nonce: %d\n&quot;</span>, nonce)<br><br>	<span class="hljs-comment">// 拿到gasPrice ，也可以不用拿，直接指定就可以</span><br>	gasPriceNow, err := client.SuggestGasPrice(context.Background())<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;Failed to retrieve gas price: %v&quot;</span>, err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;gasPriceNow: %d\n&quot;</span>, gasPriceNow)<br><br>	gasPrice := big.NewInt(<span class="hljs-number">2000000000</span>)<br>	amount := big.NewInt(<span class="hljs-number">1100000000000000</span>)<br>	gasLimit := <span class="hljs-type">uint64</span>(<span class="hljs-number">21208</span>)<br>	<span class="hljs-comment">//gasPrice := big.NewInt(1000)</span><br>	data := []<span class="hljs-type">byte</span>(<span class="hljs-string">&quot;Hello, World!&quot;</span>)<br><br>	<span class="hljs-comment">// 第二步 构建交易对象 ---&gt; 生成一个未签名的交易</span><br>	tx := types.NewTx(&amp;types.LegacyTx&#123;<br>		Nonce:    nonce,<br>		To:       &amp;toAddr,<br>		Value:    amount,<br>		Gas:      gasLimit,<br>		GasPrice: gasPrice,<br>		Data:     data,<br>	&#125;)<br><br>	<span class="hljs-comment">// 第三步 对交易进行签名，签名前先拿到链ID，即你要上的链</span><br>	chainID, err := client.NetworkID(context.Background()) <span class="hljs-comment">// 拿到链ID</span><br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br>	signedTx, err := types.SignTx(tx, types.NewEIP155Signer(chainID), privateKey) <span class="hljs-comment">// 对交易进行签名</span><br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br><br>	<span class="hljs-comment">// 第四步  发送交易,这一步就是广播</span><br>	err = client.SendTransaction(context.Background(), signedTx) <span class="hljs-comment">// 广播出去</span><br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br><br>	fmt.Printf(<span class="hljs-string">&quot;转账交易已发送，交易哈希\n：%s\n&quot;</span>, signedTx.Hash().Hex())<br>	<span class="hljs-comment">// 第一笔交易哈希：0xb4f9ff541c3423e5bbffbb63f78fed2b384cde60b74b9a3838f05eb172c65e90 ， 第一次发交易的时候gasPrice 花费的比较低，所以第二次改了gasPrice后再发</span><br>	<span class="hljs-comment">// 前面的一直在pending中 有点问题，</span><br>	<span class="hljs-comment">// 第二笔交易哈希：转账交易已发送，交易哈希：0xd65407692e1f872d47ce1231a80d9afbf0dbcf8336362f78262d4fd872a55c81</span><br>	<span class="hljs-comment">// 第三笔交易哈希：转账交易已发送，交易哈希：0xcb297210b49a5a3747c27783ab3610b8b287134792e50ccbf6afe86c6c96edfd</span><br>	<span class="hljs-comment">// 第四笔交易哈希：转账交易已发送，交易哈希：0xc922a93fd5a5eabe7819623a65aa6b572e755658f3a9f24e71a64f3d533b1a87</span><br>	<span class="hljs-comment">// 第五笔交易哈希：转账交易已发送，交易哈希：0x4a8e649836a69d22e2b979c7330f03b97e7017b4a89d27e9c646051725f89a2c</span><br>	<span class="hljs-comment">// 第六笔交易哈希：转账交易已发送，交易哈希：0xae0b39c8cb2e02f7c647778f4325f0cca6392fe54c8f144a8e4ae58da79484eb</span><br>	<span class="hljs-comment">// 显示pending 然后转indexing状态 最后Success成功</span><br>	<span class="hljs-comment">// pending 状态： This txn hash was found in our secondary node and should be picked up by our indexer in a short while.</span><br>	<span class="hljs-comment">// indexing 状态：This transaction has been included and will be reflected in a short while.</span><br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="4-以太坊-RPC-接口"><a href="#4-以太坊-RPC-接口" class="headerlink" title="4.以太坊 RPC 接口"></a>4.以太坊 RPC 接口</h1><p>这里在做的就是扫链，钱包都要扫链</p>
+<h3 id="4-1-检查网络的-RPC-接口是否可以"><a href="#4-1-检查网络的-RPC-接口是否可以" class="headerlink" title="4.1.检查网络的 RPC 接口是否可以"></a>4.1.检查网络的 RPC 接口是否可以</h3><p>先调接口看下链是不是处于活跃的状态，如果是才能继续下去</p>
+<h3 id="4-2-获取最新块高"><a href="#4-2-获取最新块高" class="headerlink" title="4.2.获取最新块高"></a>4.2.获取最新块高</h3><p>调eth block number获取到最新的快高是多 比如说当前是第101个块</p>
+<h3 id="4-3-根据块高获取块里面的信息"><a href="#4-3-根据块高获取块里面的信息" class="headerlink" title="4.3.根据块高获取块里面的信息"></a>4.3.根据块高获取块里面的信息</h3><p>从我之前上一次扫到的块（比如说第100）到我这一次扫到的块（第101）之间，扫到交易就下一步</p>
+<h3 id="4-4-根据交易-Hash-获取交易详情"><a href="#4-4-根据交易-Hash-获取交易详情" class="headerlink" title="4.4.根据交易 Hash 获取交易详情"></a>4.4.根据交易 Hash 获取交易详情</h3><p>扫到交易之后就要去解析交易。然后判断from 和to 的地址是什么地址，来判断是转出还是转入是归集还是冷热互转</p>
+<h3 id="4-5-获取交易状态"><a href="#4-5-获取交易状态" class="headerlink" title="4.5.获取交易状态"></a>4.5.获取交易状态</h3><p>解析交易就是获取交易状态是成功的吗，fail 还是 success</p>
+<h3 id="4-6-获取签名需要的参数-Nonce"><a href="#4-6-获取签名需要的参数-Nonce" class="headerlink" title="4.6. 获取签名需要的参数 Nonce"></a>4.6. 获取签名需要的参数 Nonce</h3><h3 id="4-7-获取签名需要的参数-Gas"><a href="#4-7-获取签名需要的参数-Gas" class="headerlink" title="4.7. 获取签名需要的参数 Gas"></a>4.7. 获取签名需要的参数 Gas</h3><ul>
+<li>这里其实不要用你获取到的当前gasprice，你可以调高一点，更容易被链上处理</li>
+</ul>
+<h3 id="4-8-发送交易到区块链网络"><a href="#4-8-发送交易到区块链网络" class="headerlink" title="4.8. 发送交易到区块链网络"></a>4.8. 发送交易到区块链网络</h3><ul>
+<li>请求参数</li>
+<li>返回值</li>
+</ul>
+<p><img src="/img/web3/%E4%BA%A4%E6%98%93%E6%B5%81%E7%A8%8B%E5%9B%BE.png" srcset="/img/loading.gif" lazyload alt="交易流程"></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> (<br>	<span class="hljs-string">&quot;context&quot;</span><br>	<span class="hljs-string">&quot;fmt&quot;</span><br>	<span class="hljs-string">&quot;github.com/ethereum/go-ethereum/common&quot;</span><br>	<span class="hljs-string">&quot;github.com/ethereum/go-ethereum/core/types&quot;</span><br>	<span class="hljs-string">&quot;github.com/ethereum/go-ethereum/crypto&quot;</span><br>	<span class="hljs-string">&quot;github.com/ethereum/go-ethereum/ethclient&quot;</span><br>	<span class="hljs-string">&quot;log&quot;</span><br>	<span class="hljs-string">&quot;math/big&quot;</span><br>)<br><br><span class="hljs-keyword">var</span> (<br>	PrivateKeyStr = <span class="hljs-string">&quot;c535facd6873ca2b3718e3ede4f626ae126c99b4a26b4354da704d8dc78b43c1&quot;</span>      <span class="hljs-comment">// go生成的账户 发送发私钥</span><br>	fromAddrStr   = <span class="hljs-string">&quot;0xa3856a939A623EdBde8f908037d3F33FceBC5408&quot;</span>                            <span class="hljs-comment">// 对应go生成的账户 发送方地址</span><br>	toAddrStr     = <span class="hljs-string">&quot;0x38B59D6D4ef6A4991926Cf04c7c2092a0E86140F&quot;</span>                            <span class="hljs-comment">// 接收方地址</span><br>	ethUrl        = <span class="hljs-string">&quot;https://eth-sepolia.g.alchemy.com/v2/fzgfj4QuLlNEyn2LrLZsseBAClGdMnyP&quot;</span> <span class="hljs-comment">//API URL</span><br>)<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br><br>	<span class="hljs-comment">// 把私钥个地址转码一下</span><br>	privateKey, _ := crypto.HexToECDSA(PrivateKeyStr)<br>	toAddr := common.HexToAddress(toAddrStr)<br><br>	<span class="hljs-comment">// 新建连接，连上以太坊</span><br>	client, err := ethclient.Dial(ethUrl)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br><br>	<span class="hljs-comment">// Get the balance of an account 第0步：查询账户余额，要先确认自己有没有钱</span><br>	fromAddr := common.HexToAddress(fromAddrStr)<br>	balance, err := client.BalanceAt(context.Background(), fromAddr, <span class="hljs-literal">nil</span>)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br><br>	fmt.Printf(<span class="hljs-string">&quot;Account balance: %d\n&quot;</span>, balance) <span class="hljs-comment">// 1008465873901900000</span><br><br>	<span class="hljs-comment">// Get the latest known block 第0步：获取最新块高，刷新</span><br>	block, err := client.BlockByNumber(context.Background(), <span class="hljs-literal">nil</span>)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br><br>	fmt.Printf(<span class="hljs-string">&quot;Latest block: %d\n&quot;</span>, block.Number().Uint64()) <span class="hljs-comment">//6055020</span><br><br>	<span class="hljs-comment">// 生成交易数据,这里注意fromAddr要转成 account common.Address对象</span><br>	<span class="hljs-comment">// 第一步拿nonce，这个拿nonce的的方法已经封装好了的，直接用就可，也可以去网站上copy url下来发请求，不过那样不优雅</span><br>	nonce, err := client.PendingNonceAt(context.Background(), fromAddr)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;nonce: %d\n&quot;</span>, nonce)<br><br>	<span class="hljs-comment">// 拿到gasPrice ，也可以不用拿，直接指定就可以</span><br>	gasPriceNow, err := client.SuggestGasPrice(context.Background())<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;Failed to retrieve gas price: %v&quot;</span>, err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;gasPriceNow: %d\n&quot;</span>, gasPriceNow)<br><br>	gasPrice := big.NewInt(<span class="hljs-number">2000000000</span>)<br>	amount := big.NewInt(<span class="hljs-number">1100000000000000</span>)<br>	gasLimit := <span class="hljs-type">uint64</span>(<span class="hljs-number">21208</span>)<br>	<span class="hljs-comment">//gasPrice := big.NewInt(1000)</span><br>	data := []<span class="hljs-type">byte</span>(<span class="hljs-string">&quot;Hello, World!&quot;</span>)<br><br>	<span class="hljs-comment">// 第二步 构建交易对象 ---&gt; 生成一个未签名的交易</span><br>	tx := types.NewTx(&amp;types.LegacyTx&#123;<br>		Nonce:    nonce,<br>		To:       &amp;toAddr,<br>		Value:    amount,<br>		Gas:      gasLimit,<br>		GasPrice: gasPrice,<br>		Data:     data,<br>	&#125;)<br><br>	<span class="hljs-comment">// 第三步 对交易进行签名，签名前先拿到链ID，即你要上的链</span><br>	chainID, err := client.NetworkID(context.Background()) <span class="hljs-comment">// 拿到链ID</span><br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br>	signedTx, err := types.SignTx(tx, types.NewEIP155Signer(chainID), privateKey) <span class="hljs-comment">// 对交易进行签名</span><br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br><br>	<span class="hljs-comment">// 第四步  发送交易,这一步就是广播</span><br>	err = client.SendTransaction(context.Background(), signedTx) <span class="hljs-comment">// 广播出去</span><br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br><br>	fmt.Printf(<span class="hljs-string">&quot;转账交易已发送，交易哈希\n：%s\n&quot;</span>, signedTx.Hash().Hex())<br>	<span class="hljs-comment">// 第七笔交易哈希：转账交易已发送，交易哈希：0x93afb74b4c4f0bca6c1ccdf4a13fe555f7a8768201804c0e21ec33b50febec46</span><br>	<span class="hljs-comment">// 第八笔交易哈希：转账交易已发送，交易哈希：</span><br>	<span class="hljs-comment">// 前面的一直在pending中 有点问题，</span><br>	<span class="hljs-comment">// 第八笔交易哈希：转账交易已发送，交易哈希：0xd65407692e1f872d47ce1231a80d9afbf0dbcf8336362f78262d4fd872a55c81</span><br>	<span class="hljs-comment">// 第八笔交易哈希：转账交易已发送，交易哈希：0xcb297210b49a5a3747c27783ab3610b8b287134792e50ccbf6afe86c6c96edfd</span><br>	<span class="hljs-comment">// 第八笔交易哈希：转账交易已发送，交易哈希：0xc922a93fd5a5eabe7819623a65aa6b572e755658f3a9f24e71a64f3d533b1a87</span><br>	<span class="hljs-comment">// 第八笔交易哈希：转账交易已发送，交易哈希：0x4a8e649836a69d22e2b979c7330f03b97e7017b4a89d27e9c646051725f89a2c</span><br>	<span class="hljs-comment">// 第八笔交易哈希：转账交易已发送，交易哈希：0xae0b39c8cb2e02f7c647778f4325f0cca6392fe54c8f144a8e4ae58da79484eb</span><br>	<span class="hljs-comment">// 显示pending 然后转indexing状态 最后Success成功</span><br>	<span class="hljs-comment">// pending 状态： This txn hash was found in our secondary node and should be picked up by our indexer in a short while.</span><br>	<span class="hljs-comment">// indexing 状态：This transaction has been included and will be reflected in a short while.</span><br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="Python代码实现"><a href="#Python代码实现" class="headerlink" title="Python代码实现"></a>Python代码实现</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> web3 <span class="hljs-keyword">import</span> Web3<br><span class="hljs-keyword">import</span> json<br><br><span class="hljs-comment"># 设置连接和账户信息</span><br>private_key = <span class="hljs-string">&quot;c535facd68xxxxxxxxxxx26ae126c99bda704d8dc78b43c1&quot;</span>  <span class="hljs-comment"># 发送方私钥</span><br>from_address = <span class="hljs-string">&quot;0xa3856a9xxxxxxxxe8f90835408&quot;</span>                     <span class="hljs-comment"># 发送方地址</span><br>to_address = <span class="hljs-string">&quot;0x38B59D6Dxxxxxxxx6Cf04c786140F&quot;</span>                    <span class="hljs-comment"># 接收方地址</span><br>eth_url = <span class="hljs-string">&quot;https://eth-sepolia.g.alchemy.com/v2/fzgfj4QuLlNEyn2LrLZsseBAClGdMnyP&quot;</span> <span class="hljs-comment"># API URL</span><br><br><span class="hljs-comment"># 连接到以太坊节点</span><br>web3 = Web3(Web3.HTTPProvider(eth_url))<br><span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> web3.is_connected():<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Failed to connect to Ethereum node.&quot;</span>)<br>    exit()<br><br><span class="hljs-comment"># 检查账户余额</span><br>balance = web3.eth.get_balance(from_address)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Account balance: <span class="hljs-subst">&#123;web3.from_wei(balance, <span class="hljs-string">&#x27;ether&#x27;</span>)&#125;</span> ETH&quot;</span>)<br><br><span class="hljs-comment"># 获取最新区块号</span><br>block = web3.eth.get_block(<span class="hljs-string">&#x27;latest&#x27;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Latest block: <span class="hljs-subst">&#123;block.number&#125;</span>&quot;</span>)<br><br><span class="hljs-comment"># 获取交易计数 (nonce) 这个才是关键</span><br>nonce = web3.eth.get_transaction_count(from_address)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Nonce: <span class="hljs-subst">&#123;nonce&#125;</span>&quot;</span>)<br><br><span class="hljs-comment"># 建议的 gas 价格 可以不接受建议</span><br>gas_price = web3.eth.gas_price<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Gas price: <span class="hljs-subst">&#123;web3.from_wei(gas_price, <span class="hljs-string">&#x27;gwei&#x27;</span>)&#125;</span> Gwei&quot;</span>)<br><br><span class="hljs-comment"># 创建交易</span><br>transaction = &#123;<br>    <span class="hljs-string">&#x27;to&#x27;</span>: to_address,<br>    <span class="hljs-comment"># &#x27;value&#x27;: web3.toWei(0.0011, &#x27;ether&#x27;),  # 发送的以太币数量</span><br>    <span class="hljs-string">&#x27;value&#x27;</span>: <span class="hljs-number">1100000000000000</span>,  <span class="hljs-comment"># 发送的以太币数量</span><br>    <span class="hljs-string">&#x27;gas&#x27;</span>: <span class="hljs-number">21320</span>,  <span class="hljs-comment"># Gas limit</span><br>    <span class="hljs-string">&#x27;gasPrice&#x27;</span>: <span class="hljs-number">2000000000</span>,  <span class="hljs-comment"># Gas price</span><br>    <span class="hljs-string">&#x27;nonce&#x27;</span>: nonce,<br>    <span class="hljs-string">&#x27;data&#x27;</span>: web3.to_hex(<span class="hljs-string">b&quot;Hello, World! python&quot;</span>),  <span class="hljs-comment"># 附加的数据</span><br>    <span class="hljs-string">&#x27;chainId&#x27;</span>: web3.eth.chain_id  <span class="hljs-comment"># 链 ID</span><br>&#125;<br><br><span class="hljs-comment"># 对交易进行签名</span><br>signed_tx = web3.eth.account.sign_transaction(transaction, private_key)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Transaction hash: <span class="hljs-subst">&#123;signed_tx.<span class="hljs-built_in">hash</span>.<span class="hljs-built_in">hex</span>()&#125;</span>&quot;</span>)<br><br><span class="hljs-comment"># 发送交易</span><br>tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Transaction sent, hash: <span class="hljs-subst">&#123;tx_hash.<span class="hljs-built_in">hex</span>()&#125;</span>&quot;</span>)<br><span class="hljs-comment"># 第一笔交易：0x22af000c45f51c03e88ea21281ccd571359e653341aef2a7fadbdc96b41eee49</span><br><span class="hljs-comment"># 第二笔交易：0xa502a7a7f589555eb0ce9bbd2d48220c860bbd0b7bf33b97819932ac0b092d6e</span><br><span class="hljs-comment"># 第三笔交易：0x775b97666b65444f2bb1b2bad852dbb9b56020fdbab513336cdec46bad1c2a36</span><br><br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="5-中心化钱包"><a href="#5-中心化钱包" class="headerlink" title="5.中心化钱包"></a>5.中心化钱包</h1><h3 id="5-1-离线地址生成"><a href="#5-1-离线地址生成" class="headerlink" title="5.1 离线地址生成"></a>5.1 离线地址生成</h3><ul>
+<li><p>调用签名机生成密钥对，签名机吐出公钥，（交易所钱包私钥被统一管控）</p>
+</li>
+<li><p>拿到公钥就可以使用公钥导出地址了</p>
+</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/blockChain/" class="category-chain-item">blockChain</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/block/" class="print-no-link">#block</a>
+      
+        <a href="/tags/%E6%A6%82%E5%BF%B5/" class="print-no-link">#概念</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>07-2 Ethereum 钱包开发流程</div>
+      <div>http://example.com/2024/05/30/07-2Ethereum钱包开发流程/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Wangxiaowang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年5月30日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/06/10/07-3Cosmos%E9%92%B1%E5%8C%85%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/" title="07-3 Cosmos 钱包开发流程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">07-3 Cosmos 钱包开发流程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/05/30/07-1%E6%AF%94%E7%89%B9%E5%B8%81%E9%92%B1%E5%8C%85%E5%BC%80%E5%8F%91%E7%AE%80%E5%8D%95%E6%B5%81%E7%A8%8B/" title="07-1 Bitcoin 钱包开发简单流程">
+                        <span class="hidden-mobile">07-1 Bitcoin 钱包开发简单流程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appKey":"p8TvvzGc2rQ02TfZHuJppQLO","path":"window.location.pathname","placeholder":"欢迎留下评论，嘿嘿！","avatar":"monsterid","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false,"appid":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appkey":"p8TvvzGc2rQ02TfZHuJppQLO"},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

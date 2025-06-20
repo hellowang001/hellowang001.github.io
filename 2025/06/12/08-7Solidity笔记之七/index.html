@@ -1,0 +1,842 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Wangxiaowang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="UniswapUniswapV2Router02.sol路由合约swapTokensForExactTokens函数用户指定输入代币的精确数量，路由合约帮你按当前汇率和滑点计算能换到的最少输出代币数量，并完成兑换。 函数签名1234567function swapExactTokensForTokens(    uint amountIn,             &#x2F;&#x2F; 输入代币数量（精确）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="08-7Solidity笔记之七">
+<meta property="og:url" content="http://example.com/2025/06/12/08-7Solidity%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%B8%83/index.html">
+<meta property="og:site_name" content="Wang">
+<meta property="og:description" content="UniswapUniswapV2Router02.sol路由合约swapTokensForExactTokens函数用户指定输入代币的精确数量，路由合约帮你按当前汇率和滑点计算能换到的最少输出代币数量，并完成兑换。 函数签名1234567function swapExactTokensForTokens(    uint amountIn,             &#x2F;&#x2F; 输入代币数量（精确）">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-06-12T12:24:09.000Z">
+<meta property="article:modified_time" content="2025-06-20T04:23:54.059Z">
+<meta property="article:author" content="Wangxiaowang">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>08-7Solidity笔记之七 - Wang</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"37fd8385820c4abc0e564a2c423b7511","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?37fd8385820c4abc0e564a2c423b7511";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Home</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="08-7Solidity笔记之七"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-06-12 20:24" pubdate>
+          2025年6月12日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          18 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">08-7Solidity笔记之七</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Uniswap"><a href="#Uniswap" class="headerlink" title="Uniswap"></a>Uniswap</h1><h1 id="UniswapV2Router02-sol路由合约"><a href="#UniswapV2Router02-sol路由合约" class="headerlink" title="UniswapV2Router02.sol路由合约"></a>UniswapV2Router02.sol路由合约</h1><h2 id="swapTokensForExactTokens函数"><a href="#swapTokensForExactTokens函数" class="headerlink" title="swapTokensForExactTokens函数"></a>swapTokensForExactTokens函数</h2><p>用户指定输入代币的精确数量，路由合约帮你按当前汇率和滑点计算能换到的最少输出代币数量，并完成兑换。</p>
+<h2 id="函数签名"><a href="#函数签名" class="headerlink" title="函数签名"></a>函数签名</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs solidity">function swapExactTokensForTokens(<br>    uint amountIn,             // 输入代币数量（精确）<br>    uint amountOutMin,         // 最少接受的输出代币数量（防止滑点过大）<br>    address[] calldata path,   // 兑换路径（代币地址数组）<br>    address to,                // 兑换后代币接收地址<br>    uint deadline              // 交易截止时间（区块时间戳）<br>) external returns (uint[] memory amounts);<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="主要流程"><a href="#主要流程" class="headerlink" title="主要流程"></a>主要流程</h2><ol>
+<li><strong>转入输入代币</strong><ul>
+<li>用户先通过 ERC20 <code>approve</code> 授权路由合约使用输入代币。</li>
+<li>路由合约调用 <code>transferFrom</code> 从用户地址转入 <code>amountIn</code> 输入代币到第一个交易对合约。</li>
+</ul>
+</li>
+<li><strong>计算兑换路径中每一步的输出数量</strong><ul>
+<li>使用 <code>UniswapV2Library.getAmountsOut</code> 计算整个路径上每一步的输出金额。</li>
+<li>这个函数基于当前池子储备量和手续费计算每一步的输出。</li>
+</ul>
+</li>
+<li><strong>检查输出数量是否满足用户要求</strong><ul>
+<li>确保最终输出代币数量 &gt;&#x3D; <code>amountOutMin</code>，防止滑点过大。</li>
+</ul>
+</li>
+<li><strong>执行多步兑换</strong><ul>
+<li>路由合约调用每个交易对合约的 <code>swap</code> 方法，依次完成路径中所有交易对的兑换。</li>
+<li>最终输出代币发送到 <code>to</code> 地址。</li>
+</ul>
+</li>
+<li><strong>返回每一步的代币数量数组</strong><ul>
+<li>返回 <code>amounts</code>，包含路径上每个代币的数量（输入和输出）。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="关键点"><a href="#关键点" class="headerlink" title="关键点"></a>关键点</h2><ul>
+<li>用户输入数量固定，输出数量根据池子状态动态计算。</li>
+<li>通过 <code>amountOutMin</code> 保护用户免受价格波动影响。</li>
+<li>支持多跳兑换（路径长度 &gt; 2）。</li>
+</ul>
+<hr>
+<h1 id="2-swapTokensForExactTokens"><a href="#2-swapTokensForExactTokens" class="headerlink" title="2. swapTokensForExactTokens"></a>2. <code>swapTokensForExactTokens</code></h1><h2 id="函数作用"><a href="#函数作用" class="headerlink" title="函数作用"></a>函数作用</h2><p>用户指定想要获得的输出代币数量，路由合约帮你计算完成兑换所需的最少输入代币数量，并完成兑换。</p>
+<hr>
+<h2 id="函数签名-1"><a href="#函数签名-1" class="headerlink" title="函数签名"></a>函数签名</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs solidity">function swapTokensForExactTokens(<br>    uint amountOut,            // 输出代币数量（精确）<br>    uint amountInMax,          // 允许的最大输入代币数量（防止滑点过大）<br>    address[] calldata path,   // 兑换路径<br>    address to,                // 接收地址<br>    uint deadline              // 截止时间<br>) external returns (uint[] memory amounts);<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="主要流程-1"><a href="#主要流程-1" class="headerlink" title="主要流程"></a>主要流程</h2><ol>
+<li><strong>计算兑换路径中每一步的输入数量</strong><ul>
+<li>使用 <code>UniswapV2Library.getAmountsIn</code> 计算整个路径上每一步所需的输入金额。</li>
+<li>这个函数基于当前池子储备量和手续费计算输入数量。</li>
+</ul>
+</li>
+<li><strong>检查输入数量是否满足用户要求</strong><ul>
+<li>确保最终输入代币数量 &lt;&#x3D; <code>amountInMax</code>，防止滑点导致输入过多。</li>
+</ul>
+</li>
+<li><strong>转入输入代币</strong><ul>
+<li>路由合约调用 <code>transferFrom</code> 从用户地址转入计算好的输入代币数量到第一个交易对合约。</li>
+</ul>
+</li>
+<li><strong>执行多步兑换</strong><ul>
+<li>路由合约调用每个交易对合约的 <code>swap</code> 方法，依次完成路径中所有交易对的兑换。</li>
+<li>最终输出代币发送到 <code>to</code> 地址。</li>
+</ul>
+</li>
+<li><strong>返回每一步的代币数量数组</strong><ul>
+<li>返回 <code>amounts</code>，包含路径上每个代币的数量（输入和输出）。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="关键点-1"><a href="#关键点-1" class="headerlink" title="关键点"></a>关键点</h2><ul>
+<li>用户输出数量固定，输入数量根据池子状态动态计算。</li>
+<li>通过 <code>amountInMax</code> 保护用户免受价格波动影响。</li>
+<li>支持多跳兑换。</li>
+</ul>
+<hr>
+<h1 id="总结对比"><a href="#总结对比" class="headerlink" title="总结对比"></a>总结对比</h1><table>
+<thead>
+<tr>
+<th>函数名</th>
+<th>输入固定还是输出固定</th>
+<th>用户保护参数</th>
+<th>计算方法</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>swapExactTokensForTokens</code></td>
+<td>输入数量固定</td>
+<td><code>amountOutMin</code></td>
+<td><code>getAmountsOut</code></td>
+<td>用户知道自己要卖多少代币，想获得尽可能多的输出</td>
+</tr>
+<tr>
+<td><code>swapTokensForExactTokens</code></td>
+<td>输出数量固定</td>
+<td><code>amountInMax</code></td>
+<td><code>getAmountsIn</code></td>
+<td>用户知道自己想买多少代币，愿意最多花多少钱</td>
+</tr>
+</tbody></table>
+<hr>
+<p>如果你需要，我可以帮你写这两个函数的伪代码流程，或者帮你分析它们的源码细节。需要告诉我！</p>
+<p>好的，关于这两个函数的返回值，我来详细说明一下。</p>
+<hr>
+<h1 id="swapExactTokensForTokens-和-swapTokensForExactTokens-的返回值"><a href="#swapExactTokensForTokens-和-swapTokensForExactTokens-的返回值" class="headerlink" title="swapExactTokensForTokens 和 swapTokensForExactTokens 的返回值"></a><code>swapExactTokensForTokens</code> 和 <code>swapTokensForExactTokens</code> 的返回值</h1><p>这两个函数的返回值都是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs solidity">uint[] memory amounts<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="返回值-amounts-是什么？"><a href="#返回值-amounts-是什么？" class="headerlink" title="返回值 amounts 是什么？"></a>返回值 <code>amounts</code> 是什么？</h2><ul>
+<li><code>amounts</code> 是一个数组，包含了兑换路径（<code>path</code>）中每个代币的数量。</li>
+<li>数组长度等于 <code>path.length</code>。</li>
+<li>具体来说：<ul>
+<li><code>amounts[0]</code> 是输入代币的数量（<code>swapExactTokensForTokens</code> 中就是用户输入的 <code>amountIn</code>，<code>swapTokensForExactTokens</code> 中是计算出的实际输入数量）。</li>
+<li><code>amounts[i]</code> 是路径中第 <code>i</code> 个代币的数量，中间经过每个交易对的兑换后递减或递增。</li>
+<li><code>amounts[path.length - 1]</code> 是最终输出代币的数量。</li>
+</ul>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这两个方法都会进行真正的swap操作，只是通过限制输入和输出的金额两种方式来调用而已</p>
+<h2 id="一些函数功能讲解"><a href="#一些函数功能讲解" class="headerlink" title="一些函数功能讲解"></a>一些函数功能讲解</h2><h3 id="获取预期输入和输出金额"><a href="#获取预期输入和输出金额" class="headerlink" title="获取预期输入和输出金额"></a>获取预期输入和输出金额</h3><p>getAmountsIn、getAmountsOut、getAmountOut、getAmountIn</p>
+<p>这几个方法都是一样的道理，都是获取对应的输入输出金额而已</p>
+<ul>
+<li><p>getAmountOut：给定一项资产的输入量和对储量，返回另一项资产的最大输出量</p>
+<ul>
+<li>amountIn：用户输入的代币数量（想要兑换的数量）</li>
+<li>reserveIn：输入代币在池子中的储备量</li>
+<li>reserveOut：输出代币在池子中的储备量</li>
+</ul>
+</li>
+<li><p>getAmountIn：给定一项资产的输出量和对储备，返回另一项资产所需的输入量</p>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs solidity">amountIn：用户输入的代币数量（想要兑换的数量）<br>reserveIn：输入代币在池子中的储备量<br>reserveOut：输出代币在池子中的储备量<br>// 这样就很清晰了<br><br>function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) internal pure returns (uint amountOut) &#123;<br>        require(amountIn &gt; 0, &#x27;UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT&#x27;);<br>        require(reserveIn &gt; 0 &amp;&amp; reserveOut &gt; 0, &#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;);<br>        // NOTE:<br>        // x = token in<br>        // y = token out<br>        //       dx * 0.997 * x0<br>        // dy = -----------------<br>        //       x0 + dx * 0.997<br><br>        // NOTE:<br>        // dx * 997<br>        uint amountInWithFee = amountIn.mul(997);<br>        // dx * 997 * y0<br>        uint numerator = amountInWithFee.mul(reserveOut);<br>        // x0 * 1000 + dx * 997<br>        uint denominator = reserveIn.mul(1000).add(amountInWithFee);<br>        //          dx * 997 * y0<br>        // dy = ----------------------<br>        //       x0 * 1000 + dx * 997<br>        // <br>        //        dx * 997 / 1000 * y0<br>        //    = -----------------------<br>        //        x0 + dx * 997 / 1000<br>        amountOut = numerator / denominator;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>然后再就是批量的</p>
+<h2 id="像他一样发起这个测试来获得输入输出金额"><a href="#像他一样发起这个测试来获得输入输出金额" class="headerlink" title="像他一样发起这个测试来获得输入输出金额"></a>像他一样发起这个测试来获得输入输出金额</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// swap 测试，测试每次换币换来的金额<br>contract UniswapV2SwapAmountsTest is Test &#123;<br>    IWETH private constant weth = IWETH(WETH);<br>    IERC20 private constant dai = IERC20(DAI);<br>    IERC20 private constant mkr = IERC20(MKR);<br>    // 这里是实例化了一个02 的路由对象 router<br>    IUniswapV2Router02 private constant router =<br>        IUniswapV2Router02(UNISWAP_V2_ROUTER_02);<br><br>    function test_getAmountsOut() public &#123;<br>        address[] memory path = new address[](3);<br>        path[0] = WETH;<br>        path[1] = DAI;<br>        path[2] = MKR;<br><br>        uint256 amountIn = 1e18;<br>        // getAmountsOut 指定输入金额，获取输出金额<br><br>        uint256[] memory amounts = router.getAmountsOut(amountIn, path);<br><br>        console2.log(&quot;WETH&quot;, amounts[0]);<br>        console2.log(&quot;DAI&quot;, amounts[1]);<br>        console2.log(&quot;MKR&quot;, amounts[2]);<br>    &#125;<br><br>    function test_getAmountsIn() public &#123;<br>        address[] memory path = new address[](3);<br>        path[0] = WETH;<br>        path[1] = DAI;<br>        path[2] = MKR;<br><br>        uint256 amountOut = 1e16;<br>        // getAmountsIn 指定输出金额获取输入金额？<br>        // 调用的还是  UniswapV2Library.getAmountsIn(factory, amountOut, path);<br>        // 看到底层有一句注释<br>        // performs chained getAmountIn calculations on any number of pairs<br>        // 对任意数量的对执行链式 getAmountIn 计算所谓链式就是循环嘛--那就去看看 getAmountIn<br>        // given an output amount of an asset and pair reserves, returns a required input amount of the other asset<br>        // getAmountIn 给定一项资产的输出量和对储备，返回另一项资产所需的输入量<br>        // 这些都是路由合约的用法，路由合约是工具<br>        uint256[] memory amounts = router.getAmountsIn(amountOut, path);<br><br>        console2.log(&quot;WETH&quot;, amounts[0]);<br>        console2.log(&quot;DAI&quot;, amounts[1]);<br>        console2.log(&quot;MKR&quot;, amounts[2]);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="找合约"><a href="#找合约" class="headerlink" title="找合约"></a>找合约</h3><p><a target="_blank" rel="noopener" href="https://sepolia.abscan.org/address/0x96ff7D9dbf52FdcAe79157d3b249282c7FABd409#code">https://sepolia.abscan.org/address/0x96ff7D9dbf52FdcAe79157d3b249282c7FABd409#code</a></p>
+<p>找到测试网上的UniswapV2Router02路由合约</p>
+<p>然后找到他的abi</p>
+<p>然后根据abi生成go文件</p>
+<p>然后调用对应的方法</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs go"><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">GetAmount</span><span class="hljs-params">()</span></span> &#123;<br>	client := ethereumcli.GetEthClient()<br>	contractAddress := common.HexToAddress(<span class="hljs-string">&quot;0x96ff7D9dbf52FdcAe79157d3b249282c7FABd409&quot;</span>)<br>	rounterInstance, err := uniswapv2router02.NewUniswapv2router02(contractAddress, client)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;Failed to instantiate contract: %v&quot;</span>, err)<br>	&#125;<br><br>	testAmountIn := big.NewInt(<span class="hljs-number">1000000000000</span>)<br>	testAmountOut := big.NewInt(<span class="hljs-number">1000000000000</span>)<br>	reserveIn := big.NewInt(<span class="hljs-number">10000000000000000</span>)<br>	reserveOut := big.NewInt(<span class="hljs-number">300000000000000000</span>)<br><br>	amountIn, err := rounterInstance.GetAmountIn(&amp;bind.CallOpts&#123;&#125;, testAmountIn, reserveIn, reserveOut)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;GetAmountIn err : %v&quot;</span>, err)<br>	&#125;<br>	log.Printf(<span class="hljs-string">&quot;amountint=%d&quot;</span>, amountIn)<br>	amountOut, err := rounterInstance.GetAmountOut(&amp;bind.CallOpts&#123;&#125;, testAmountOut, reserveIn, reserveOut)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;GetAmountOut err : %v&quot;</span>, err)<br>	&#125;<br>	log.Printf(<span class="hljs-string">&quot;amountOut=%d&quot;</span>, amountOut)<br><br>	<span class="hljs-comment">// 指定对应的代币合约去多跳</span><br>	USDC := common.HexToAddress(<span class="hljs-string">&quot;0xe4C7fBB0a626ed208021ccabA6Be1566905E2dFc&quot;</span>)<br>	WETH := common.HexToAddress(<span class="hljs-string">&quot;0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d&quot;</span>)<br>	BTC := common.HexToAddress(<span class="hljs-string">&quot;0x216683565fbE6F3d365Ae5D73BE1549216989ff6&quot;</span>)<br><br>	<span class="hljs-comment">// 例如：USDC -&gt; WETH</span><br>	<span class="hljs-comment">//path := []common.Address&#123;USDC, WETH&#125;</span><br><br>	<span class="hljs-comment">// 或者：USDC -&gt; WETH -&gt; BTC</span><br>	path := []common.Address&#123;USDC, WETH, BTC&#125;<br>	amountsIn, err := rounterInstance.GetAmountsIn(&amp;bind.CallOpts&#123;&#125;, testAmountIn, path)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;GetAmountsIn err : %v&quot;</span>, err)<br>	&#125;<br>	log.Printf(<span class="hljs-string">&quot;amountsIn USDC =%d&quot;</span>, amountsIn[<span class="hljs-number">0</span>])<br>	log.Printf(<span class="hljs-string">&quot;amountsIn WETH =%d&quot;</span>, amountsIn[<span class="hljs-number">1</span>])<br>	log.Printf(<span class="hljs-string">&quot;amountsIn BTC =%d&quot;</span>, amountsIn[<span class="hljs-number">2</span>])<br>	amountsOut, err := rounterInstance.GetAmountsOut(&amp;bind.CallOpts&#123;&#125;, testAmountIn, path)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;amountsOut err : %v&quot;</span>, err)<br>	&#125;<br>	log.Printf(<span class="hljs-string">&quot;amountsOut USDC =%d&quot;</span>, amountsOut[<span class="hljs-number">0</span>])<br>	log.Printf(<span class="hljs-string">&quot;amountsOut WETH =%d&quot;</span>, amountsOut[<span class="hljs-number">1</span>])<br>	log.Printf(<span class="hljs-string">&quot;amountsOut BTC =%d&quot;</span>, amountsOut[<span class="hljs-number">2</span>])<br>&#125;<br><br><br>=== RUN   TestGetAmount<br><span class="hljs-number">2025</span>/<span class="hljs-number">06</span>/<span class="hljs-number">12</span> <span class="hljs-number">21</span>:<span class="hljs-number">50</span>:<span class="hljs-number">58</span> amountint=<span class="hljs-number">33433745682</span><br><span class="hljs-number">2025</span>/<span class="hljs-number">06</span>/<span class="hljs-number">12</span> <span class="hljs-number">21</span>:<span class="hljs-number">50</span>:<span class="hljs-number">59</span> amountOut=<span class="hljs-number">29907018270278</span><br><span class="hljs-number">2025</span>/<span class="hljs-number">06</span>/<span class="hljs-number">12</span> <span class="hljs-number">21</span>:<span class="hljs-number">50</span>:<span class="hljs-number">59</span> amountsIn USDC =<span class="hljs-number">1</span><br><span class="hljs-number">2025</span>/<span class="hljs-number">06</span>/<span class="hljs-number">12</span> <span class="hljs-number">21</span>:<span class="hljs-number">50</span>:<span class="hljs-number">59</span> amountsIn WETH =<span class="hljs-number">6211</span><br><span class="hljs-number">2025</span>/<span class="hljs-number">06</span>/<span class="hljs-number">12</span> <span class="hljs-number">21</span>:<span class="hljs-number">50</span>:<span class="hljs-number">59</span> amountsIn BTC =<span class="hljs-number">1000000000000</span><br><span class="hljs-number">2025</span>/<span class="hljs-number">06</span>/<span class="hljs-number">12</span> <span class="hljs-number">21</span>:<span class="hljs-number">50</span>:<span class="hljs-number">59</span> amountsOut USDC =<span class="hljs-number">1000000000000</span><br><span class="hljs-number">2025</span>/<span class="hljs-number">06</span>/<span class="hljs-number">12</span> <span class="hljs-number">21</span>:<span class="hljs-number">50</span>:<span class="hljs-number">59</span> amountsOut WETH =<span class="hljs-number">14138269893380246</span><br><span class="hljs-number">2025</span>/<span class="hljs-number">06</span>/<span class="hljs-number">12</span> <span class="hljs-number">21</span>:<span class="hljs-number">50</span>:<span class="hljs-number">59</span> amountsOut BTC =<span class="hljs-number">2236640707169690577419326</span><br>--- PASS: TestGetAmount (<span class="hljs-number">2.12</span>s)<br>PASS<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，这个时候我们已经通过调用链上的合约通过输入对应金额的方法来获取到了我们对应的回来的金额</p>
+<p>看到了01:03:05</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>08-7Solidity笔记之七</div>
+      <div>http://example.com/2025/06/12/08-7Solidity笔记之七/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Wangxiaowang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年6月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/06/04/08-6Solidity%E7%AC%94%E8%AE%B0%E4%B9%8B%E5%85%AD/" title="08-6Solidity笔记之六">
+                        <span class="hidden-mobile">08-6Solidity笔记之六</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appKey":"p8TvvzGc2rQ02TfZHuJppQLO","path":"window.location.pathname","placeholder":"欢迎留下评论，嘿嘿！","avatar":"monsterid","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false,"appid":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appkey":"p8TvvzGc2rQ02TfZHuJppQLO"},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

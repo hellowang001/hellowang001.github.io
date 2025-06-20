@@ -1,0 +1,917 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Wangxiaowang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一 SOL简介名称： 精度： 确认数：xxx块后交易安全不易会滚 是否支持token代币：是 是否支持质押:是 出块时间: 地址：Base58 交易签名算法   secp256k1  ed25519 BLAKE2b  schnorr_1  其它签名算法  二 离线地址生成12345678910111213141516171819202122func GenerateOfflineAddress()">
+<meta property="og:type" content="article">
+<meta property="og:title" content="07-5SOL钱包开发流程">
+<meta property="og:url" content="http://example.com/2024/11/22/07-5SOL%E9%92%B1%E5%8C%85%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Wang">
+<meta property="og:description" content="一 SOL简介名称： 精度： 确认数：xxx块后交易安全不易会滚 是否支持token代币：是 是否支持质押:是 出块时间: 地址：Base58 交易签名算法   secp256k1  ed25519 BLAKE2b  schnorr_1  其它签名算法  二 离线地址生成12345678910111213141516171819202122func GenerateOfflineAddress()">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/web3/solana1.jpg">
+<meta property="article:published_time" content="2024-11-22T07:26:30.000Z">
+<meta property="article:modified_time" content="2025-06-20T04:23:54.057Z">
+<meta property="article:author" content="Wangxiaowang">
+<meta property="article:tag" content="block">
+<meta property="article:tag" content="概念">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/web3/solana1.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>07-5SOL钱包开发流程 - Wang</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"37fd8385820c4abc0e564a2c423b7511","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?37fd8385820c4abc0e564a2c423b7511";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Home</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/web3/solana.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="07-5SOL钱包开发流程"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-11-22 15:26" pubdate>
+          2024年11月22日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          35 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">07-5SOL钱包开发流程</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="一-SOL简介"><a href="#一-SOL简介" class="headerlink" title="一 SOL简介"></a>一 SOL简介</h1><p>名称：</p>
+<p>精度：</p>
+<p>确认数：xxx块后交易安全不易会滚</p>
+<p>是否支持token代币：是</p>
+<p>是否支持质押:是</p>
+<p>出块时间:</p>
+<p>地址：Base58</p>
+<p><strong>交易签名算法</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> secp256k1</li>
+<li><input checked="" disabled="" type="checkbox"> ed25519 BLAKE2b</li>
+<li><input disabled="" type="checkbox"> schnorr_1</li>
+<li><input disabled="" type="checkbox"> 其它签名算法</li>
+</ul>
+<h1 id="二-离线地址生成"><a href="#二-离线地址生成" class="headerlink" title="二 离线地址生成"></a>二 离线地址生成</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">GenerateOfflineAddress</span><span class="hljs-params">()</span></span> types.Account &#123;<br>    <span class="hljs-comment">// 生成随机墒---bit39</span><br>    entropy, _ := bip39.NewEntropy(<span class="hljs-number">256</span>)<br>    <span class="hljs-comment">// 墒生成助记词</span><br>    mnemonic, _ := bip39.NewMnemonic(entropy)<br><br>    <span class="hljs-comment">// 从助记词生成种子</span><br><br>    logrus.Infof(<span class="hljs-string">&quot;mnemonic: %s&quot;</span>, mnemonic)<br>    seed := bip39.NewSeed(mnemonic, <span class="hljs-string">&quot;&quot;</span>)<br><br>    path := <span class="hljs-string">`m/44&#x27;/501&#x27;/0&#x27;/0&#x27;`</span><br>    derivedKey, _ := hdwallet.Derived(path, seed)<br>    <span class="hljs-comment">//accountFromSeed, err := types.AccountFromBytes(derivedKey)</span><br>    accountFromSeed, err := types.AccountFromSeed(derivedKey.PrivateKey)<br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>       fmt.Printf(<span class="hljs-string">&quot;err=%v&quot;</span>, err)<br>    &#125;<br>    publicKey := accountFromSeed.PublicKey.ToBase58()<br>    fmt.Println(<span class="hljs-string">&quot;Solana Wallet Address:&quot;</span>, publicKey)<br>    <span class="hljs-keyword">return</span> accountFromSeed<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="三-离线签名"><a href="#三-离线签名" class="headerlink" title="三 离线签名"></a>三 离线签名</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs go">NewTx := types.NewTransactionParam&#123;<br>    Message: types.NewMessage(types.NewMessageParam&#123;<br>       FeePayer:        Account.PublicKey,<br>       RecentBlockhash: block.Blockhash,<br>       Instructions: []types.Instruction&#123;system.Transfer(system.TransferParam&#123;<br>          From:   Account.PublicKey,<br>          To:     common.PublicKeyFromString(<span class="hljs-string">&quot;6cPnfGr9Y4bZK7ykNpxe2hkKfaPPgsy6Tu5ahyGhzQLt&quot;</span>),<br>          Amount: <span class="hljs-number">123000</span>,<br>       &#125;)&#125;,<br>    &#125;),<br>    Signers: []types.Account&#123;Account&#125;,<br>&#125;<br><br>tx, err := types.NewTransaction(NewTx)<br><span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>    logrus.Warnf(<span class="hljs-string">&quot;new transaction error: %s&quot;</span>, err)<br>&#125;<br><br>hash, err := solClient.SendTransaction(bg, tx)<br><span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>    logrus.Warnf(<span class="hljs-string">&quot;new transaction error: %s&quot;</span>, err)<br>&#125;<br>logrus.Infof(<span class="hljs-string">&quot;hash: %v&quot;</span>, hash)<br></code></pre></td></tr></table></figure>
+
+<p>三、交易理解</p>
+<p>sol转账交易</p>
+<p>交易包括一个或多个 <a target="_blank" rel="noopener" href="https://solana.com/docs/core/transactions#instruction">指令</a>，每个代表要处理的特定操作。指令的执行逻辑存储在部署到Solana网络的<a target="_blank" rel="noopener" href="https://solana.com/docs/core/programs">程序</a>上，每个程序都存储自己的指令集。</p>
+<p>为简单起见，可以将交易视为处理一个或多个说明的请求</p>
+<p><img src="/img/web3/soltrx1.jpg" srcset="/img/loading.gif" lazyload alt="s"></p>
+<p>注意：会按照顺序执行，要么全部通过，要么全部不通过</p>
+<p>Instruction 指令，下面是单个指令的示意图</p>
+<p><img src="/img/web3/soltrx2.jpg" srcset="/img/loading.gif" lazyload alt="s"></p>
+<p>指令中包含:</p>
+<ul>
+<li>System Program </li>
+<li>Accounts:帐户信息：Sender 地址 和 Receiver 地址</li>
+<li>Transfer Amount 转账金额，注意：给一个新地址转账的时候，必须要大于等于租金费用890880 也就是0.00089088，满足租金后就可以随便转账了,可以通过GetMinimumBalanceForRentExemption接口拿到这个金额</li>
+</ul>
+<p>看代码</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><code class="hljs go"><br><span class="hljs-comment">// SendSol 用于组装sol币的的交易</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">SendSol</span><span class="hljs-params">()</span></span> &#123;<br>	<span class="hljs-comment">// 拆解</span><br>	DEV := <span class="hljs-string">&quot;https://solana-devnet.g.alchemy.com/v2/wqZxT7UnY6AgrzV42CtGgGQ7ZGM-UrTq&quot;</span><br>	c := client.NewClient(DEV)<br>	<span class="hljs-comment">// 1、导入私钥恢复帐户</span><br>	piv := <span class="hljs-string">&quot;46M2pAp4z3mNPuTh7jS8XHSn69TC4FAnX33Avjx7wqy3W1zzZKiSoBmNTH5PEBDKu7xR2rPa9ocSyzGWYFK7VRF2&quot;</span><br>	alice, err := types.AccountFromBase58(piv)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		fmt.Printf(<span class="hljs-string">&quot;err=%v&quot;</span>, err)<br>	&#125;<br>	bob := <span class="hljs-string">&quot;6cPnfGr9Y4bZK7ykNpxe2hkKfaPPgsy6Tu5ahyGhzQLt&quot;</span><br><br>	<span class="hljs-comment">// 查询下地址的当前余额</span><br>	balances, err := c.GetBalance(context.Background(), alice.PublicKey.String())<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		fmt.Printf(<span class="hljs-string">&quot;get balances err = %v&quot;</span>, err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;balances = %v\n&quot;</span>, balances)<br>	<span class="hljs-comment">// 2、组装交易</span><br>	<span class="hljs-comment">// 2.1 拿recentBlockhashResponse</span><br>	recentBlockhashResponse, err := c.GetLatestBlockhash(context.Background())<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;failed to get recent blockhash, err: %v&quot;</span>, err)<br>	&#125;<br>	<span class="hljs-comment">// 最小转账金额</span><br>	minimumBalanceForRentExemption, err := c.GetMinimumBalanceForRentExemption(context.Background(), <span class="hljs-number">0</span>)<br>	fmt.Printf(<span class="hljs-string">&quot;minimumBalanceForRentExemption = %v\n&quot;</span>, minimumBalanceForRentExemption)<br>	<span class="hljs-comment">// 2.2 定义Instruction然后填充它</span><br>	ins := <span class="hljs-built_in">make</span>([]types.Instruction, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>)<br>	<span class="hljs-comment">// createAccount</span><br>	<span class="hljs-comment">//createAccountInstruction := system.CreateAccount(</span><br>	<span class="hljs-comment">//	system.CreateAccountParam&#123;</span><br>	<span class="hljs-comment">//		From:     alice.PublicKey,</span><br>	<span class="hljs-comment">//		New:      common.PublicKeyFromString(alice.PublicKey.String()),</span><br>	<span class="hljs-comment">//		Owner:    common.StakeProgramID,</span><br>	<span class="hljs-comment">//		Lamports: nonceAccountMinimumBalance,</span><br>	<span class="hljs-comment">//		Space:    system.NonceAccountSize,</span><br>	<span class="hljs-comment">//	&#125;)</span><br>	<span class="hljs-comment">//ins = append(ins, createAccountInstruction)</span><br>	<span class="hljs-comment">// 交易分成2个大部份 Transactions 和 Instructions 指令，Instructions可以有多个</span><br>	<span class="hljs-comment">// 这里我们先做一个简单的交易 ins就是Instructions\</span><br>	ins = <span class="hljs-built_in">append</span>(ins, system.Transfer(<br>		system.TransferParam&#123;<br>			From:   common.PublicKeyFromString(alice.PublicKey.String()),<br>			To:     common.PublicKeyFromString(bob),<br>			Amount: minimumBalanceForRentExemption,<br>		&#125;))<br>	message := types.NewMessage(<br>		types.NewMessageParam&#123;<br>			FeePayer:        common.PublicKeyFromString(alice.PublicKey.String()),<br>			Instructions:    ins,<br>			RecentBlockhash: recentBlockhashResponse.Blockhash,<br>		&#125;)<br>	tx, err := types.NewTransaction(types.NewTransactionParam&#123;<br>		Message: message,<br>		Signers: []types.Account&#123;alice&#125;,<br>	&#125;)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;failed to new transaction, err: %v&quot;</span>, err)<br>	&#125;<br>	<span class="hljs-comment">// 3、广播上链</span><br>	txhash, err := c.SendTransaction(context.Background(), tx)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;failed to SendTransaction, err: %v&quot;</span>, err)<br>	&#125;<br>	fmt.Println(<span class="hljs-string">&quot;tx hash&quot;</span>, txhash)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>让我们来看看转账指令发生了什么</p>
+<p><img src="/img/web3/soltrx3.jpg" srcset="/img/loading.gif" lazyload alt="s"></p>
+<p>可以看到，内部是由发送者Sender 地址的Lamprots帐户转给了 和 Receiver 地址的Lamprots帐户，因为sol一切皆为帐户</p>
+<p>继续往下看，交易由什么组成，由 签名Signatures + 消息Message组成</p>
+<p><img src="/img/web3/soltrx4.jpg" srcset="/img/loading.gif" lazyload alt="s"></p>
+<p>消息Message里包含了什么？4个东西</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://solana.com/docs/core/transactions#message-header">Message Header</a>: Specifies the number of signer and read-only account.<br><a target="_blank" rel="noopener" href="https://solana.com/docs/core/transactions#message-header">消息头</a>：指定签名者的数量和仅阅读帐户的数量。</li>
+<li><a target="_blank" rel="noopener" href="https://solana.com/docs/core/transactions#array-of-account-addresses">Account Addresses</a>: An array of account addresses required by the instructions on the transaction.<br><a target="_blank" rel="noopener" href="https://solana.com/docs/core/transactions#array-of-account-addresses">帐户地址</a>：交易指令要求的帐户地址数组。</li>
+<li><a target="_blank" rel="noopener" href="https://solana.com/docs/core/transactions#recent-blockhash">Recent Blockhash</a>: Acts as a timestamp for the transaction.<br><a target="_blank" rel="noopener" href="https://solana.com/docs/core/transactions#recent-blockhash">最近的块</a>：充当交易的时间戳。</li>
+<li><a target="_blank" rel="noopener" href="https://solana.com/docs/core/transactions#array-of-instructions">Instructions</a>: An array of instructions to be executed.<br><a target="_blank" rel="noopener" href="https://solana.com/docs/core/transactions#array-of-instructions">说明</a>：要执行的一系列说明</li>
+</ul>
+<p><img src="/img/web3/soltrx5.jpg" srcset="/img/loading.gif" lazyload alt="s"></p>
+<h2 id="Token的转账"><a href="#Token的转账" class="headerlink" title="Token的转账"></a>Token的转账</h2><p>token转账的关键就是拿到发送者和接收者在这个代币合约上的地址</p>
+<p>还有要确定接收者的子帐户(在这个token上的地址)是否上链，如果没有上过链(新地址)则需要为其创建对应的子帐户地址用于接收token</p>
+<p>看代码</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// SendToken 用于组装Token代币的的交易</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">SendToken</span><span class="hljs-params">()</span></span> &#123;<br><br>    tokenAddress := <span class="hljs-string">&quot;58g1sdTgzazjR4ApXxPP63JRHj4ZDXePX251An7fxEhG&quot;</span><br>    DEV := <span class="hljs-string">&quot;https://solana-devnet.g.alchemy.com/v2/wqZxT7UnY6AgrzV42CtGgGQ7ZGM-UrTq&quot;</span><br>    c := client.NewClient(DEV)<br>    <span class="hljs-comment">// 1、获取代币的owner 拥有者</span><br>    <span class="hljs-comment">//accInfo, err := c.GetAccountInfo(context.Background(), tokenAddress)</span><br>    <span class="hljs-comment">//if err != nil &#123;</span><br>    <span class="hljs-comment">// log.Fatalf(&quot;failed to GetAccountInfo, err: %v&quot;, err)</span><br>    <span class="hljs-comment">//&#125;</span><br>    <span class="hljs-comment">//</span><br>    <span class="hljs-comment">//fmt.Printf(&quot;accInfo Owner =%v\n&quot;, accInfo.Owner)</span><br>    <span class="hljs-comment">// 2 寻找用户在这个token上的地址</span><br>    piv := <span class="hljs-string">&quot;46M2pAp4z3mNPuTh7jS8XHSn69TC4FAnX33Avjx7wqy3W1zzZKiSoBmNTH5PEBDKu7xR2rPa9ocSyzGWYFK7VRF2&quot;</span><br>    alice, err := types.AccountFromBase58(piv)<br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>       fmt.Printf(<span class="hljs-string">&quot;err=%v&quot;</span>, err)<br>    &#125;<br>    bob := <span class="hljs-string">&quot;6cPnfGr9Y4bZK7ykNpxe2hkKfaPPgsy6Tu5ahyGhzQLt&quot;</span><br>    <span class="hljs-comment">//bob := &quot;8pZWotbBSKBy6Luxf41TxUxDvZHp49jAbuUe2yFZRorE&quot;</span><br>    fromTokenATA, _, err := common.FindAssociatedTokenAddress(alice.PublicKey, common.PublicKeyFromString(tokenAddress))<br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>       log.Fatalf(<span class="hljs-string">&quot;failed to FindAssociatedTokenAddress, err: %v&quot;</span>, err)<br>    &#125;<br>    <span class="hljs-comment">//fmt.Printf(&quot;fromTokenATA=%v\n&quot;, fromTokenATA)</span><br>    toTokenATA, _, err := common.FindAssociatedTokenAddress(common.PublicKeyFromString(bob), common.PublicKeyFromString(tokenAddress))<br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>       log.Fatalf(<span class="hljs-string">&quot;failed to FindAssociatedTokenAddress, err: %v&quot;</span>, err)<br>    &#125;<br>    <span class="hljs-comment">//fmt.Printf(&quot;toTokenATA=%v\n&quot;, toTokenATA)</span><br>    ins := <span class="hljs-built_in">make</span>([]types.Instruction, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>)<br>    recentBlockhashResponse, err := c.GetLatestBlockhash(context.Background())<br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>       log.Fatalf(<span class="hljs-string">&quot;failed to get recent blockhash, err: %v&quot;</span>, err)<br>    &#125;<br>    info, err := c.GetTokenAccount(context.Background(), toTokenATA.ToBase58())<br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>       <span class="hljs-keyword">if</span> errors.Is(err, token.ErrInvalidAccountOwner) &#123;<br>          fmt.Println(<span class="hljs-string">&quot;test&quot;</span>)<br>          ins = <span class="hljs-built_in">append</span>(ins, associated_token_account.Create(<br>             associated_token_account.CreateParam&#123;<br>                Funder:                 common.PublicKeyFromString(alice.PublicKey.String()),<br>                Owner:                  common.PublicKeyFromString(bob),<br>                Mint:                   common.PublicKeyFromString(tokenAddress),<br>                AssociatedTokenAccount: toTokenATA,<br>                <span class="hljs-comment">//ProgramID:              programID,</span><br>             &#125;))<br><br>       &#125; <span class="hljs-keyword">else</span> &#123;<br>          log.Fatalf(<span class="hljs-string">&quot;failed to GetTokenAccount, err: %v&quot;</span>, err)<br>       &#125;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>       <span class="hljs-keyword">if</span> info.Owner.ToBase58() != bob &#123;<br>          log.Fatalf(<span class="hljs-string">&quot;failed to GetTokenAccount,info!=bob err: %v&quot;</span>, err)<br>       &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 追加优先费</span><br>    ComputerUnitPrice := <span class="hljs-type">uint64</span>(<span class="hljs-number">110000</span>) <span class="hljs-comment">//一个计算单元的价格</span><br>    ComputerUnitLimit := <span class="hljs-type">uint32</span>(<span class="hljs-number">200000</span>) <span class="hljs-comment">//计算单元的限制</span><br>    ins = <span class="hljs-built_in">append</span>(ins, compute_budget.SetComputeUnitPrice(compute_budget.SetComputeUnitPriceParam&#123;<br>       MicroLamports: ComputerUnitPrice,<br>    &#125;))<br><br>    ins = <span class="hljs-built_in">append</span>(ins, compute_budget.SetComputeUnitLimit(compute_budget.SetComputeUnitLimitParam&#123;<br>       Units: ComputerUnitLimit,<br>    &#125;))<br>    ins = <span class="hljs-built_in">append</span>(ins, token.TransferChecked(<br>       token.TransferCheckedParam&#123;<br>          From:     fromTokenATA,<br>          To:       toTokenATA,<br>          Mint:     common.PublicKeyFromString(tokenAddress),<br>          Auth:     alice.PublicKey,<br>          Signers:  []common.PublicKey&#123;alice.PublicKey&#125;,<br>          Amount:   <span class="hljs-number">40000000000</span>,<br>          Decimals: <span class="hljs-number">9</span>, <span class="hljs-comment">//精度</span><br><br>       &#125;),<br>    )<br><br>    message := types.NewMessage(<br>       types.NewMessageParam&#123;<br>          FeePayer:        common.PublicKeyFromString(alice.PublicKey.String()),<br>          Instructions:    ins,<br>          RecentBlockhash: recentBlockhashResponse.Blockhash,<br>       &#125;)<br>    tx, err := types.NewTransaction(types.NewTransactionParam&#123;<br>       Message: message,<br>       Signers: []types.Account&#123;alice&#125;,<br>    &#125;)<br><br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>       log.Fatalf(<span class="hljs-string">&quot;failed to new transaction, err: %v&quot;</span>, err)<br>    &#125;<br>    <span class="hljs-comment">// 3、广播上链</span><br>    txhash, err := c.SendTransaction(context.Background(), tx)<br>    <span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>       log.Fatalf(<span class="hljs-string">&quot;failed to SendTransaction, err: %v&quot;</span>, err)<br>    &#125;<br>    fmt.Println(<span class="hljs-string">&quot;tx hash&quot;</span>, txhash)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="四-SOL钱包开发中的API"><a href="#四-SOL钱包开发中的API" class="headerlink" title="四 SOL钱包开发中的API"></a>四 SOL钱包开发中的API</h1><h2 id="1-获取账户信息"><a href="#1-获取账户信息" class="headerlink" title="1.获取账户信息"></a>1.获取账户信息</h2><h2 id="2-获取-recentBlochHash-直接签名的话-recentBlochHash-相当于-nonce"><a href="#2-获取-recentBlochHash-直接签名的话-recentBlochHash-相当于-nonce" class="headerlink" title="2.获取 recentBlochHash, 直接签名的话 recentBlochHash 相当于 nonce"></a>2.获取 recentBlochHash, 直接签名的话 recentBlochHash 相当于 nonce</h2><h2 id="3-获取准备-nonce-账户的-Minimum-Balance-For-Rent-数据"><a href="#3-获取准备-nonce-账户的-Minimum-Balance-For-Rent-数据" class="headerlink" title="3. 获取准备 nonce 账户的 Minimum Balance For Rent 数据"></a>3. 获取准备 nonce 账户的 Minimum Balance For Rent 数据</h2><h2 id="4-获取最新块高-（Slot）"><a href="#4-获取最新块高-（Slot）" class="headerlink" title="4. 获取最新块高 （Slot）"></a>4. 获取最新块高 （Slot）</h2><h2 id="5-根据块高获取交易"><a href="#5-根据块高获取交易" class="headerlink" title="5. 根据块高获取交易"></a>5. 根据块高获取交易</h2><h2 id="6-根据交易-Hash-获取交易详情"><a href="#6-根据交易-Hash-获取交易详情" class="headerlink" title="6. 根据交易 Hash 获取交易详情"></a>6. 根据交易 Hash 获取交易详情</h2><h2 id="7-发送交易到区块链网络"><a href="#7-发送交易到区块链网络" class="headerlink" title="7.发送交易到区块链网络"></a>7.发送交易到区块链网络</h2><h1 id="五-中心化钱包开发"><a href="#五-中心化钱包开发" class="headerlink" title="五 中心化钱包开发"></a>五 中心化钱包开发</h1><h1 id="六、去中心化钱包开发-HD钱包"><a href="#六、去中心化钱包开发-HD钱包" class="headerlink" title="六、去中心化钱包开发 HD钱包"></a>六、去中心化钱包开发 HD钱包</h1><h1 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h1><h1 id="八、附件"><a href="#八、附件" class="headerlink" title="八、附件"></a>八、附件</h1><p>资料；</p>
+<p>节点：<a target="_blank" rel="noopener" href="https://dashboard.alchemy.com/">https://dashboard.alchemy.com/</a> 第三方节点</p>
+<p>浏览器：<a target="_blank" rel="noopener" href="https://solscan.io/">https://solscan.io/</a></p>
+<p>第三方SDK：<a target="_blank" rel="noopener" href="https://github.com/blocto/solana-go-sdk">https://github.com/blocto/solana-go-sdk</a></p>
+<p>文档：<a target="_blank" rel="noopener" href="https://solana.com/zh/docs">https://solana.com/zh/docs</a></p>
+<p>API&#x2F;Swager 文档:<a target="_blank" rel="noopener" href="https://solana.com/zh/docs/rpc">https://solana.com/zh/docs/rpc</a></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs go"><br><br>solana1.jpg<br></code></pre></td></tr></table></figure>
+
+<h1 id="额外笔记"><a href="#额外笔记" class="headerlink" title="额外笔记"></a>额外笔记</h1><h3 id="交易"><a href="#交易" class="headerlink" title="交易"></a>交易</h3><p>我们发送到 Solana 网络中的一笔交易包括四个部分：</p>
+<ul>
+<li>一个或多个指令 （<code>instructions</code>）</li>
+<li>一个要读取或写入的账户数组 （<code>account_keys</code>）</li>
+<li>一个或多个签名 （<code>signatures</code>）</li>
+<li>最近的区块哈希 （<code>recent_blockhash</code>）</li>
+</ul>
+<p>一个<a target="_blank" rel="noopener" href="https://solana.com/docs/terminology#instruction">指令</a>是 Solana 上最小的执行逻辑。指令指定了执行程序、涉及的所有账户和操作数据。指令调用程序更新状态（例如，调用代币程序将代币从你的帐户转移到另一个帐户），程序解释指令中的数据，并对指定账户进行操作</p>
+<blockquote>
+<p>指令—&gt;类似于以太坊智能合约上的函数调用</p>
+</blockquote>
+<h2 id="交易费—基础手续费-和-优先费"><a href="#交易费—基础手续费-和-优先费" class="headerlink" title="交易费—基础手续费 和 优先费"></a>交易费—基础手续费 和 优先费</h2><p>（<code>lamports_per_signature</code>），<strong>基础手续费</strong>目前设定为每个签名 0.000005 SOL（5k lamports），这是一次性的费用，以便获得使用网络资源的权利，无论实际使用多少资源来执行交易（或者交易是否执行），都需要预先支付给网络。50% 的费用支付给产生区块的验证节点，剩余的 50% 则被销毁。</p>
+<p>如果想提高其交易的优先级【可选的费用】，它可以设置一个 “计算单元价格”。 这个价格与 <a target="_blank" rel="noopener" href="https://solana.com/zh/docs/core/fees#compute-unit-limit">计算单元限制</a> 结合使用，用来确定交易的优先级费用。</p>
+<p>默认的计算单元限制为 <a target="_blank" rel="noopener" href="https://github.com/anza-xyz/agave/blob/b7bbe36918f23d98e2e73502e3c4cba78d395ba9/program-runtime/src/compute_budget_processor.rs#L18">每个指令 20 万 CU</a>， 如果计算量比较大，可以设置最大为 140 万 Cu。 Solana 交易会预先请求指定数量的计算单元（CUs），如果超出这个数量，交易将失败。</p>
+<p>另外，Solana 交易还会收交易包大小的限制，Solana 网络遵循最大传输单元 (MTU) 大小为 1280 字节，这与 IPv6 MTU 大小约束一致，以确保通过 UDP 传输集群信息的快速和可靠性。在计算必要的标头（IPv6 的 40 字节和 8 字节的片段头）后，1232 字节仍然可用于数据包， 签名和消息的组合不能超过此限制。</p>
+<blockquote>
+<p> 以下官方视频介绍</p>
+</blockquote>
+<h1 id="Accounts"><a href="#Accounts" class="headerlink" title="Accounts"></a>Accounts</h1><p>sol Accounts 模型</p>
+<p>Solana 上的宗旨是一切皆为帐户，类似Linux 的一切皆文件一样，</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">&#123;<br>  &quot;key&quot;:number,// 视为区块链公共地址<br>  &quot;lamports&quot;:number, // 实际总余额 本地soltoken 的最小单位，1 lamports=0.0000000001sol<br>  &quot;data&quot;:Unit8Array,// 无符号整数存储的原始字节<br>  &quot;is_executable&quot;:boolean, // 是否为程序，如果为true 就是可执行程序，flase就是普通数据帐户<br>  &quot;ower&quot;:Publickey // 所有者，只有该帐户的所有者才可以更新该帐户内数据<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="Programs"><a href="#Programs" class="headerlink" title="Programs"></a>Programs</h1><p>Programs 程序就是solana 上的智能合约Smart contracts on Solana</p>
+<ul>
+<li><p>程序是无状态的，只能读取和写入别人的帐户数据</p>
+</li>
+<li><p>必须是帐户所有者才能修改</p>
+</li>
+<li><p>程序运行指令</p>
+</li>
+<li><p>程序能发送指令给其他程序</p>
+</li>
+</ul>
+<p>总结</p>
+<ul>
+<li>一切皆程序</li>
+<li>所有帐户都持有SOL</li>
+<li>帐户能存储任意数据</li>
+<li>帐户也能存储<strong>可执行程序</strong></li>
+<li>帐户也能床底到程序中并行执行</li>
+</ul>
+<h1 id="Programs-Instructions"><a href="#Programs-Instructions" class="headerlink" title="Programs Instructions"></a>Programs Instructions</h1><p>程序指令</p>
+<p>原始模型：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs go">&#123;<br>  <span class="hljs-string">&quot;program_id&quot;</span>:number,<span class="hljs-comment">// 指定程序的id,该指令用于的程序</span><br>  <span class="hljs-string">&quot;keys&quot;</span>:Array&lt;&#123; <span class="hljs-comment">// 设计指令的帐户，这里用了数组，说明是可以传递多个的</span><br>    <span class="hljs-string">&quot;key&quot;</span>:Publcky,<br>    <span class="hljs-string">&quot;is_mutable&quot;</span>:boolean,<br>    <span class="hljs-string">&quot;is_signer&quot;</span>:boolean,<br>  &#125;&gt;,<br>  <span class="hljs-string">&quot;data&quot;</span>:Unit8Array <span class="hljs-comment">//你有一定量的数据通过原始字节的形式发送到网络中</span><br>&#125;<br><br><br><span class="hljs-comment">// 下面是go中的</span><br><span class="hljs-keyword">type</span> Instruction <span class="hljs-keyword">struct</span> &#123;<br>	ProgramID common.PublicKey<br>	Accounts  []AccountMeta<br>	Data      []<span class="hljs-type">byte</span><br>&#125;<br><br><span class="hljs-keyword">type</span> AccountMeta <span class="hljs-keyword">struct</span> &#123;<br>	PubKey     common.PublicKey<br>	IsSigner   <span class="hljs-type">bool</span><br>	IsWritable <span class="hljs-type">bool</span><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="简单指令"><a href="#简单指令" class="headerlink" title="简单指令"></a>简单指令</h2><p>多个指令捆绑在一起，就可以组成一个交易</p>
+<p>Transactions 交易</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs go">message := types.NewMessage(<br>   types.NewMessageParam&#123;<br>      FeePayer:        common.PublicKeyFromString(alice.PublicKey.String()),<br>      Instructions:    ins,<br>      RecentBlockhash: recentBlockhashResponse.Blockhash,<br>   &#125;)<br>tx, err := types.NewTransaction(types.NewTransactionParam&#123;<br>   Message: message,<br>   Signers: []types.Account&#123;alice&#125;,<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<p><strong>创建帐户的指令</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">CreateAccountSimpleTx</span><span class="hljs-params">()</span></span> &#123;<br>	c := NewClient()<br>	alice, err := types.AccountFromBase58(Piv)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		fmt.Printf(<span class="hljs-string">&quot;err=%v&quot;</span>, err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;alice=%v\n&quot;</span>, alice.PublicKey.String())<br>	<span class="hljs-comment">// 查询下地址的当前余额</span><br>	balances, err := c.GetBalance(context.Background(), alice.PublicKey.String())<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		fmt.Printf(<span class="hljs-string">&quot;get balances err = %v&quot;</span>, err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;balances = %v\n&quot;</span>, balances)<br>	<span class="hljs-comment">// 2、组装交易</span><br>	<span class="hljs-comment">// 2.1 拿recentBlockhashResponse</span><br>	recentBlockhashResponse, err := c.GetLatestBlockhash(context.Background())<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;failed to get recent blockhash, err: %v&quot;</span>, err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;recentBlockhashResponse = %v\n&quot;</span>, recentBlockhashResponse)<br><br>	<span class="hljs-comment">// 最小转账金额</span><br>	minimumBalanceForRentExemption, err := c.GetMinimumBalanceForRentExemption(context.Background(), <span class="hljs-number">0</span>)<br>	fmt.Printf(<span class="hljs-string">&quot;minimumBalanceForRentExemption = %v\n&quot;</span>, minimumBalanceForRentExemption)<br>	<span class="hljs-comment">// 2.2 定义Instruction然后填充它</span><br>	ins := <span class="hljs-built_in">make</span>([]types.Instruction, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>)<br>	<span class="hljs-comment">// 交易分成2个大部份 Transactions 和 Instructions 指令，Instructions可以有多个</span><br>	<span class="hljs-comment">// 追加优先费</span><br>	ComputerUnitPrice := <span class="hljs-type">uint64</span>(<span class="hljs-number">200000</span>) <span class="hljs-comment">//一个计算单元的价格</span><br>	ComputerUnitLimit := <span class="hljs-type">uint32</span>(<span class="hljs-number">200000</span>) <span class="hljs-comment">//计算单元的限制</span><br>	ins = <span class="hljs-built_in">append</span>(ins, compute_budget.SetComputeUnitPrice(compute_budget.SetComputeUnitPriceParam&#123;<br>		MicroLamports: ComputerUnitPrice,<br>	&#125;))<br><br>	ins = <span class="hljs-built_in">append</span>(ins, compute_budget.SetComputeUnitLimit(compute_budget.SetComputeUnitLimitParam&#123;<br>		Units: ComputerUnitLimit,<br>	&#125;))<br><br>	<span class="hljs-comment">// DOINGS 我在做的事情是创建一个地址并为其在链上创建一个账号,参考createAccount方法</span><br>	<span class="hljs-comment">// 生成一个钱包，先不管他的地址</span><br>	bob := types.NewAccount()<br>	fmt.Printf(<span class="hljs-string">&quot;bob address=%s\n&quot;</span>, bob.PublicKey.String())<br>	<span class="hljs-comment">// 指令三纬度，ProgramId 、 Accounts、Data</span><br>	Accounts := []types.AccountMeta&#123;<br>		&#123;PubKey: common.PublicKeyFromString(alice.PublicKey.String()), IsSigner: <span class="hljs-literal">true</span>, IsWritable: <span class="hljs-literal">true</span>&#125;,<br>		&#123;PubKey: common.PublicKeyFromString(bob.PublicKey.String()), IsSigner: <span class="hljs-literal">true</span>, IsWritable: <span class="hljs-literal">true</span>&#125;,<br>	&#125;<br>	data, err := bincode.SerializeData(<span class="hljs-keyword">struct</span> &#123;<br>		Instruction system.Instruction<br>		Lamports    <span class="hljs-type">uint64</span><br>		Space       <span class="hljs-type">uint64</span><br>		Owner       common.PublicKey<br>	&#125;&#123;<br>		Instruction: system.InstructionCreateAccount,<br>		Lamports:    minimumBalanceForRentExemption + <span class="hljs-number">1</span>,<br>		<span class="hljs-comment">//Space:       system.NonceAccountSize,</span><br>		Space: <span class="hljs-number">0</span>,<br>		Owner: common.SystemProgramID,<br>	&#125;)<br>	createAccountIns := types.Instruction&#123;<br>		ProgramID: common.SystemProgramID,<br>		Accounts:  Accounts,<br>		<span class="hljs-comment">//Data:      []byte&#123;0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0, 0, 0, 0, 0, 6, 161, 216, 23, 145, 55, 84, 42, 152, 52, 55, 189, 254, 42, 122, 178, 85, 127, 83, 92, 138, 120, 114, 43, 104, 164, 157, 192, 0, 0, 0, 0&#125;,</span><br>		Data: data,<br>	&#125;<br>	ins = <span class="hljs-built_in">append</span>(ins, createAccountIns)<br>	<span class="hljs-comment">// 消息包含指令、区块哈希、fee支付者</span><br>	message := types.NewMessage(<br>		types.NewMessageParam&#123;<br>			FeePayer: alice.PublicKey,<br>			Instructions:    ins,<br>			RecentBlockhash: recentBlockhashResponse.Blockhash,<br>		&#125;)<br>	<span class="hljs-comment">// 交易包含签名和消息</span><br>	tx, err := types.NewTransaction(types.NewTransactionParam&#123;<br>		Message: message,<br>		Signers: []types.Account&#123;alice, bob&#125;,<br>	&#125;)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;failed to new transaction, err: %v&quot;</span>, err)<br>	&#125;<br>	<span class="hljs-comment">// 3、广播上链</span><br>	txhash, err := c.SendTransaction(context.Background(), tx)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;failed to SendTransaction, err: %v&quot;</span>, err)<br>	&#125;<br>	fmt.Println(<span class="hljs-string">&quot;tx hash&quot;</span>, txhash)<br>&#125;<br><br><span class="hljs-comment">// 下面是使用sdk自带的方法</span><br>	bob := types.NewAccount()<br>	fmt.Printf(<span class="hljs-string">&quot;bob address=%s\n&quot;</span>, bob.PublicKey.String())<br><br>	createAccountIns2 := system.CreateAccount(system.CreateAccountParam&#123;<br>		From:     alice.PublicKey,<br>		New:      bob.PublicKey,<br>		Owner:    common.SystemProgramID, <span class="hljs-comment">// 你要为他创建哪个帐户就用哪个owner</span><br>		Lamports: minimumBalanceForRentExemption + <span class="hljs-number">1</span>, <span class="hljs-comment">// 最低租金+1</span><br>		Space:    <span class="hljs-number">0</span>,<br>	&#125;)<br>	ins = <span class="hljs-built_in">append</span>(ins, createAccountIns2)<br></code></pre></td></tr></table></figure>
+
+
+
+<p>总结</p>
+<ul>
+<li>程序调用指令</li>
+<li>指令通过交易发送广播出去</li>
+<li>交易需要是原子的</li>
+<li>所有交易都必须签名</li>
+</ul>
+<p>Solana 交易的生命周期—-&gt;不单单是solana 很多题目都会出现</p>
+<ul>
+<li>指令包含什么：程序id、 帐户key数组 、data</li>
+<li>交易包含什么：指令、RecentBlockhash、签名消息、fee支付者</li>
+<li>去中心化应用DAPP 客户端 组装交易（指令），</li>
+<li>交易被发送到RPC 客户端 </li>
+<li>RPC客户端把所有交易转发给投票验证者</li>
+<li>验证者将实际使用solana运行时来启用，运行时实际执行每个交易内的每个指令</li>
+<li>每个指令将调用一个特定程序来实际执行该程序代码试图做的事情，这个程序只是增加一个计数器并递增1</li>
+</ul>
+<h2 id="复杂指令"><a href="#复杂指令" class="headerlink" title="复杂指令"></a>复杂指令</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">CreateComplexTx</span><span class="hljs-params">()</span></span> &#123;<br><br>	c := NewClient()<br>	alice, err := types.AccountFromBase58(Piv)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		fmt.Printf(<span class="hljs-string">&quot;err=%v&quot;</span>, err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;alice=%v\n&quot;</span>, alice.PublicKey.String())<br>	<span class="hljs-comment">// 查询下地址的当前余额</span><br>	balances, err := c.GetBalance(context.Background(), alice.PublicKey.String())<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		fmt.Printf(<span class="hljs-string">&quot;get balances err = %v&quot;</span>, err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;balances = %v\n&quot;</span>, balances)<br>	<span class="hljs-comment">// 2、组装交易</span><br>	<span class="hljs-comment">// 2.1 拿recentBlockhashResponse</span><br>	recentBlockhashResponse, err := c.GetLatestBlockhash(context.Background())<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;failed to get recent blockhash, err: %v&quot;</span>, err)<br>	&#125;<br><br>	<span class="hljs-comment">// 最小转账金额</span><br>	minimumBalanceForRentExemption, err := c.GetMinimumBalanceForRentExemption(context.Background(), <span class="hljs-number">0</span>)<br>	fmt.Printf(<span class="hljs-string">&quot;minimumBalanceForRentExemption = %v\n&quot;</span>, minimumBalanceForRentExemption)<br>	<span class="hljs-comment">// 2.2 定义Instruction然后填充它</span><br>	ins := <span class="hljs-built_in">make</span>([]types.Instruction, <span class="hljs-number">0</span>, <span class="hljs-number">4</span>)<br>	<span class="hljs-comment">// 交易分成2个大部份 Transactions 和 Instructions 指令，Instructions可以有多个</span><br>	<span class="hljs-comment">// 追加优先费</span><br>	ComputerUnitPrice := <span class="hljs-type">uint64</span>(<span class="hljs-number">2000000</span>) <span class="hljs-comment">//一个计算单元的价格</span><br>	ComputerUnitLimit := <span class="hljs-type">uint32</span>(<span class="hljs-number">2000000</span>) <span class="hljs-comment">//计算单元的限制</span><br>	ins = <span class="hljs-built_in">append</span>(ins, compute_budget.SetComputeUnitPrice(compute_budget.SetComputeUnitPriceParam&#123;<br>		MicroLamports: ComputerUnitPrice,<br>	&#125;))<br><br>	ins = <span class="hljs-built_in">append</span>(ins, compute_budget.SetComputeUnitLimit(compute_budget.SetComputeUnitLimitParam&#123;<br>		Units: ComputerUnitLimit,<br>	&#125;))<br><br>	<span class="hljs-comment">// DOINGS 我在做的事情是创建一个地址并为其在链上创建一个账号,参考createAccount方法</span><br>	<span class="hljs-comment">// 创建测试帐户指令，生成一个钱包，先不管他的地址</span><br>	bob := types.NewAccount()<br>	fmt.Printf(<span class="hljs-string">&quot;bob address=%s\n&quot;</span>, bob.PublicKey.String())<br>	createAccountIns2 := system.CreateAccount(system.CreateAccountParam&#123;<br>		From:     alice.PublicKey,<br>		New:      bob.PublicKey,<br>		Owner:    common.SystemProgramID,<br>		Lamports: minimumBalanceForRentExemption + <span class="hljs-number">1</span>,<br>		Space:    <span class="hljs-number">0</span>,<br>	&#125;)<br>	ins = <span class="hljs-built_in">append</span>(ins, createAccountIns2)<br>	<span class="hljs-comment">// 第二个指令，给静态地址转账</span><br>	Cindy := common.PublicKeyFromString(<span class="hljs-string">&quot;2e7MJy7rh3mr7myjEtyD6Bjyyc9fYcYVwwhGhgVDbx5U&quot;</span>) <span class="hljs-comment">// 随便一个静态地址</span><br>	ins = <span class="hljs-built_in">append</span>(ins, system.Transfer(system.TransferParam&#123;<br>		From:   alice.PublicKey,<br>		To:     Cindy,<br>		Amount: <span class="hljs-number">100000000</span>,<br>	&#125;))<br>	<span class="hljs-comment">// 第三个指令，给测试帐户转账</span><br>	ins = <span class="hljs-built_in">append</span>(ins, system.Transfer(system.TransferParam&#123;<br>		From:   alice.PublicKey,<br>		To:     bob.PublicKey,<br>		Amount: <span class="hljs-number">200000000</span>,<br>	&#125;))<br>	<span class="hljs-comment">// 第四个指令，给静态地址转账</span><br>	ins = <span class="hljs-built_in">append</span>(ins, system.Transfer(system.TransferParam&#123;<br>		From:   alice.PublicKey,<br>		To:     Cindy,<br>		Amount: <span class="hljs-number">300000000</span>,<br>	&#125;))<br>	<span class="hljs-comment">// 消息包含指令、区块哈希、fee支付者</span><br>	message := types.NewMessage(<br>		types.NewMessageParam&#123;<br>			FeePayer: alice.PublicKey,<br>			Instructions:    ins,<br>			RecentBlockhash: recentBlockhashResponse.Blockhash,<br>		&#125;)<br>	<span class="hljs-comment">// 交易包含签名和消息</span><br>	tx, err := types.NewTransaction(types.NewTransactionParam&#123;<br>		Message: message,<br>		Signers: []types.Account&#123;alice, bob&#125;,<br>	&#125;)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;failed to new transaction, err: %v&quot;</span>, err)<br>	&#125;<br>	<span class="hljs-comment">// 3、广播上链</span><br>	txhash, err := c.SendTransaction(context.Background(), tx)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;failed to SendTransaction, err: %v&quot;</span>, err)<br>	&#125;<br>	fmt.Println(<span class="hljs-string">&quot;tx hash&quot;</span>, txhash)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="TOKEN-指令–-创建Token和元数据"><a href="#TOKEN-指令–-创建Token和元数据" class="headerlink" title="TOKEN 指令–&gt;创建Token和元数据"></a>TOKEN 指令–&gt;创建Token和元数据</h2><p>createTokenWithMetadata</p>
+<p>分成4个步骤</p>
+<ol>
+<li>Create a new account 创建一个新帐户，</li>
+<li>Initialize that account as a mint  初始化这个帐户为铸造方</li>
+<li>Create an associated token account  创建关联代币帐户 ATA</li>
+<li>Mint new tokens to that associated token account 将新代币铸造到关联的代币账户</li>
+</ol>
+<p>我们先完成前面3个步骤来创建token和元数据，3个指令</p>
+<p>createMintAccountInstruction,</p>
+<p> initializeMintInstruction,</p>
+<p>createMetadataInstruction,</p>
+<p>见代码  </p>
+<p>第四步就是mint to 铸造一定数量的token发送给某个接收者地址</p>
+<p>见代码</p>
+<h2 id="更改代币元数据"><a href="#更改代币元数据" class="headerlink" title="更改代币元数据"></a>更改代币元数据</h2><p>见代码</p>
+<p>总结铸造流程：</p>
+<ol>
+<li>创建一个帐户,<code>system.CreateAccount()方法</code></li>
+<li>为帐户初始化为一个铸币帐户Mint <code>token.InitializeMint()方法</code></li>
+<li>为该帐户初始名称并创建元数据帐户地址(PDA派生那一步),<code>common.FindProgramAddress()加上token_metadata.CreateMetadataAccountV3()方法</code></li>
+<li>create an associated token account for the user’s wallet为用户的钱包创建关联的代币账户 ·<code>associated_token_account.Create()方法</code></li>
+<li>mint a token to the user’s associated token account向用户关联的代币账户铸造代币 <code>token.MintTo()方法</code></li>
+</ol>
+<h1 id="NFT"><a href="#NFT" class="headerlink" title="NFT"></a>NFT</h1><p>NFT就是一个splat Token 是一个具有独特属性的非同质化代币</p>
+<p>特性</p>
+<ol>
+<li>Are SPL Tokens 是token</li>
+<li>小数精度为0</li>
+<li>总供应量为1</li>
+<li>高度可定制的元数据如图像等各种属性</li>
+</ol>
+<p>还有两个概念，主板和集合</p>
+<h1 id="调用合约"><a href="#调用合约" class="headerlink" title="调用合约"></a>调用合约</h1><p>参考交易<a target="_blank" rel="noopener" href="https://solscan.io/tx/4kEqM9WYQnud3G2UjiNgRktQKGkRu3B4PSuLepSrqYubU3Ha5J88PGmWNnt85MKwDuCyrc2q5odU8nWRNnUFVtNw?cluster=devnet">https://solscan.io/tx/4kEqM9WYQnud3G2UjiNgRktQKGkRu3B4PSuLepSrqYubU3Ha5J88PGmWNnt85MKwDuCyrc2q5odU8nWRNnUFVtNw?cluster=devnet</a></p>
+<p>创建池子的交易:</p>
+<p><a target="_blank" rel="noopener" href="https://solscan.io/tx/4kEqM9WYQnud3G2UjiNgRktQKGkRu3B4PSuLepSrqYubU3Ha5J88PGmWNnt85MKwDuCyrc2q5odU8nWRNnUFVtNw?cluster=devnet">https://solscan.io/tx/4kEqM9WYQnud3G2UjiNgRktQKGkRu3B4PSuLepSrqYubU3Ha5J88PGmWNnt85MKwDuCyrc2q5odU8nWRNnUFVtNw?cluster=devnet</a></p>
+<p>3aPmA4hTkMQMFfF5cpktFSK6rniJHoL2DdmqVi1q3SoLTNXzisK4FiW6XJcD1tftygq9n1vMyjBLBrP6gymWapeK</p>
+<ul>
+<li>得到的代币可容忍的数量差，超出容忍度，超出</li>
+<li></li>
+</ul>
+<p>AMM</p>
+<p>CLMM</p>
+<p>CPMM </p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/blockChain/" class="category-chain-item">blockChain</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/block/" class="print-no-link">#block</a>
+      
+        <a href="/tags/%E6%A6%82%E5%BF%B5/" class="print-no-link">#概念</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>07-5SOL钱包开发流程</div>
+      <div>http://example.com/2024/11/22/07-5SOL钱包开发流程/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Wangxiaowang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年11月22日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/11/26/07-6Stacks%E9%92%B1%E5%8C%85%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/" title="07-6Stacks钱包开发流程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">07-6Stacks钱包开发流程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/11/19/07-4TON%E9%92%B1%E5%8C%85%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/" title="07-4TON钱包开发流程">
+                        <span class="hidden-mobile">07-4TON钱包开发流程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appKey":"p8TvvzGc2rQ02TfZHuJppQLO","path":"window.location.pathname","placeholder":"欢迎留下评论，嘿嘿！","avatar":"monsterid","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false,"appid":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appkey":"p8TvvzGc2rQ02TfZHuJppQLO"},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

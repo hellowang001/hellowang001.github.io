@@ -1,0 +1,901 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Wangxiaowang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一. Bitcoin 概览1.1 Bitcoin 简介比特币（Bitcoin）是由一个或一群化名为中本聪（Satoshi Nakamoto）的人在 2008 年提出，并于 2009 年开始发布的去中心化数字货币。它的出现标志着一种新型金融体系的诞生，具有以下主要特点： 去中心化：  比特币网络没有中央管理机构或中介机构，它通过一个称为区块链的分布式账本来记录所有交易。 区块链技术确保了所有参与者都">
+<meta property="og:type" content="article">
+<meta property="og:title" content="05 Bitcoin钱包生成和签名">
+<meta property="og:url" content="http://example.com/2024/05/27/05Bitcoin%E9%92%B1%E5%8C%85%E7%94%9F%E6%88%90%E5%92%8C%E7%AD%BE%E5%90%8D/index.html">
+<meta property="og:site_name" content="Wang">
+<meta property="og:description" content="一. Bitcoin 概览1.1 Bitcoin 简介比特币（Bitcoin）是由一个或一群化名为中本聪（Satoshi Nakamoto）的人在 2008 年提出，并于 2009 年开始发布的去中心化数字货币。它的出现标志着一种新型金融体系的诞生，具有以下主要特点： 去中心化：  比特币网络没有中央管理机构或中介机构，它通过一个称为区块链的分布式账本来记录所有交易。 区块链技术确保了所有参与者都">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/web3/bitcoin2.jpg">
+<meta property="article:published_time" content="2024-05-27T09:20:36.000Z">
+<meta property="article:modified_time" content="2025-06-20T04:23:54.056Z">
+<meta property="article:author" content="Wangxiaowang">
+<meta property="article:tag" content="block">
+<meta property="article:tag" content="概念">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/web3/bitcoin2.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>05 Bitcoin钱包生成和签名 - Wang</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"37fd8385820c4abc0e564a2c423b7511","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?37fd8385820c4abc0e564a2c423b7511";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Home</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/web3/bitcoin5.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="05 Bitcoin钱包生成和签名"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-05-27 17:20" pubdate>
+          2024年5月27日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">05 Bitcoin钱包生成和签名</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="一-Bitcoin-概览"><a href="#一-Bitcoin-概览" class="headerlink" title="一. Bitcoin 概览"></a>一. Bitcoin 概览</h1><h2 id="1-1-Bitcoin-简介"><a href="#1-1-Bitcoin-简介" class="headerlink" title="1.1 Bitcoin 简介"></a>1.1 Bitcoin 简介</h2><p>比特币（Bitcoin）是由一个或一群化名为中本聪（Satoshi Nakamoto）的人在 2008 年提出，并于 2009 年开始发布的去中心化数字货币。它的出现标志着一种新型金融体系的诞生，具有以下主要特点：</p>
+<p><strong>去中心化</strong>：</p>
+<ul>
+<li>比特币网络没有中央管理机构或中介机构，它通过一个称为区块链的分布式账本来记录所有交易。</li>
+<li>区块链技术确保了所有参与者都可以查看和验证交易，提高了透明度和安全性。</li>
+</ul>
+<p><strong>有限供应</strong>：</p>
+<ul>
+<li>比特币的总供应量被固定在2100万枚，这通过代码内的机制控制。 </li>
+<li>这一机制使比特币具备了抗通胀的特点。</li>
+</ul>
+<p><strong>点对点交易</strong>：</p>
+<ul>
+<li>比特币允许用户之间直接进行交易，不需要通过银行或支付处理机构。 </li>
+<li>这种点对点交易减少了交易成本和处理时间。</li>
+</ul>
+<p><strong>安全性</strong> ：</p>
+<ul>
+<li>比特币使用加密技术确保交易的安全性和隐私性。 </li>
+<li>每一笔交易都需要通过复杂的数学算法进行验证，从而确保系统的完整性。</li>
+</ul>
+<p><strong>不可逆交易</strong>：</p>
+<ul>
+<li>一旦比特币交易被确认，它就无法被撤销。这减少了欺诈的风险，但也意味着用户需要谨慎操作。</li>
+</ul>
+<p><strong>挖矿机制</strong>：</p>
+<ul>
+<li>新的比特币通过一个称为挖矿的过程产生。矿工们使用计算能力来解决复杂的数学问题，成功解决问题的矿工将获得比特币奖励。 </li>
+<li>挖矿不仅生成新币，还维护和保护比特币网络的安全。</li>
+</ul>
+<p><strong>全球流通</strong>：</p>
+<ul>
+<li>比特币可以在全球范围内进行交易，不受地域和国界的限制。 </li>
+<li>它为跨国支付提供了一种高效、低成本的替代方案。</li>
+</ul>
+<p><strong>隐私和匿名性</strong>：</p>
+<ul>
+<li>虽然比特币交易是公开记录的，但用户身份是匿名的。交易是通过地址（类似于账号）进行的，而不是通过真实身份。</li>
+</ul>
+<h2 id="1-2-Bitcoin-的升级次数介绍"><a href="#1-2-Bitcoin-的升级次数介绍" class="headerlink" title="1.2.Bitcoin 的升级次数介绍"></a>1.2.Bitcoin 的升级次数介绍</h2><p>比特币自 2009 年发布以来，经历了多次重要升级。这些升级旨在提高比特币网络的安全性、效率和功能性。</p>
+<p>并且比特币的 Taproot 升级给比特币带来更多的可能性，Taproot 升级带动了 BRC20 和 Bitcoin-Layer2 的发展，</p>
+<p>**P2SH（Pay-to-Script-Hash）2012年 **</p>
+<ul>
+<li>BIP（Bitcoin Improvement Proposal）：BIP-0016 </li>
+<li>内容：允许更复杂的交易脚本，支持多重签名地址。这种升级使得比特币交易更加灵活和安全</li>
+</ul>
+<p>**比特币改进提案 BIP 66    2015年 ** </p>
+<ul>
+<li>BIP：BIP-0066 </li>
+<li>内容：规范了交易中DER格式的签名，解决了交易签名的一致性问题，增强了网络的安全性。</li>
+</ul>
+<p>**CheckSequenceVerify（CSV）2016年 ** ：</p>
+<ul>
+<li><p>BIP：BIP-0112 </p>
+</li>
+<li><p>内容：增加了相对时间锁功能，使得交易可以在指定的时间或块高度之后才生效，这为更复杂的支付通道铺平了道路。</p>
+</li>
+</ul>
+<p>**Segregated Witness（SegWit）2017年 ** </p>
+<ul>
+<li>BIP：BIP-0141, BIP-0143, BIP-0144 </li>
+<li>内容：分离交易签名数据，提高了区块的有效容量，减小了交易体积，降低了交易费用。还解决了交易的可塑性问题，使得闪电网络等侧链解决方案成为可能。</li>
+</ul>
+<p>**隔离见证2x（SegWit2x）2017年 ** </p>
+<ul>
+<li>内容：这次升级是对 SegWit 的后续提案，旨在进一步增加区块大小。然而，由于社区共识未达成，这次升级最终未能实现。</li>
+</ul>
+<p>**Taproot 2021年 ** </p>
+<ul>
+<li>BIP：BIP-0340, BIP-0341, BIP-0342 </li>
+<li>内容：引入了 Schnorr 签名和默克尔化抽象语法树（MAST），增强了隐私性和执行脚本验证的功能，进一步提高了交易的灵活性和效率。这是自2017年 SegWit 以来最重要的一次升级。</li>
+</ul>
+<p>**MAST（Merkelized Abstract Syntax Trees）2021年 ** </p>
+<ul>
+<li><p>BIP：作为 Taproot 的一部分 </p>
+</li>
+<li><p>内容：允许将多种条件的智能合约合并为一个，使得只有满足条件的部分才被公开，提高了隐私性和效率。</p>
+</li>
+</ul>
+<p><strong>Schnorr Signatures</strong> </p>
+<ul>
+<li>BIP：作为 Taproot 的一部分 </li>
+<li>内容：提供了一种更高效和安全的签名算法，允许多重签名聚合，提高了交易的隐私性和可扩展性。</li>
+</ul>
+<h2 id="3-UTXO-介绍"><a href="#3-UTXO-介绍" class="headerlink" title="3.UTXO 介绍"></a>3.UTXO 介绍</h2><p>UTXO（Unspent Transaction Output，<strong>未花费交易输出</strong>）模型是比特币及其他一些加密货币使用的一种记账方法。它与账户模型不同，通过<strong>追踪未花费</strong>的交易输出来记录每个地址的<strong>余额</strong>。以下是UTXO模型的详细介绍：</p>
+<h3 id="3-1-模型解说"><a href="#3-1-模型解说" class="headerlink" title="3.1 模型解说"></a>3.1 模型解说</h3><p>说说一个名词，叫做 Transaction交易，Transaction 和 UTXO 是相辅相成的，先举例：</p>
+<p>张三：通过挖矿得到了120个比特币，</p>
+<p>现在张三饿了，想要花费2个比特币去购买一个面包（假设）。</p>
+<p>现在假设李四是面包店营业主</p>
+<p>张三付给李四将一次性付给李四 120 块，</p>
+<p>李四给张三找零 118 块，这里其实产生了两笔交易，</p>
+<p>咱们可以这样理解，张三的钱被分成了两份，其中 118 打给了自己，剩下的 2 块打给了李四。</p>
+<p>交易与交易之间组成了网状关系，<strong>1 个交易的输出，成为了下 1 个交易的输入；下 1 个交易的输出，又成了下下 1 个交易的输入。</strong></p>
+<p>所有的钱，在这个网络中流动，每 1 笔钱的去向、来源，都是可追溯的，而这也是区块链网络的一个重要特点。</p>
+<p>接下来咱们用比较通俗的方式来说明 UTXO 和 Transaction 到底是什么</p>
+<p>在现实生活中，一笔转账对应的事一个付款人和一个收款人，</p>
+<p>而在比特币中，一笔转账对应的是多个转账人和多个收款人。</p>
+<p>现在咱们仔细分析一下上面的这个例子，对于张三买面包这个案列</p>
+<ul>
+<li>付款人：张三 120块</li>
+<li>收款人：张三 118块，李四 2块</li>
+</ul>
+<p>张三的120，<strong>转118块给自己，转2块给李四，</strong>对应到交易里面，就是这笔交易有<strong>1个输入，2个输出</strong>！</p>
+<p>下面来一个多输入，多输出的案例</p>
+<p>考虑如下场景：</p>
+<p>用户A和用户B之间发生了一个交易T3，A 向 B 转 100 元。</p>
+<p> A的100元来自2笔交易：来自T1：C向A转的80元 + T2：D向A转的30元（共110元，但A只转了100元给B，10元找零返回给A的账号）。 </p>
+<p>同理，C向A转的这80元，来自用户E、F的某次交易…… D向A转的这30元，来自用户E的某次交易……</p>
+<p>这个交易就有2个输入，2个输出：</p>
+<p> 2个输入（也就是2个UTXO）： </p>
+<ul>
+<li><p>T1: C向A转的80元 </p>
+</li>
+<li><p>T2：D向A转的30元</p>
+</li>
+</ul>
+<p>2个输出：</p>
+<ul>
+<li>B：100元 </li>
+<li>A：10元（找零）</li>
+</ul>
+<p>当你理解上面的例子时，我们再来说一下UTXO，理解上面的例子对你理解UTXO会特别有帮助。</p>
+<ul>
+<li>比特币的交易中不是通过账户的增减来实现的，而是一笔笔关联的<strong>输入&#x2F;输出交易事务</strong>。</li>
+<li>每一笔的交易都要花费“<strong>输入</strong>”，然后产生“<strong>输出</strong>”，这个产生的“<strong>输出</strong>”就是所谓的“<strong>未花费过的交易输出</strong>”，也就是<strong>UTXO</strong>。每一笔交易事务都有一个唯一的编号，称为<strong>交易事务ID</strong>，这是通过哈希算法计算而来的，当需要<strong>引用</strong>某一笔交易事务中的<strong>“输出”</strong>时，主要提供<strong>交易事务ID</strong>和所处<strong>“输出”</strong>列表中的<strong>序号</strong>就可以了。</li>
+<li>由于没有账户的概念，因此<strong>当“输入”部分的金额大于所需的“输出”时</strong>，必须给自己<strong>找零</strong>，这个找零也是作为交易的一部分包含在“输出”中。</li>
+<li>旧的 UTXO不断消亡，新的UTXO不断产生。所有的UTXO，组成了UTXO Set 的数据库，存在于每个节点</li>
+<li>任何1笔 UTXO，有且仅可能被1个交易花费1次</li>
+<li>1 个 UTXO，具有如下的表达形式： 1 个 UTXO &#x3D; 1个Transaction ID + Output Index</li>
+</ul>
+<h3 id="2-UTXO模型的区块链钱包余额形式"><a href="#2-UTXO模型的区块链钱包余额形式" class="headerlink" title="2. UTXO模型的区块链钱包余额形式"></a>2. UTXO模型的区块链钱包余额形式</h3><p>深刻理解了UTXO的概念，钱包就很容易理解了，</p>
+<p>某个人的钱包的余额 &#x3D; 属于他的UTXO的总和；在这里，你会发现一个不同于现实世界的“银行”里的一个概念，在银行里，会存储每个账号剩余多少钱。但这里，我们存储的并不是每个账号的余额，而存的是<strong>1笔笔的交易</strong>，也就是<strong>1 笔笔的UTXO</strong>，每个账户的余额是通过<strong>UTXO计算</strong>出来的，而不是<strong>直接存储</strong>余额。</p>
+<h1 id="二-Bitcoin-钱包地址类型"><a href="#二-Bitcoin-钱包地址类型" class="headerlink" title="二. Bitcoin 钱包地址类型"></a>二. Bitcoin 钱包地址类型</h1><p>Bitcoin 钱包地址有几种不同的类型，每种类型都有其特定的用途和特点。主要的几种类型包括：</p>
+<h4 id="P2PKH（Pay-to-PubKeyHash）地址-💡💡"><a href="#P2PKH（Pay-to-PubKeyHash）地址-💡💡" class="headerlink" title="P2PKH（Pay-to-PubKeyHash）地址 💡💡"></a><strong>P2PKH（Pay-to-PubKeyHash）地址</strong> 💡💡</h4><ul>
+<li><strong>传统的 P2PKH</strong> 地址，也叫legacyAddr</li>
+<li>格式：以1开头，例如，1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa。 💡💡</li>
+<li>特点：这是最传统和最常见的地址类型，广泛用于比特币的早期交易。 💡💡</li>
+<li>优点：兼容性好，几乎所有钱包和交易所都支持。 💡💡</li>
+<li>缺点：随着时间的推移，这种地址类型的使用效率较低，交易费用可能会较高。</li>
+</ul>
+<h4 id="P2SH（Pay-to-Script-Hash）地址-💡💡"><a href="#P2SH（Pay-to-Script-Hash）地址-💡💡" class="headerlink" title="P2SH（Pay-to-Script-Hash）地址 💡💡"></a><strong>P2SH（Pay-to-Script-Hash）地址</strong> 💡💡</h4><ul>
+<li><strong>隔离见证 P2SH</strong></li>
+<li>格式：以3开头，例如，3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy。 💡💡</li>
+<li>特点：这种地址允许更复杂的交易脚本，例如多重签名地址。 💡💡</li>
+<li>优点：支持更复杂的交易和脚本，安全性更高。 💡💡</li>
+<li>缺点：创建和管理比P2PKH地址更复杂。</li>
+</ul>
+<h4 id="Bech32（SegWit）地址-💡💡"><a href="#Bech32（SegWit）地址-💡💡" class="headerlink" title="Bech32（SegWit）地址 💡💡"></a><strong>Bech32（SegWit）地址</strong> 💡💡</h4><ul>
+<li><p><strong>原生的隔离见证 Bech32</strong> </p>
+</li>
+<li><p>格式：以 bc1 开头，例如，bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwfvenl。 💡💡</p>
+</li>
+<li><p>特点：这是比特币改进提案BIP-0173中引入的新地址格式，旨在提高交易效率和减少费用。 💡💡</p>
+</li>
+<li><p>优点：交易费用更低，处理速度更快，且有助于减少交易体积。 💡💡</p>
+</li>
+<li><p>缺点：并非所有的钱包和交易所都支持这种地址类型，尽管支持率在逐步增加。</p>
+</li>
+</ul>
+<p>每种地址类型都有其特定的应用场景和优缺点，用户可以根据自己的需求选择合适的地址类型来存储和交易比特币</p>
+<h1 id="三-Bitcoin-离线地址生成代码"><a href="#三-Bitcoin-离线地址生成代码" class="headerlink" title="三. Bitcoin 离线地址生成代码"></a>三. Bitcoin 离线地址生成代码</h1><h2 id="NodeJs-代码"><a href="#NodeJs-代码" class="headerlink" title="NodeJs 代码"></a>NodeJs 代码</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">createAddress</span> (<span class="hljs-attr">params</span>: any): any &#123;<br>    <span class="hljs-keyword">const</span> &#123;seedHex, receiveOrChange, addressIndex, network, method &#125; = params<br>    <span class="hljs-keyword">const</span> root = bip32.<span class="hljs-title function_">fromSeed</span>(<span class="hljs-title class_">Buffer</span>.<span class="hljs-title function_">from</span>(seedHex, <span class="hljs-string">&#x27;hex&#x27;</span>));<br>    <span class="hljs-keyword">let</span> path = <span class="hljs-string">&quot;m/44&#x27;/0&#x27;/0&#x27;/0/&quot;</span> + addressIndex + <span class="hljs-string">&#x27;&#x27;</span>;<br>    <span class="hljs-keyword">if</span> (receiveOrChange === <span class="hljs-string">&#x27;1&#x27;</span>) &#123;<br>        path = <span class="hljs-string">&quot;m/44&#x27;/0&#x27;/0&#x27;/1/&quot;</span> + addressIndex + <span class="hljs-string">&#x27;&#x27;</span>;<br>    &#125;<br>    <span class="hljs-keyword">const</span> child = root.<span class="hljs-title function_">derivePath</span>(path);<br>    <span class="hljs-keyword">let</span> <span class="hljs-attr">address</span>: string<br>    <span class="hljs-keyword">switch</span>(method) &#123;<br>        <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;p2pkh&quot;</span>:<br>            <span class="hljs-keyword">const</span> p2pkhAddress = bitcoin.<span class="hljs-property">payments</span>.<span class="hljs-title function_">p2pkh</span>(&#123;<br>                <span class="hljs-attr">pubkey</span>: child.<span class="hljs-property">publicKey</span>,<br>                <span class="hljs-attr">network</span>: bitcoin.<span class="hljs-property">networks</span>[network]<br>            &#125;);<br>            address = p2pkhAddress.<span class="hljs-property">address</span><br>            <span class="hljs-keyword">break</span><br>        <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;p2wpkh&quot;</span>:<br>            <span class="hljs-keyword">const</span> p2wpkhAddress = bitcoin.<span class="hljs-property">payments</span>.<span class="hljs-title function_">p2wpkh</span>(&#123;<br>                <span class="hljs-attr">pubkey</span>: child.<span class="hljs-property">publicKey</span>,<br>                <span class="hljs-attr">network</span>: bitcoin.<span class="hljs-property">networks</span>[network]<br>            &#125;);<br>            address = p2wpkhAddress.<span class="hljs-property">address</span><br>            <span class="hljs-keyword">break</span><br>        <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;p2sh&quot;</span>:<br>            <span class="hljs-keyword">const</span> p2shAddress = bitcoin.<span class="hljs-property">payments</span>.<span class="hljs-title function_">p2sh</span>(&#123;<br>                <span class="hljs-attr">redeem</span>: bitcoin.<span class="hljs-property">payments</span>.<span class="hljs-title function_">p2wpkh</span>(&#123;<br>                    <span class="hljs-attr">pubkey</span>: child.<span class="hljs-property">publicKey</span>,<br>                    <span class="hljs-attr">network</span>: bitcoin.<span class="hljs-property">networks</span>[network]<br>                &#125;),<br>            &#125;);<br>            address = p2shAddress.<span class="hljs-property">address</span><br>            <span class="hljs-keyword">break</span><br>        <span class="hljs-attr">default</span>:<br>            <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;This way can not support&quot;</span>)<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> &#123;<br>        <span class="hljs-attr">privateKey</span>: <span class="hljs-title class_">Buffer</span>.<span class="hljs-title function_">from</span>(child.<span class="hljs-property">privateKey</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-string">&#x27;hex&#x27;</span>),<br>        <span class="hljs-attr">publicKey</span>: <span class="hljs-title class_">Buffer</span>.<span class="hljs-title function_">from</span>(child.<span class="hljs-property">publicKey</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-string">&#x27;hex&#x27;</span>),<br>        address<br>    &#125;;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>代码中通过 method 来控制生成的地址类别</p>
+<h1 id="四-Bitcoin-离线签名代码"><a href="#四-Bitcoin-离线签名代码" class="headerlink" title="四. Bitcoin 离线签名代码"></a>四. Bitcoin 离线签名代码</h1><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">buildAndSignTx</span> (<span class="hljs-attr">params</span>: &#123; <span class="hljs-attr">privateKey</span>: string; <span class="hljs-attr">signObj</span>: any; <span class="hljs-attr">network</span>: string; &#125;): string &#123;<br>    <span class="hljs-keyword">const</span> &#123; privateKey, signObj, network &#125; = params;<br>    <span class="hljs-keyword">const</span> net = bitcore.<span class="hljs-property">Networks</span>[network];<br>    <span class="hljs-keyword">const</span> inputs = signObj.<span class="hljs-property">inputs</span>.<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">input</span> =&gt;</span> &#123;<br>        <span class="hljs-keyword">return</span> &#123;<br>            <span class="hljs-attr">address</span>: input.<span class="hljs-property">address</span>,<br>            <span class="hljs-attr">txId</span>: input.<span class="hljs-property">txid</span>,<br>            <span class="hljs-attr">outputIndex</span>: input.<span class="hljs-property">vout</span>,<br>            <span class="hljs-attr">script</span>: <span class="hljs-keyword">new</span> bitcore.<span class="hljs-property">Script</span>.<span class="hljs-title function_">fromAddress</span>(input.<span class="hljs-property">address</span>).<span class="hljs-title function_">toHex</span>(),<br>            <span class="hljs-attr">satoshis</span>: input.<span class="hljs-property">amount</span><br>        &#125;<br>    &#125;);<br>    <span class="hljs-keyword">const</span> outputs = signObj.<span class="hljs-property">outputs</span>.<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">output</span> =&gt;</span> &#123;<br>        <span class="hljs-keyword">return</span> &#123;<br>            <span class="hljs-attr">address</span>: output.<span class="hljs-property">address</span>,<br>            <span class="hljs-attr">satoshis</span>: output.<span class="hljs-property">amount</span><br>        &#125;;<br>    &#125;);<br>    <span class="hljs-keyword">const</span> transaction = <span class="hljs-keyword">new</span> bitcore.<span class="hljs-title class_">Transaction</span>(net).<span class="hljs-title function_">from</span>(inputs).<span class="hljs-title function_">to</span>(outputs);<br>    transaction.<span class="hljs-property">version</span> = <span class="hljs-number">2</span>;<br>    transaction.<span class="hljs-title function_">sign</span>(privateKey);<br>    <span class="hljs-keyword">return</span> transaction.<span class="hljs-title function_">toString</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/blockChain/" class="category-chain-item">blockChain</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/block/" class="print-no-link">#block</a>
+      
+        <a href="/tags/%E6%A6%82%E5%BF%B5/" class="print-no-link">#概念</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>05 Bitcoin钱包生成和签名</div>
+      <div>http://example.com/2024/05/27/05Bitcoin钱包生成和签名/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Wangxiaowang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年5月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/05/28/05-2Bitcoin%E9%92%B1%E5%8C%85Schnorr%E5%9C%B0%E5%9D%80%E7%94%9F%E6%88%90%E4%B8%8E%E7%AD%BE%E5%90%8D/" title="05-02 Bitcoin钱包Schnorr地址生成与签名">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">05-02 Bitcoin钱包Schnorr地址生成与签名</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/05/25/04HD%E9%92%B1%E5%8C%85%E5%8A%A9%E8%AE%B0%E8%AF%8D%E7%94%9F%E6%88%90/" title="04 HD钱包助记词生成与验证">
+                        <span class="hidden-mobile">04 HD钱包助记词生成与验证</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appKey":"p8TvvzGc2rQ02TfZHuJppQLO","path":"window.location.pathname","placeholder":"欢迎留下评论，嘿嘿！","avatar":"monsterid","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false,"appid":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appkey":"p8TvvzGc2rQ02TfZHuJppQLO"},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

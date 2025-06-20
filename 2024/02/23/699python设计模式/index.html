@@ -1,0 +1,828 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Wangxiaowang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言第1章 简介1.1 面向对象相关1.2 面相对象的3个设计设计原则第2章–单例设计模式【创建型模式】2.1 理解单例12.1.1实现单例 –代码解读1234567891011121314151617181920212223242526272829# 单例模式class Singleton(object):    def __new__(cls): # __new__是在实例化的时候调用的方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【python】之设计模式【未完】">
+<meta property="og:url" content="http://example.com/2024/02/23/699python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Wang">
+<meta property="og:description" content="前言第1章 简介1.1 面向对象相关1.2 面相对象的3个设计设计原则第2章–单例设计模式【创建型模式】2.1 理解单例12.1.1实现单例 –代码解读1234567891011121314151617181920212223242526272829# 单例模式class Singleton(object):    def __new__(cls): # __new__是在实例化的时候调用的方法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/javier-miranda-N7mrKzGhKro-unsplash.jpg">
+<meta property="article:published_time" content="2024-02-23T03:45:54.000Z">
+<meta property="article:modified_time" content="2025-06-20T04:23:54.065Z">
+<meta property="article:author" content="Wangxiaowang">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/javier-miranda-N7mrKzGhKro-unsplash.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>【python】之设计模式【未完】 - Wang</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"37fd8385820c4abc0e564a2c423b7511","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?37fd8385820c4abc0e564a2c423b7511";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Home</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/spacex-OHOU-5UVIYQ-unsplash.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="【python】之设计模式【未完】"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-02-23 11:45" pubdate>
+          2024年2月23日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【python】之设计模式【未完】</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h1 id="第1章-简介"><a href="#第1章-简介" class="headerlink" title="第1章 简介"></a>第1章 简介</h1><h2 id="1-1-面向对象相关"><a href="#1-1-面向对象相关" class="headerlink" title="1.1 面向对象相关"></a>1.1 面向对象相关</h2><h2 id="1-2-面相对象的3个设计设计原则"><a href="#1-2-面相对象的3个设计设计原则" class="headerlink" title="1.2 面相对象的3个设计设计原则"></a>1.2 面相对象的3个设计设计原则</h2><h1 id="第2章–单例设计模式【创建型模式】"><a href="#第2章–单例设计模式【创建型模式】" class="headerlink" title="第2章–单例设计模式【创建型模式】"></a>第2章–单例设计模式【创建型模式】</h1><h2 id="2-1-理解单例1"><a href="#2-1-理解单例1" class="headerlink" title="2.1 理解单例1"></a>2.1 理解单例1</h2><h3 id="2-1-1实现单例-–代码解读"><a href="#2-1-1实现单例-–代码解读" class="headerlink" title="2.1.1实现单例 –代码解读"></a>2.1.1实现单例 –代码解读</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 单例模式</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Singleton</span>(<span class="hljs-title class_ inherited__">object</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__new__</span>(<span class="hljs-params">cls</span>): <span class="hljs-comment"># __new__是在实例化的时候调用的方法</span><br>        <span class="hljs-string">&quot;&quot;&quot; 判断cls类是否具有instance实例属性，如果没有就创建一个实例出来&quot;&quot;&quot;</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">hasattr</span>(cls, <span class="hljs-string">&#x27;instance&#x27;</span>): <span class="hljs-comment"># 如果cls类本身 没有实例</span><br>            <span class="hljs-string">&quot;&quot;&quot; </span><br><span class="hljs-string">            这里比较难理解，</span><br><span class="hljs-string">            super(Singleton, cls)会返回Singleton类的父类object的对象</span><br><span class="hljs-string">            super(Singleton, cls).__new__(cls)也就是父类object的对象的__new__方法，</span><br><span class="hljs-string">            用父类的对象创建一个对象传递给cls（本类）</span><br><span class="hljs-string">            然后本类cls.instance就=父类对象创建出来的对象，</span><br><span class="hljs-string">            &quot;&quot;&quot;</span><br>            cls.instance = <span class="hljs-built_in">super</span>(Singleton, cls).__new__(cls) <span class="hljs-comment"># 那类的实例就等于</span><br><br>        <span class="hljs-keyword">return</span> cls.instance <span class="hljs-comment"># 如果有就直接返回这个实例cls.instance类的实例</span><br><br>s = Singleton()<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Object created&quot;</span>, s) <span class="hljs-comment"># Object created &lt;__main__.Singleton object at 0x7ffbc212fbe0&gt;</span><br><br>s1 = Singleton()<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Object created&quot;</span>, s1) <span class="hljs-comment"># Object created &lt;__main__.Singleton object at 0x7ffbc212fbe0&gt;</span><br><span class="hljs-comment"># 在 Python 中，对象的实例化过程包括两个步骤：__new__() 和 __init__()。__new__() 方法负责创建实例对象，而 __init__() 方法负责初始化实例。</span><br><span class="hljs-comment"># 在这个代码段中，super(Singleton, cls).__new__(cls) 使用了 super() 内置函数来调用父类 object 的 __new__() 方法。通过传递 Singleton 类和 cls 参数，super(Singleton, cls) 返回了一个代表父类的特殊对象。</span><br><br><span class="hljs-comment"># 然后，通过调用 __new__() 方法，父类 object 创建了一个新的实例对象。这个新的实例对象是通过传递 cls 参数（即 Singleton 类本身）给 __new__() 方法来创建的。</span><br><br><span class="hljs-comment"># 最后，将这个新创建的实例对象赋值给类属性 instance，以便后续的调用可以返回同一个实例。</span><br><br><span class="hljs-comment"># 换句话说，这行代码的目的是在首次实例化时创建一个新的实例，并将其赋值给类属性 instance，以便后续的实例化都返回该实例。</span><br></code></pre></td></tr></table></figure>
+
+<p>问：如何实现单例模式：</p>
+<p>答：通过在定义类魔法方法__–new–__里面，做一个判断，判断 当前类是否存在实例化对象也就是cls.instance 如果有，就直接返回这个实例化对象，如果没有则通过super调用父类的new方法来创建一个实例 cls.instance &#x3D; super(Singleton, cls).<strong>new</strong>(cls)) 然后再返回出去</p>
+<p>UML类图简单学习笔记</p>
+<blockquote>
+<p>设计模式三大类—&gt;创建型、结构型、行为型</p>
+</blockquote>
+<h1 id="创建型"><a href="#创建型" class="headerlink" title="创建型"></a>创建型</h1><blockquote>
+<p>怎么去创建一个对象， 工厂方法模式、抽象工厂模式、创建者模式、原型模式、单例模式</p>
+</blockquote>
+<h2 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h2><h3 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h3><p>不直接向客户端暴露对象创建的实现细节，而是通过一个工厂类来负责创建产品类的实例</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">python设计模式之工厂模式</span><br><span class="hljs-string">不直接向客户端暴露对象创建的实现细节，而是通过一个工厂类来负责创建产品类的实例</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-keyword">from</span> abc <span class="hljs-keyword">import</span> ABCMeta, abstractmethod<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Payment</span>(metaclass=ABCMeta):<br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">pay</span>(<span class="hljs-params">self, money</span>):<br>        <span class="hljs-keyword">pass</span><br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Alipay</span>(<span class="hljs-title class_ inherited__">Payment</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, us_huabei=<span class="hljs-literal">False</span></span>):<br>        self.us_huabei = us_huabei<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">pay</span>(<span class="hljs-params">self, money</span>):<br>        <span class="hljs-keyword">if</span> self.us_huabei:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;花呗支付<span class="hljs-subst">&#123;money&#125;</span>元&quot;</span>)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;支付宝支付<span class="hljs-subst">&#123;money&#125;</span>元&quot;</span>)<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">WechatPay</span>(<span class="hljs-title class_ inherited__">Payment</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">pay</span>(<span class="hljs-params">self, money</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;微信支付<span class="hljs-subst">&#123;money&#125;</span>元&quot;</span>)<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">PaymentFactory</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">create_payment</span>(<span class="hljs-params">self, method</span>):<br>        <span class="hljs-keyword">if</span> method == <span class="hljs-string">&quot;alipay&quot;</span>:<br>            <span class="hljs-keyword">return</span> Alipay()<br>        <span class="hljs-keyword">elif</span> method == <span class="hljs-string">&quot;wechatpay&quot;</span>:<br>            <span class="hljs-keyword">return</span> WechatPay()<br>        <span class="hljs-keyword">elif</span> method == <span class="hljs-string">&quot;huabei&quot;</span>:<br>            <span class="hljs-keyword">return</span> Alipay(us_huabei=<span class="hljs-literal">True</span>)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">raise</span> TypeError(<span class="hljs-string">f&quot;no such payment named <span class="hljs-subst">&#123;method&#125;</span>&quot;</span>)<br><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    pf = PaymentFactory()<br>    p = pf.create_payment(method=<span class="hljs-string">&quot;alipay&quot;</span>)<br>    p.pay(<span class="hljs-number">100</span>)<br><br></code></pre></td></tr></table></figure>
+
+<p>类不直接实例化，由工厂类去返回对应的实例化对象</p>
+<h3 id="工厂方法模式"><a href="#工厂方法模式" class="headerlink" title="工厂方法模式"></a>工厂方法模式</h3><p>工厂方法模式</p>
+<p>优点:</p>
+<ul>
+<li>每个具体产品都对应一个具体工厂类，不需要修改工厂类代码</li>
+<li>隐藏了对象创建的实现细节3</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>每增加一个具体产品类，就必须增加一个相应的具体工厂类</li>
+</ul>
+<p>代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> abc <span class="hljs-keyword">import</span> ABCMeta, abstractmethod<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Payment</span>(metaclass=ABCMeta):<br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">pay</span>(<span class="hljs-params">self, money</span>):<br>        <span class="hljs-keyword">pass</span><br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Alipay</span>(<span class="hljs-title class_ inherited__">Payment</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, use_huabei=<span class="hljs-literal">False</span></span>):<br>        self.us_huabei = use_huabei<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">pay</span>(<span class="hljs-params">self, money</span>):<br>        <span class="hljs-keyword">if</span> self.us_huabei:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;花呗支付<span class="hljs-subst">&#123;money&#125;</span>元&quot;</span>)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;支付宝支付<span class="hljs-subst">&#123;money&#125;</span>元&quot;</span>)<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">BankPay</span>(<span class="hljs-title class_ inherited__">Payment</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">pay</span>(<span class="hljs-params">self, money</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;银联支付<span class="hljs-subst">&#123;money&#125;</span>元&quot;</span>)<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">WechatPay</span>(<span class="hljs-title class_ inherited__">Payment</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">pay</span>(<span class="hljs-params">self, money</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;微信支付<span class="hljs-subst">&#123;money&#125;</span>元&quot;</span>)<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">PaymentFactory</span>(metaclass=ABCMeta):<br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">create_payment</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">pass</span><br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">AlipayFactory</span>(<span class="hljs-title class_ inherited__">PaymentFactory</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">create_payment</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">return</span> Alipay()<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">WechatPayFactory</span>(<span class="hljs-title class_ inherited__">PaymentFactory</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">create_payment</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">return</span> WechatPay()<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">HuabeiFactory</span>(<span class="hljs-title class_ inherited__">PaymentFactory</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">create_payment</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">return</span> Alipay(use_huabei=<span class="hljs-literal">True</span>)<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">BankPayFactory</span>(<span class="hljs-title class_ inherited__">PaymentFactory</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">create_payment</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">return</span> BankPay()<br><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    pf = HuabeiFactory()<br>    p = pf.create_payment()<br>    p.pay(<span class="hljs-number">100</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h3><ul>
+<li>内容:定义一个工厂类接口，让工厂子类来创建一系列相关或相互依赖的对象。</li>
+<li>例:生产一部手机，需要手机壳、CPU、操作系统三类对象进行组装其中每类对象都有不同的种类。对每个具体工厂，分别生产一部手机所需要的三个对象。</li>
+<li>相比工厂方法模式，抽象工厂模式中的每个具体工厂都生产一套产品。</li>
+</ul>
+<h2 id="建造者模式"><a href="#建造者模式" class="headerlink" title="建造者模式"></a>建造者模式</h2><ul>
+<li>内容:将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示。</li>
+<li>角色<ul>
+<li>抽象建造者(Builder)</li>
+<li>具体建造者(Concrete Builder)</li>
+<li>指挥者(Director)</li>
+<li>产品(Product)</li>
+</ul>
+</li>
+<li>建造者模式与抽象工厂模式相似，也用来创建复杂对象。主要区别是建造者模式着重一步步构造一个复杂对象，而抽象工厂模式着重于多个系列的产品对象</li>
+<li>优点<ul>
+<li>隐藏了一个产品的内部结构和装配过程</li>
+<li>将构造代码与表示代码分开</li>
+<li>可以对构造过程进行更精细的控制</li>
+</ul>
+</li>
+</ul>
+<h2 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h2><p>确保一个类只会创建出一个对象，并提供一个访问他的全局访问点</p>
+<ul>
+<li>角色<ul>
+<li>单例(Singleton)</li>
+</ul>
+</li>
+<li>优点<ul>
+<li>对唯一实例的受控访问</li>
+<li>单例相当于全局变量，但防止了命名空间被污染—&gt;不用单例也可以</li>
+</ul>
+</li>
+</ul>
+<p>一般日志系统会是单例，不然两个日志对象同时操作一个文件对象，会出现问题，</p>
+<blockquote>
+<p>抽象工厂模式和建造者模式相对比简单工厂模式和工厂方法模式而言更灵活也更复杂</p>
+<p>通常情况下、设计以简单工厂模式或工厂方法模式开始，当你发现设计需要更大的灵活性时，则像更复杂的设计模式演变</p>
+<p>——-设计应当从简单开始，简单无法满足时才考虑复杂设计模式</p>
+</blockquote>
+<h1 id="结构型模式"><a href="#结构型模式" class="headerlink" title="结构型模式"></a>结构型模式</h1><h2 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h2><ul>
+<li>内容:将一个类的接口转换成客户希望的另一个接口。适配器模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。</li>
+<li>两种实现方式<ul>
+<li>类适配器：使用多继承</li>
+<li>对象适配器：使用组合</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> abc <span class="hljs-keyword">import</span> ABCMeta, abstractmethod<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Payment</span>(metaclass=ABCMeta):<br><span class="hljs-meta">    @abstractmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">pay</span>(<span class="hljs-params">self, money</span>):<br>        <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Alipay</span>(<span class="hljs-title class_ inherited__">Payment</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">pay</span>(<span class="hljs-params">self, money</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;支付宝支付<span class="hljs-subst">&#123;money&#125;</span>元&quot;</span>)<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">WechatPay</span>(<span class="hljs-title class_ inherited__">Payment</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">pay</span>(<span class="hljs-params">self, money</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;微信支付<span class="hljs-subst">&#123;money&#125;</span>元&quot;</span>)<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">BankPay</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">cast</span>(<span class="hljs-params">self, money</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;银联支付<span class="hljs-subst">&#123;money&#125;</span>元&quot;</span>)<br><br><span class="hljs-comment"># 类适配器</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">NewBankPay</span>(Payment, BankPay):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">pay</span>(<span class="hljs-params">self, money</span>):<br>        self.cast(money)<br>p = NewBankPay()<br>p.pay(<span class="hljs-number">100</span>)<br><br><span class="hljs-comment"># 对象适配器</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">PaymentAdapter</span>(<span class="hljs-title class_ inherited__">Payment</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, payment</span>):<br>        self.payment = payment<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">pay</span>(<span class="hljs-params">self, money</span>):<br>        self.payment.cast(money)<br><br>p = PaymentAdapter(BankPay())<br>p.pay(<span class="hljs-number">100</span>)<br><br></code></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>角色:<ul>
+<li>目标接口(Target)</li>
+<li>待适配的类(Adaptee)</li>
+<li>适配器(Adapter)</li>
+</ul>
+</li>
+<li>适用场景</li>
+<li>想使用一个已经存在的类，而它的接口不符合你的要求</li>
+<li>(对象适配器)想使用一些已经存在的子类，但不可能对每一个都进行子类化以匹配它们的接口。对象适配器可以适配它的父类接口。</li>
+</ul>
+<h2 id="桥模式"><a href="#桥模式" class="headerlink" title="桥模式"></a>桥模式</h2><h1 id="行为型模式"><a href="#行为型模式" class="headerlink" title="行为型模式"></a>行为型模式</h1>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/python/" class="category-chain-item">python</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/python/" class="print-no-link">#python</a>
+      
+        <a href="/tags/%E7%AC%94%E8%AE%B0/" class="print-no-link">#笔记</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【python】之设计模式【未完】</div>
+      <div>http://example.com/2024/02/23/699python设计模式/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Wangxiaowang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年2月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/02/26/UML%E7%B1%BB%E5%9B%BE%E7%AE%80%E5%8D%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="【other】UML类图简单学习笔记">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【other】UML类图简单学习笔记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/02/23/Ubuntu%E4%B8%8A%E4%BD%BF%E7%94%A8Charles/" title="【linux】Ubuntu上使用Charles">
+                        <span class="hidden-mobile">【linux】Ubuntu上使用Charles</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appKey":"p8TvvzGc2rQ02TfZHuJppQLO","path":"window.location.pathname","placeholder":"欢迎留下评论，嘿嘿！","avatar":"monsterid","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false,"appid":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appkey":"p8TvvzGc2rQ02TfZHuJppQLO"},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,840 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Wangxiaowang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="对于一些词汇概念的讲解  1. 什么是区块链？区块链是一种分布式的、去中心化的数字账本技术，用于记录和验证交易的数据。 区块链的核心概念是将交易的数据记录在一个被称为“区块”的数据结构中， 并通过加密和共识算法保证数据的安全性和 一致性 每个区块包含了一批交易的信息，以及与之前区块的链接，形成了一个链式结构  链：串起来了才是链  2. 区块链有什么特点？在区块链中，参与者通过网络共享和维护这个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="00 区块链基础知识">
+<meta property="og:url" content="http://example.com/2024/05/16/00%E5%8C%BA%E5%9D%97%E9%93%BE%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/index.html">
+<meta property="og:site_name" content="Wang">
+<meta property="og:description" content="对于一些词汇概念的讲解  1. 什么是区块链？区块链是一种分布式的、去中心化的数字账本技术，用于记录和验证交易的数据。 区块链的核心概念是将交易的数据记录在一个被称为“区块”的数据结构中， 并通过加密和共识算法保证数据的安全性和 一致性 每个区块包含了一批交易的信息，以及与之前区块的链接，形成了一个链式结构  链：串起来了才是链  2. 区块链有什么特点？在区块链中，参与者通过网络共享和维护这个">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/web3/btb4.jpg">
+<meta property="article:published_time" content="2024-05-16T09:51:12.000Z">
+<meta property="article:modified_time" content="2025-06-20T04:23:54.055Z">
+<meta property="article:author" content="Wangxiaowang">
+<meta property="article:tag" content="block">
+<meta property="article:tag" content="概念">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/web3/btb4.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>00 区块链基础知识 - Wang</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"37fd8385820c4abc0e564a2c423b7511","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?37fd8385820c4abc0e564a2c423b7511";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Home</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/web3/eth1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="00 区块链基础知识"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-05-16 17:51" pubdate>
+          2024年5月16日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">00 区块链基础知识</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>对于一些词汇概念的讲解</p>
+</blockquote>
+<h1 id="1-什么是区块链？"><a href="#1-什么是区块链？" class="headerlink" title="1. 什么是区块链？"></a>1. 什么是区块链？</h1><p>区块链是一种<code>分布式</code>的、去<code>中心化</code>的数字账本技术，用于记录和验证交易的数据。</p>
+<p>区块链的核心概念是将交易的数据记录在一个被称为“区块”的数据结构中，</p>
+<p>并通过<code>加密</code>和<code>共识算法</code>保证数据的<code>安全性</code>和 <code>一致性</code></p>
+<p>每个区块包含了一批交易的信息，以及与之前区块的链接，形成了一个链式结构</p>
+<blockquote>
+<p>链：串起来了才是链</p>
+</blockquote>
+<h1 id="2-区块链有什么特点？"><a href="#2-区块链有什么特点？" class="headerlink" title="2. 区块链有什么特点？"></a>2. 区块链有什么特点？</h1><p>在区块链中，参与者通过网络共享和维护这个账本的副本，而不是依赖于中央机构来验证交易。这种去中心化的特性使得区块链具有以下特点：</p>
+<ol>
+<li><code>透明性</code>：区块链中的交易和数据是公开可见的，任何人都可以查看账本的副本。这提供了一种透明的方式来验证交易和监督系统的运作。</li>
+<li><code>安全性</code>：区块链使用密码学技术对数据进行加密和验证，从而确保数据的安全性和完整性。由于数据存储在多个节点上，篡改数据变得非常困难。</li>
+<li><code>去中心化</code>：区块链没有中央机构或控制权，参与者通过共识算法来达成对账本的一致认可。这使得区块链具有更高的可信度和抗攻击能力。</li>
+<li><code>不可篡改性</code>：一旦数据被记录在区块链上，由于每个区块都包含了前一个区块的哈希值，任何对数据的篡改都将被其他节点检测到。</li>
+</ol>
+<h2 id="3-区块链的运作方式"><a href="#3-区块链的运作方式" class="headerlink" title="3.区块链的运作方式"></a>3.区块链的运作方式</h2><h3 id="3-1-哈希函数"><a href="#3-1-哈希函数" class="headerlink" title="3.1 哈希函数"></a>3.1 哈希函数</h3><p>理想的加密哈希函数具备5个主要属性：</p>
+<ol>
+<li><strong>确定性：</strong>相同的消息总是产生相同的哈希值。</li>
+<li><strong>快速：</strong>快速计算任何给定消息的哈希值。</li>
+<li><strong>抵抗性：</strong>除非尝试所有可能的消息，否则从其哈希值生成消息是不可行的。—无法返解</li>
+<li><strong>不相关：</strong>对消息的微小更改会极大地改变哈希值，以至于新值与旧值没有关系。–原始消息改1个字哈希大改</li>
+<li><strong>抗碰撞：</strong>不可能找到具有相同哈希值的两个不同消息。—每一个都是唯一的</li>
+</ol>
+<h3 id="3-2-区块、链"><a href="#3-2-区块、链" class="headerlink" title="3.2 区块、链"></a>3.2 区块、链</h3><ul>
+<li>有效区块是一组有序的<strong>交易</strong>。</li>
+<li>每个块都包含前一个块的<strong>哈希值。</strong>—按顺序排的</li>
+<li>区块的哈希值具有<strong>易证明难伪造。</strong></li>
+</ul>
+<p><img src="/img/chain/image-03.png" srcset="/img/loading.gif" lazyload alt="image1"></p>
+<h2 id="4-交易的运作方式"><a href="#4-交易的运作方式" class="headerlink" title="4.交易的运作方式"></a>4.交易的运作方式</h2><h3 id="4-1-加密钱包"><a href="#4-1-加密钱包" class="headerlink" title="4.1 加密钱包"></a>4.1 加密钱包</h3><blockquote>
+<p>钱包并不存储加密资产，他们只存储私钥</p>
+</blockquote>
+<p>先理解三个重要概念：</p>
+<ul>
+<li>私钥、公钥、地址：公私钥通过<code>非对称加密</code>生成，公钥用于分发，私钥用于个人保留，地址通过公钥推导</li>
+<li>加密与解密：消息传递通过公钥加密、私钥解密</li>
+<li>签名与验证：交易信息通过私钥签名、公钥验证签名</li>
+</ul>
+<p><img src="/img/chain/image-0401.png" srcset="/img/loading.gif" lazyload alt="image-0401"></p>
+<h3 id="4-2-以BTC为例，讲解一笔交易流程"><a href="#4-2-以BTC为例，讲解一笔交易流程" class="headerlink" title="4.2 以BTC为例，讲解一笔交易流程"></a>4.2 以BTC为例，讲解一笔交易流程</h3><blockquote>
+<p>用户B转账 1 bitcoin 到用户 A</p>
+</blockquote>
+<p><img src="/img/chain/image-0402.png" srcset="/img/loading.gif" lazyload alt="image-0402"></p>
+<ol>
+<li>用户B使用自己的私钥签名完成交易信息【确认用户B有足够的代币】</li>
+<li>将交易信息发送至节点，节点使用公钥验证交易信息，并存储在<code>内存池</code>中。</li>
+<li>节点将交易分组在区块中，并广播到其他节点。</li>
+<li>共识成功并出块后，用户A才能获取到1 bitcoin。</li>
+</ol>
+<h2 id="5-共识"><a href="#5-共识" class="headerlink" title="5.共识"></a>5.共识</h2><h3 id="5-1-工作量证明（PoW）"><a href="#5-1-工作量证明（PoW）" class="headerlink" title="5.1 工作量证明（PoW）"></a>5.1 工作量证明（PoW）</h3><blockquote>
+<p>去中心化程度高，消耗资源高<br>在 PoW 共识中，用户必须完成任意难度的任务，当与块中的有序交易结合时，会产生符合特定标准的哈希函数结果。</p>
+</blockquote>
+<ol>
+<li>称为“矿工”的节点通过暴力竞争来解决数学问题（找到特定规则的哈希值）—-大家一起挖呀挖</li>
+<li>第一个解决问题的矿工可以创建一个区块—–第一个挖到了哦</li>
+<li>其他节点检查该块是否有效。如果是，矿工将获得加密货币奖励。如果不是，矿工就浪费了时间和精力。</li>
+<li>所有的节点都将新块添加到其区块链副本中。—-</li>
+</ol>
+<h3 id="5-2-股权证明-PoS"><a href="#5-2-股权证明-PoS" class="headerlink" title="5.2 股权证明 (PoS)"></a>5.2 股权证明 (PoS)</h3><blockquote>
+<p>去中心化的一种妥协方案，更像选择代表人参与网络，相比工作量证明大大降低资源消耗</p>
+</blockquote>
+<ol>
+<li>称为验证者节点会抵押一些加密货币。投入一定数量的加密货币来参与和分配出块奖励。</li>
+<li>验证者节点所占的权重越高更有可能被选择来处理交易并创建区块。</li>
+<li>其他验证者节点检查该块是否有效。如果是，所有参与的验证者都会赚取收益。如果不是，创建该块的验证者可能会失去其权益或者获得惩罚。</li>
+</ol>
+<p>还有其他共识算法将后续介绍，比如：权威证明、委托权益证明等</p>
+<h1 id="延伸：-Cosmos的共识机制是什么？："><a href="#延伸：-Cosmos的共识机制是什么？：" class="headerlink" title="延伸： Cosmos的共识机制是什么？："></a>延伸： Cosmos的共识机制是什么？：</h1><p>Cosmos 是一个开放的区块链生态系统，它采用了一种具有扩展性和互联性的共识机制，称为 <strong>Tendermint</strong> 共识。</p>
+<p><strong>Tendermint</strong> 共识是一种基于<strong>权益证明</strong>（Proof-of-Stake, PoS）的共识算法。它的设计目标是实现高吞吐量、快速确认和良好的安全性。以下是 Tendermint 共识的主要特点：</p>
+<ol>
+<li>权益证明（Proof-of-Stake）：Tendermint 使用权益证明作为共识机制，参与共识的节点需要锁定一定数量的代币作为权益。这些权益代币用于确定节点在共识过程中的投票权重。</li>
+<li>BFT 共识算法：Tendermint 基于拜占庭容错（Byzantine Fault Tolerance, BFT）算法实现共识。它使用了一种称为 “Tendermint Core” 的共识引擎，该引擎通过节点之间的相互通信来达成共识。</li>
+<li>轮次制（Round-Robin）：在 Tendermint 中，节点按照轮次制进行共识过程。每个轮次中，一个节点被选为提议者（Proposer），负责提议一个区块。其他节点将根据提议者的区块进行投票，达成共识。每个轮次后，提议者会轮换到下一个节点。</li>
+<li>快速最终性（Fast Finality）：Tendermint 具有快速最终性的特点，一旦一个区块被大多数节点确认，它就被视为最终的并且不可逆的。这意味着确认的区块在整个网络中被广泛接受，提高了交易的安全性和确定性。</li>
+</ol>
+<p>Tendermint 共识机制在 Cosmos 生态系统中被用于连接多个独立的区块链（称为 “区块链间通信”，Inter-Blockchain Communication, IBC），实现跨链互操作性。它提供了一个安全且高效的共识算法，使得 Cosmos 网络中的不同区块链能够进行可靠的交互和数据传输。</p>
+<h1 id="区块链基础："><a href="#区块链基础：" class="headerlink" title="区块链基础："></a>区块链基础：</h1><p>密码学、分布式存储、智能合约、共识算法</p>
+<h2 id="区块"><a href="#区块" class="headerlink" title="区块"></a>区块</h2><p>每个区块都存储广播数据</p>
+<p>区块链就是每个区块连起来形成一个链条</p>
+<h2 id="特点：去中心化"><a href="#特点：去中心化" class="headerlink" title="特点：去中心化"></a>特点：去中心化</h2><p>中心化是什么？</p>
+<p>把中心化去掉，让全网人人参与，数据维护</p>
+<h2 id="运行原理"><a href="#运行原理" class="headerlink" title="运行原理"></a>运行原理</h2><p>人人都参与记账的大账本，拆分到每个人的小账本</p>
+<p>大部份的人认为真是可靠的时候，就可以确认这个区块</p>
+<p>大家共同记账-互相验证-大家确认</p>
+<h2 id="挖矿"><a href="#挖矿" class="headerlink" title="挖矿"></a>挖矿</h2><p>是一种奖励行为，</p>
+<p>鼓励大家共同维护全网数据–&gt;也就是区块链数据</p>
+<p>能把数据处理的最快最好，谁就可以获得btc奖励</p>
+<h3 id="挖矿原理"><a href="#挖矿原理" class="headerlink" title="挖矿原理"></a>挖矿原理</h3><p>矿工那么多，取谁的呢？所有参与的矿工打包的数据必须加入一个<strong>哈希值</strong>，这个哈希值必须满足一定的条件，谁能先计算出这个哈希值并且广播给其他的矿工确认，且大部份的人认为没问题，谁就可以获得记录数据的权利以及大部份区块链给的奖励</p>
+<p>同理，矿工挖矿不仅仅是为了得到比特币奖励，因为这是维护整个网络的重要环节。</p>
+<p>挖矿的人越多，参与数据确认的人就越多，我们的数据也就越安全</p>
+<h1 id="分叉"><a href="#分叉" class="headerlink" title="分叉"></a>分叉</h1><p>分叉其实是升级，当版本升级的时候，会有两个分叉，一个老的一个新的，老链上的矿工完成升级切换到新链后，这就叫做<strong>软分叉</strong>，当矿工不能达成共识的时候，就会分成了2条链，大家互不兼容各自玩各自的，这就叫做<strong>硬分叉</strong></p>
+<p>想象一下，你造链一条链。现在矿工们把你的链升级了，然后联合起来达成共识要往他们升级的方向去走，那你的链还是你的吗？</p>
+<h1 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h1><p>公有链：公平公正公开，</p>
+<p>私有链：个人或者公司的内部使用的链，外面的人不可以参与到链的共识，</p>
+<p>联盟链：多企业联合，企业或组织方面的应用</p>
+<h1 id="核心技术"><a href="#核心技术" class="headerlink" title="核心技术"></a>核心技术</h1><p>密码学、分布式存储、智能合约、共识算法</p>
+<p>分布式存储：</p>
+<h1 id="交易所"><a href="#交易所" class="headerlink" title="交易所"></a>交易所</h1><p>币安、 </p>
+<p>okx、</p>
+<p>Gateio  bitget wallet  </p>
+<p>coinbase  </p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/blockChain/" class="category-chain-item">blockChain</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/block/" class="print-no-link">#block</a>
+      
+        <a href="/tags/%E6%A6%82%E5%BF%B5/" class="print-no-link">#概念</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>00 区块链基础知识</div>
+      <div>http://example.com/2024/05/16/00区块链基础知识/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Wangxiaowang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年5月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/05/17/01%E5%88%86%E5%B8%83%E5%BC%8F%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA/" title="01 分布式基础理论">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">01 分布式基础理论</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/05/11/rust%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" title="rust学习记录">
+                        <span class="hidden-mobile">rust学习记录</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appKey":"p8TvvzGc2rQ02TfZHuJppQLO","path":"window.location.pathname","placeholder":"欢迎留下评论，嘿嘿！","avatar":"monsterid","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false,"appid":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appkey":"p8TvvzGc2rQ02TfZHuJppQLO"},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,969 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Wangxiaowang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="记录一下Rust的学习历程第一章：安装和hello world安装1$ curl https:&#x2F;&#x2F;sh.rustup.rs -sSf | sh  这条命令会下载并执行一个脚本来安装rustup工具，进而安装最新的Rust稳定版本。该脚本可能会在执行过程中请求输入你的密码。一旦安装成功，你将能够看到如下所示的输出 1Rust is installed now. Great!  上面的安装过程会自动将">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rust学习记录">
+<meta property="og:url" content="http://example.com/2024/05/11/rust%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="Wang">
+<meta property="og:description" content="记录一下Rust的学习历程第一章：安装和hello world安装1$ curl https:&#x2F;&#x2F;sh.rustup.rs -sSf | sh  这条命令会下载并执行一个脚本来安装rustup工具，进而安装最新的Rust稳定版本。该脚本可能会在执行过程中请求输入你的密码。一旦安装成功，你将能够看到如下所示的输出 1Rust is installed now. Great!  上面的安装过程会自动将">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/rust/91957901e7724f2793c8783110be3914.png">
+<meta property="article:published_time" content="2024-05-11T01:17:04.000Z">
+<meta property="article:modified_time" content="2025-06-20T04:23:54.069Z">
+<meta property="article:author" content="Wangxiaowang">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="rust">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/rust/91957901e7724f2793c8783110be3914.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>rust学习记录 - Wang</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"37fd8385820c4abc0e564a2c423b7511","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?37fd8385820c4abc0e564a2c423b7511";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Home</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/ValGardenaItaly.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="rust学习记录"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-05-11 09:17" pubdate>
+          2024年5月11日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          45 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">rust学习记录</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="记录一下Rust的学习历程"><a href="#记录一下Rust的学习历程" class="headerlink" title="记录一下Rust的学习历程"></a>记录一下Rust的学习历程</h1><h1 id="第一章：安装和hello-world"><a href="#第一章：安装和hello-world" class="headerlink" title="第一章：安装和hello world"></a>第一章：安装和hello world</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">curl https://sh.rustup.rs -sSf | sh</span><br></code></pre></td></tr></table></figure>
+
+<p>这条命令会下载并执行一个脚本来安装rustup工具，进而安装最新的Rust稳定版本。该脚本可能会在执行过程中请求输入你的密码。一旦安装成功，你将能够看到如下所示的输出</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">Rust is installed now. Great!<br></code></pre></td></tr></table></figure>
+
+<p>上面的安装过程会自动将Rust工具链添加到环境变量PATH中，并在下一次登录终端时生效。假如你想要立即开始使用Rust而不用重新启动终端，那么你可以在终端中运行如下所示的命令来让配置立即生效：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">source</span> <span class="hljs-variable">$HOME</span>/.cargo/env</span><br></code></pre></td></tr></table></figure>
+
+<p>或者，你也可以向～&#x2F;.bash_profile 文件中添加下面的语句，手动将Rust添加到环境变量PATH中：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">export</span> PATH=<span class="hljs-string">&quot;<span class="hljs-variable">$HOME</span>/.cargo/bin:<span class="hljs-variable">$PATH</span></span></span><br></code></pre></td></tr></table></figure>
+
+<h2 id="Hello-world"><a href="#Hello-world" class="headerlink" title="Hello , world"></a>Hello , world</h2><p>创建一个文件夹</p>
+<p>先，我们需要创建一个文件夹来存储编写的Rust代码。通常而言，Rust不会限制我们存储代码的位置，但是针对本书中的各种练习和项目，我们建议你创建一个可以集合所有项目的根文件夹，然后将本书中所有的项目放在里面。</p>
+<p>现在，你可以打开终端并输入相应命令，来创建我们的文件夹及第一个“Hello, world!”项目了。</p>
+<p>对于Linux系统、macOS系统，以及Windows系统的PowerShell终端来说，输入的命令如下所示：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">mkdir</span> ～/projects</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">cd</span> ～/projects</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">mkdir</span> hello_world</span><br>Hello, World!<br>现在，你应该已经成功安装好了Rust。让我们遵从传统，从编写一个可以打印出“Hello, world!”的小程序开始正式的学习旅程。<br><br>注意<br>本书假定你已经熟悉了基本的终端操作与常用命令。开发Rust程序并不会对你所使用的编辑工具有任何的要求，如果你喜欢使用某个IDE（Integrated Development Environment，集成开发环境），那么就用你喜欢的IDE好了。许多常用的IDE都已经针对Rust实现了某种程度上的支持，你可以通过相应的IDE文档来了解更多的细节。值得高兴的是，Rust开发团队在集中精力提供流畅、舒适的IDE支持，不断优化编码体验！<br><br>创建一个文件夹<br>首先，我们需要创建一个文件夹来存储编写的Rust代码。通常而言，Rust不会限制我们存储代码的位置，但是针对本书中的各种练习和项目，我们建议你创建一个可以集合所有项目的根文件夹，然后将本书中所有的项目放在里面。<br><br>现在，你可以打开终端并输入相应命令，来创建我们的文件夹及第一个“Hello, world!”项目了。<br><br>对于Linux系统、macOS系统，以及Windows系统的PowerShell终端来说，输入的命令如下所示：<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">mkdir</span> ～/projects</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">cd</span> ～/projects</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">mkdir</span> hello_world</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">cd</span> hello_world</span><br><br>对于Windows系统的CMD终端，输入的命令如下所示：<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">&gt; </span><span class="language-bash"><span class="hljs-built_in">mkdir</span> <span class="hljs-string">&quot;%USERPROFILE%\projects&quot;</span></span><br><span class="hljs-meta prompt_">&gt; </span><span class="language-bash"><span class="hljs-built_in">cd</span> /d <span class="hljs-string">&quot;%USERPROFILE%\projects&quot;</span></span><br><span class="hljs-meta prompt_">&gt; </span><span class="language-bash"><span class="hljs-built_in">mkdir</span> hello_world</span><br><span class="hljs-meta prompt_">&gt; </span><span class="language-bash"><span class="hljs-built_in">cd</span> hello_world</span><br></code></pre></td></tr></table></figure>
+
+<p>现在，你可以打开刚刚创建的<em>main.rs</em> 文件，并键入示例1-1中的代码。</p>
+<p>main.rs</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Hello, world!&quot;</span>);<br>&#125;<br><span class="hljs-comment">// 这部分代码定义了Rust中的一个函数。这里的main函数会比较特殊：当你运行一个可执行Rust程序的时候，所有的代码都会从这个入口函数开始运行。这段代码的第一行声明了一个名为main的、没有任何参数和返回值的函数。如果某天你需要给函数声明参数的话，那么就必须把它们放置在圆括号()中。</span><br><span class="hljs-comment">// 首先，标准Rust风格使用4个空格而不是Tab来实现缩进</span><br><span class="hljs-comment">// 最后，我们使用了一个分号（;　）作为这一行的结尾，它表明当前的表达式已经结束，而下一个表达式将要开始。大部分的Rust代码行都会以分号来结尾。</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="编译与运行是两个不同的步骤"><a href="#编译与运行是两个不同的步骤" class="headerlink" title="编译与运行是两个不同的步骤"></a>编译与运行是两个不同的步骤</h3><p>你应该已经运行过刚刚编写的程序了，让我们来详细地讨论一下这个过程中的每一个步骤。</p>
+<p>在运行一段Rust程序之前，你必须输入rustc命令及附带的源文件名参数来编译它：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">rustc main.rs</span><br></code></pre></td></tr></table></figure>
+
+<p>编译完之后我们ls看一下编译出来了什么东西</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">main.exe # Windows系统下的main.exe<br>main.pdb # 如果你使用的是Windows系统，那么你还会看到一个附带调试信息、以.pdb 为后缀的文件<br>main.rs # 以.rs 为后缀的源代码文件<br></code></pre></td></tr></table></figure>
+
+<p>假如你更加熟悉某种类似于Ruby、Python或JavaScript之类的动态语言，你可能还不太习惯在运行之前需要先进行编译。Rust是一种预编译语言，这意味着当你编译完Rust程序之后，便可以将可执行文件交付于其他人，并运行在没有安装Rust的环境中。而如果你交付给其他人的是一份.rb 、.py 或.js 文件，那么他们就必须要拥有对应的Ruby、Python或JavaScript实现来执行程序。当然，这些语言只需要用简单的一句命令就可以完成程序的编译和运行。这也算是语言设计上的权衡与取舍吧</p>
+<h2 id="hello-cargo"><a href="#hello-cargo" class="headerlink" title="hello cargo"></a>hello cargo</h2><p>是啥：</p>
+<p>是Rust的包管理器，它可以处理众多诸如构建代码、下载编译依赖库等琐碎但重要的任务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">cargo --version</span><br>cargo 1.77.2 (e52e36006 2024-03-26)<br></code></pre></td></tr></table></figure>
+
+<p>使用Cargo创建一个项目</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">cargo new hello_cargo</span><br></code></pre></td></tr></table></figure>
+
+<p>现在，让我们进入<em>hello_cargo</em> 文件夹，你可以看到Cargo刚刚生成的两个文件与一个目录：一个名为<em>Cargo.toml</em> 的文件，以及一个名为<em>main.rs</em> 的源代码文件，该源代码文件被放置在<em>src</em> 目录下。与此同时，Cargo还会初始化一个新的Git仓库并生成默认的.<em>gitignore</em> 文件。</p>
+<p><em>Cargo.toml</em> 中的内容如示例1-2所示，你可以使用文本编辑器打开它。</p>
+<p>toml就是配置文件格式</p>
+<p>Cargo.toml</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs toml"><span class="hljs-section">[package]</span> <span class="hljs-comment"># 首行文本中的[package]是一个区域标签，它表明接下来的语句会被用于配置当前的程序包。随着我们在这个文件中增加更多的信息，你还会见识到更多其他的区域 （section）</span><br><span class="hljs-attr">name</span> = <span class="hljs-string">&quot;hello_cargo&quot;</span> <span class="hljs-comment"># 项目名称</span><br><span class="hljs-attr">version</span> = <span class="hljs-string">&quot;0.1.0&quot;</span> <span class="hljs-comment"># 版本</span><br><span class="hljs-attr">edition</span> = <span class="hljs-string">&quot;2021&quot;</span> <span class="hljs-comment"># 日期</span><br><br><span class="hljs-comment"># See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html</span><br><br><span class="hljs-section">[dependencies]</span><br></code></pre></td></tr></table></figure>
+
+<p>同样按照惯例，Cargo会默认把所有的源代码文件保存到src 目录下，而项目根目录只被用来存放诸如README文档、许可声明、配置文件等与源代码无关的文件。使用Cargo可以帮助你合理并一致地组织自己的项目文件，从而使一切井井有条。</p>
+<h3 id="使用Cargo构建和运行项目"><a href="#使用Cargo构建和运行项目" class="headerlink" title="使用Cargo构建和运行项目"></a>使用Cargo构建和运行项目</h3><p>那么使用Cargo来构建和运行项目与手动使用rustc相比又有哪些异同呢？在当前的<em>hello_cargo</em> 项目目录下，Cargo可以通过下面的命令来完成构建任务：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">cargo build</span><br>   Compiling hello_cargo v0.1.0 (file:///projects/hello_cargo)<br>    Finished dev [unoptimized + debuginfo] target(s) in 2.85 secs<br></code></pre></td></tr></table></figure>
+
+<p>与之前不同，这个命令会将可执行程序生成在路径<em>target&#x2F;debug&#x2F;hello_ cargo</em> （或者Windows系统下的<em>target\debug\hello_cargo.exe</em> ）下。你可以通过如下所示的命令运行这个可执行程序试试看</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">./target/debug/hello_cargo <span class="hljs-comment"># or .\target\debug\hello_cargo.exe on Windows</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">如果是linux就直接运行这个二进制，如果是win就运行exe</span><br>Hello, world!<br></code></pre></td></tr></table></figure>
+
+<p>一切正常的话，Hello, world! 应该能够被打印到终端上。首次使用命令cargo build构建的时候，它还会在项目根目录下创建一个名为Cargo.lock 的新文件，这个文件记录了当前项目所有依赖库的具体版本号。由于当前的项目不存在任何依赖，所以这个文件中还没有太多东西。你最好不要手动编辑其中的内容，Cargo可以帮助你自动维护它。</p>
+<p>当然，也可以简单的使用cargo run 命令来一次完成编译和运行任务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">cargo run</span><br>    Finished dev [unoptimized + debuginfo] target(s) in 0.02s<br>     Running `target/debug/hello_cargo`<br>Hello, world!<br></code></pre></td></tr></table></figure>
+
+<p>这里没有看到编译hello_cargo的相关信息，因为cargo发现源码并没有被修改，所以就直接运行了所生成的二进制，我们现在修改一下源代码再试试run</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">cargo run</span><br>   Compiling hello_cargo v0.1.0 (/home/wang/code/rustStudy/hello/hello_cargo)<br>    Finished dev [unoptimized + debuginfo] target(s) in 0.13s # 这里就是在重新编译<br>     Running `target/debug/hello_cargo`<br>Hello, world!, test cargo run<br></code></pre></td></tr></table></figure>
+
+<p>还有一个命令，cargo check ，这个命令可以快速检查当前的代码是否可以通过编译，而不需要花费EAI的时间去真正生成可执行程序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">cargo check</span><br>    Finished dev [unoptimized + debuginfo] target(s) in 0.00s<br></code></pre></td></tr></table></figure>
+
+<p>总结：</p>
+<p>cargo new project_name 创建一个Cargo项目目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">src --放项目代码的 source 的缩写<br>target --目标，也就是放构建完的东西的目录<br>Cargo.lock 这个文件记录了当前项目所有依赖库的具体版本号<br>Cargo.toml 存放Cargo的配置信息，<br>.gitignore git配置信息，这个里面目前的内容是/target，表示target这个目录不会上传到git上去<br></code></pre></td></tr></table></figure>
+
+
+
+<p>通过cargo build 和cargo check 来构建一个项目</p>
+<p>通过cargo run 来构建并且运行这个项目，</p>
+<p>构建所产生的结果会被Cargo 存储在<em>target&#x2F;debug</em>目录下面，而非代码所处在的位置，</p>
+<p>Cargo另一个优势是不区分操作系统（Linux\MacOS\Windows），在任何操作系统下都是一样的命令</p>
+<h3 id="以Release模式进行构建"><a href="#以Release模式进行构建" class="headerlink" title="以Release模式进行构建"></a>以Release模式进行构建</h3><p>当准备好发布自己的项目时，你可以使用命令cargo build –release在优化模式下构建并生成可执行程序。它生成的可执行文件会被放置在<em>target&#x2F;release</em> 目录下，而不是之前的<em>target&#x2F;debug</em> 目录下。这种模式会以更长的编译时间为代价来优化代码，从而使代码拥有更好的运行时性能。</p>
+<h1 id="第二章-编写一个猜数游戏"><a href="#第二章-编写一个猜数游戏" class="headerlink" title="第二章 编写一个猜数游戏"></a>第二章 编写一个猜数游戏</h1><h1 id="第三章-通用编程概念"><a href="#第三章-通用编程概念" class="headerlink" title="第三章 通用编程概念"></a>第三章 通用编程概念</h1><p>src&#x2F;main.rs</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">use</span> std::io;<br><br><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Guess the number!&quot;</span>);<br><br>    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Please input your guess.&quot;</span>);<br><br>    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">guess</span> = <span class="hljs-type">String</span>::<span class="hljs-title function_ invoke__">new</span>();<br><br>    io::<span class="hljs-title function_ invoke__">stdin</span>().<span class="hljs-title function_ invoke__">read_line</span>(&amp;<span class="hljs-keyword">mut</span> guess)<br>        .<span class="hljs-title function_ invoke__">expect</span>(<span class="hljs-string">&quot;Failed to read line&quot;</span>);<br><br>    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;You guessed: &#123;&#125;&quot;</span>, guess);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="变量与可变性："><a href="#变量与可变性：" class="headerlink" title="变量与可变性："></a>变量与可变性：</h3><p>Rust中的变量默认是不可变的。Rust语言提供这一概念是为了能够让你安全且方便地写出复杂、甚至是并行的代码。</p>
+<p>代码：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Hello, world!, test cargo run&quot;</span>);<br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">x</span> = <span class="hljs-number">5</span>; <span class="hljs-comment">// 如果要对变量进行二次赋值，就要使用let mut x = 5;</span><br>    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;x is &#123;&#125;&quot;</span>,x);<br>    x = <span class="hljs-number">6</span>;<br>    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;x is &#123;&#125;&quot;</span>,x);<br>&#125;<br><span class="hljs-comment">// 这里运行会报错，看报错提示</span><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">$ cargo run</span><br><span class="hljs-comment">   Compiling hello_cargo v0.1.0 (/home/wang/code/rustStudy/hello/hello_cargo)</span><br><span class="hljs-comment">error[E0384]: cannot assign twice to immutable variable `x`</span><br><span class="hljs-comment"> --&gt; src/main.rs:5:5</span><br><span class="hljs-comment">  |</span><br><span class="hljs-comment">3 |     let x = 5;</span><br><span class="hljs-comment">  |         -</span><br><span class="hljs-comment">  |         |</span><br><span class="hljs-comment">  |         first assignment to `x`  第一个任务x</span><br><span class="hljs-comment">  |         help: consider making this binding mutable: `mut x` x是一个不变的类型</span><br><span class="hljs-comment">4 |     println!(&quot;x is &#123;&#125;&quot;,x);</span><br><span class="hljs-comment">5 |     x = 6;</span><br><span class="hljs-comment">  |     ^^^^^ cannot assign twice to immutable variable 不可以对不变类型变量进行二次赋值</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">For more information about this error, try `rustc --explain E0384`.</span><br><span class="hljs-comment">error: could not compile `hello_cargo` (bin &quot;hello_cargo&quot;) due to 1 previous error</span><br><span class="hljs-comment">*/</span><br></code></pre></td></tr></table></figure>
+
+<p>如果需要定义可变变量，就必须<code>let mut x = 5;</code></p>
+<p>除了避免出现bug，设计一个变量的可变性还需要考量许多因素。例如当你在使用某些重型数据结构时，适当地使用可变性去修改一个实例，可能比赋值和重新返回一个新分配的实例要更有效率；而当数据结构较为轻量的时候，采用更偏向函数式的风格，通过创建新变量来进行赋值，可能会使代码更加易于理解。在类似这样的情形下，为了可读性而损失少许的性能也许是值得的。</p>
+<h3 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h3><p>与不可变变量类似，<strong>常量</strong>（constant）是绑定到一个常量名且不允许更改的值，但是常量和变量之间是有差异的</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-meta">#![allow(unused)]</span><br><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>    <span class="hljs-keyword">const</span> THREE_HOURS_IN_SECONDS: <span class="hljs-type">u32</span> = <span class="hljs-number">60</span> * <span class="hljs-number">60</span> * <span class="hljs-number">3</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="遮蔽"><a href="#遮蔽" class="headerlink" title="遮蔽"></a>遮蔽</h3><p>你可以声明和前面变量具有相同名称的新变量。这个是第一个变量被第二个变量<strong>遮蔽</strong>（<em>shadow</em>）</p>
+<p>遮蔽和将变量标记为 <code>mut</code> 的方式不同，因为除非我们再次使用 <code>let</code> 关键字，否则若是我们不小心尝试重新赋值给这个变量，我们将得到一个编译错误。通过使用 <code>let</code>，我们可以对一个值进行一些转换，但在这些转换完成后，变量将是不可变的。</p>
+<p><code>mut</code> 和遮蔽之间的另一个区别是，因为我们在再次使用 <code>let</code> 关键字时有效地创建了一个新的变量，所以我们可以改变值的类型，但重复使用相同的名称。例如，假设我们程序要求用户输入空格字符来显示他们想要的空格数目，但我们实际上想要将该输入存储为一个数字：</p>
+<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>Rust是一种静态类型（statically typed）的语言，意味着它必须在编译期间就要知道所有变量的类型，、</p>
+<h3 id="整型"><a href="#整型" class="headerlink" title="整型"></a>整型</h3><p>表 3-1: Rust 中的整型</p>
+<table>
+<thead>
+<tr>
+<th>长度</th>
+<th>有符号类型</th>
+<th>无符号类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>8 位</td>
+<td><code>i8</code></td>
+<td><code>u8</code></td>
+</tr>
+<tr>
+<td>16 位</td>
+<td><code>i16</code></td>
+<td><code>u16</code></td>
+</tr>
+<tr>
+<td>32 位</td>
+<td><code>i32</code></td>
+<td><code>u32</code></td>
+</tr>
+<tr>
+<td>64 位</td>
+<td><code>i64</code></td>
+<td><code>u64</code></td>
+</tr>
+<tr>
+<td>128 位</td>
+<td><code>i128</code></td>
+<td><code>u128</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code>isize</code></td>
+<td><code>usize</code></td>
+</tr>
+</tbody></table>
+<p><strong>有符号</strong>和<strong>无符号</strong>表示数字能否取负数</p>
+<p>每个有符号类型规定的数字范围是 -(2^(n - 1) ~ 2^(n - 1) - 1，其中 <code>n</code> 是该定义形式的位长度。所以 <code>i8</code> 可存储数字范围是 -(2^7) ~ 2^7 - 1，即 -128 ~ 127。</p>
+<p>无符号类型可以存储的数字范围是 0 ~( 2^n )- 1，所以 <code>u8</code> 能够存储的数字为 0 ~ 2^(8 - 1)，即 0 ~ 255。</p>
+<p>此外，<code>isize</code> 和 <code>usize</code> 类型取决于程序运行的计算机体系结构，在表中表示为“arch”：若使用 64 位架构系统则为 64 位，若使用 32 位架构系统则为 32 位。</p>
+<p>注意，可能属于多种数字类型的数字字面量允许使用类型后缀来指定类型，例如 <code>57u8</code>。数字字面量还可以使用 <code>_</code> 作为可视分隔符以方便读数，如 <code>1_000</code>，此值和 <code>1000</code> 相同。</p>
+<p>表 3-2: Rust 的整型字面量</p>
+<table>
+<thead>
+<tr>
+<th>数字字面量</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>十进制</td>
+<td><code>98_222</code></td>
+</tr>
+<tr>
+<td>十六进制</td>
+<td><code>0xff</code></td>
+</tr>
+<tr>
+<td>八进制</td>
+<td><code>0o77</code></td>
+</tr>
+<tr>
+<td>二进制</td>
+<td><code>0b1111_0000</code></td>
+</tr>
+<tr>
+<td>字节 (仅限于 <code>u8</code>)</td>
+<td><code>b&#39;A&#39;</code></td>
+</tr>
+</tbody></table>
+<p>那么该使用哪种类型的整型呢？如果不确定，Rust 的默认形式通常是个不错的选择，整型默认是 <code>i32</code>。<code>isize</code> 和 <code>usize</code> 的主要应用场景是用作某些集合的索引。</p>
+<p>i32 就是 -2^31~2^31-1</p>
+<h3 id="整型溢出"><a href="#整型溢出" class="headerlink" title="整型溢出"></a>整型溢出</h3><p>比方说有一个<code>u8</code> ,存放区间是什么？是0<del>(2^8)-1&#x3D;0</del>255</p>
+<p>如果当你将其修改为范围之外的值，比如说256，则会发生<strong>整型溢出（integer overflow）</strong>,这会导致两种行为的其中一种：</p>
+<p>1、当在调试（debug）模式编译时，Rust 会检查整型溢出，若存在这些问题则使程序在编译时 <em>panic</em>。Rust 使用 panic 这个术语来表明程序因错误而退出。第 9 章 [“<code>panic!</code> 与不可恢复的错误”](file:&#x2F;&#x2F;&#x2F;opt&#x2F;Koodo Reader&#x2F;resources&#x2F;app.asar&#x2F;build&#x2F;ch09-01-unrecoverable-errors-with-panic.xhtml)会详细介绍 panic。</p>
+<p>2、在当使用 <code>--release</code> 参数进行发布（release）模式构建时，Rust <strong>不</strong>检测会导致 panic 的整型溢出。相反当检测到整型溢出时，Rust 会进行一种被称为二进制补码包裹（<em>two’s complement wrapping</em>）的操作。简而言之，大于该类型最大值的数值会被“包裹”成该类型能够支持的对应数字的最小值。比如在 <code>u8</code> 的情况下，256 变成 0，257 变成 1，依此类推。程序不会 panic，但是该变量的值可能不是你期望的值。依赖整型溢出包裹的行为不是一种正确的做法。</p>
+<h3 id="浮点型"><a href="#浮点型" class="headerlink" title="浮点型"></a>浮点型</h3><p>浮点数是带有小数点的数字，Rust中有两种：</p>
+<p><code>f32</code>类型是单精度浮点型</p>
+<p><code>f64</code>为双精度浮点型。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">x</span> = <span class="hljs-number">2.0</span>; <span class="hljs-comment">// f64</span><br><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">y</span>: <span class="hljs-type">f32</span> = <span class="hljs-number">3.0</span>; <span class="hljs-comment">// f32</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="数字运算"><a href="#数字运算" class="headerlink" title="数字运算"></a>数字运算</h3><p>Rust 的所有数字类型都支持基本数学运算：加法、减法、乘法、除法和取模运算。整数除法会向下取整。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs rust"><br><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>    <span class="hljs-comment">// addition</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">sum</span> = <span class="hljs-number">5</span> + <span class="hljs-number">10</span>;<br><br>    <span class="hljs-comment">// subtraction</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">difference</span> = <span class="hljs-number">95.5</span> - <span class="hljs-number">4.3</span>;<br><br>    <span class="hljs-comment">// multiplication</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">product</span> = <span class="hljs-number">4</span> * <span class="hljs-number">30</span>;<br><br>    <span class="hljs-comment">// division</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">quotient</span> = <span class="hljs-number">56.7</span> / <span class="hljs-number">32.2</span>;<br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">floored</span> = <span class="hljs-number">2</span> / <span class="hljs-number">3</span>; <span class="hljs-comment">// Results in 0</span><br><br>    <span class="hljs-comment">// remainder</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">remainder</span> = <span class="hljs-number">43</span> % <span class="hljs-number">5</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="布尔类型"><a href="#布尔类型" class="headerlink" title="布尔类型"></a>布尔类型</h3><p>和大多数编程语言一样，Rust 中的布尔类型也有两个可能的值：<code>true</code> 和 <code>false</code>。布尔值的大小为 1 个字节。Rust 中的布尔类型使用 <code>bool</code> 声明。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs rust"><br><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">t</span> = <span class="hljs-literal">true</span>;<br><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">f</span>: <span class="hljs-type">bool</span> = <span class="hljs-literal">false</span>; <span class="hljs-comment">// with explicit type annotation</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="字符类型"><a href="#字符类型" class="headerlink" title="字符类型"></a>字符类型</h3><p>Rust 的 <code>char</code>（字符）类型是该语言最基本的字母类型，</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">c</span> = <span class="hljs-string">&#x27;z&#x27;</span>;<br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">z</span> = <span class="hljs-string">&#x27;ℤ&#x27;</span>;<br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">heart_eyed_cat</span> = &#x27;😻&#x27;;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>注意，我们声明的 <code>char</code> 字面量采用单引号括起来，这与字符串字面量不同，字符串字面量是用双引号括起来。</p>
+<p>Rust 的字符类型大小为 4 个字节，表示的是一个 Unicode 标量值，这意味着它可以表示的远远不止是 ASCII。</p>
+<p>标音字母，中文&#x2F;日文&#x2F;韩文的文字，emoji，还有零宽空格(zero width space)在 Rust 中都是合法的字符类型。</p>
+<p>Unicode 值的范围为 <code>U+0000</code> ~ <code>U+D7FF</code> 和 <code>U+E000</code>~&#96;U+10FFFF&#96;。</p>
+<p>不过“字符”并不是 Unicode 中的一个概念，所以人在直觉上对“字符”的理解和 Rust 的字符概念并不一致。</p>
+<h3 id="复合类型"><a href="#复合类型" class="headerlink" title="复合类型"></a>复合类型</h3><p><strong>复合类型</strong>（<em>compound type</em>）可以将多个值组合成一个类型。Rust 有两种基本的复合类型：元组（tuple）和数组（array）</p>
+<h3 id="元组类型"><a href="#元组类型" class="headerlink" title="元组类型"></a>元组类型</h3><p>元组是将多种类型的多个值组合到一个复合类型中的一种基本方式。元组的长度是固定的：声明后，它们就无法增长或缩小。</p>
+<p>我们通过在小括号内写入以逗号分隔的值列表来创建一个元组。</p>
+<p>元组中的每个位置都有一个类型，并且元组中不同值的类型不要求是相同的。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">tup</span>: (<span class="hljs-type">i32</span>, <span class="hljs-type">f64</span>, <span class="hljs-type">u8</span>) = (<span class="hljs-number">500</span>, <span class="hljs-number">6.4</span>, <span class="hljs-number">1</span>);<span class="hljs-comment">//变量 `tup` 绑定到整个元组，</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>因为元组被认作是单个复合元素。 想从元组中获取个别值，我们可以使用模式匹配来<strong>解构</strong>（destructure）元组的一个值，如下所示：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">tup</span> = (<span class="hljs-number">500</span>, <span class="hljs-number">6.4</span>, <span class="hljs-number">1</span>); <span class="hljs-comment">//变量 `tup` 绑定到整个元组，</span><br><br>    <span class="hljs-keyword">let</span> (x, y, z) = tup; <span class="hljs-comment">// 用对应的3个变量去接收它,</span><br><br>    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;The value of y is: &#123;&#125;&quot;</span>, y);<br>    <span class="hljs-comment">// 这里注意报错提醒你x和z是未使用的变量，前面加_就可以</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>将这个元组分解成三个单独的变量x、y、z，这个过程称为解构</p>
+<p>除了通过模式匹配进行结构外，还可以通过使用一个句点（.）连上要访问的值的<strong>索引</strong>来直接访问元组元素（类似Python下标索引取值），代码示例:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">x</span>: (<span class="hljs-type">i32</span>, <span class="hljs-type">f64</span>, <span class="hljs-type">u8</span>) = (<span class="hljs-number">500</span>, <span class="hljs-number">6.4</span>, <span class="hljs-number">1</span>);<br><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">five_hundred</span> = x.<span class="hljs-number">0</span>; <span class="hljs-comment">// 下标索引为 0 的值</span><br><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">six_point_four</span> = x.<span class="hljs-number">1</span>;<br><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">one</span> = x.<span class="hljs-number">2</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>没有任何值的元组<code>()</code>是一种特俗的类型，只有一个值，也可以写成<code>()</code>。该类型被称为<strong>单元类型（unit type）</strong>，该值也被称为<strong>单元值（unit value）</strong>。如果表达式不返回任何其他值，就隐式地返回单元值。</p>
+<h3 id="数组类型"><a href="#数组类型" class="headerlink" title="数组类型"></a>数组类型</h3><p>数组：将多个值组合在一起的另一种方式就是<strong>数组（array）</strong>。与元组不同，数组内的每个元素必须是<strong>同样类型</strong>的元素，</p>
+<p>长度：Rust语言的数组是固定长度的。</p>
+<p>表达形式：方括号内逗号分隔</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">let</span> <span class="hljs-variable">a</span>  = [<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>];<br></code></pre></td></tr></table></figure>
+
+<p>特点：</p>
+<ul>
+<li><p>当你希望将数据分配到<strong>栈（stack）</strong>而不是<strong>堆（heap）</strong>时，或者希望确保始终具有固定数量的元素时，数组就特别有用。</p>
+</li>
+<li><p>但它不像<strong>vector</strong>（中文翻译为“向量”，Rust中的意义为“动态数据、可变数组”）类型那么灵活。</p>
+</li>
+<li><p>vector 类型类似于标准库中提供的集合类型，其大小<strong>允许</strong>增长或缩小。</p>
+</li>
+<li><p>如果不确定是使用数组还是 vector，那就应该使用一个 vector。</p>
+</li>
+<li><p>不过当你明确元素数量不需要改变时，数组会更有用。例如，如果你在程序中使用月份的名称，你很可能希望使用的是数组而不是 vector，因为你知道它始终包含 12 个元素：</p>
+</li>
+</ul>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-meta">#![allow(unused)]</span><br><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br><span class="hljs-keyword">let</span> <span class="hljs-variable">months</span> = [<span class="hljs-string">&quot;January&quot;</span>, <span class="hljs-string">&quot;February&quot;</span>, <span class="hljs-string">&quot;March&quot;</span>, <span class="hljs-string">&quot;April&quot;</span>, <span class="hljs-string">&quot;May&quot;</span>, <span class="hljs-string">&quot;June&quot;</span>, <span class="hljs-string">&quot;July&quot;</span>,<br>              <span class="hljs-string">&quot;August&quot;</span>, <span class="hljs-string">&quot;September&quot;</span>, <span class="hljs-string">&quot;October&quot;</span>, <span class="hljs-string">&quot;November&quot;</span>, <span class="hljs-string">&quot;December&quot;</span>];<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>使用方括号编写数组的类型，其中包含每个元素的类型、分号，然后是数组中的元素数，如下所示：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-meta">#![allow(unused)]</span><br><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>	<span class="hljs-keyword">let</span> <span class="hljs-variable">a</span>: [<span class="hljs-type">i32</span>; <span class="hljs-number">5</span>] = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>]; <span class="hljs-comment">// i32整型，5个元素</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>以这种方式编写数组的类型看起来类似于初始化数组的另一种语法：如果要为每个元素创建包含相同值的数组，可以指定初始值，后跟分号，然后在方括号中指定数组的长度，</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>	<span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = [<span class="hljs-number">3</span>; <span class="hljs-number">5</span>]; <span class="hljs-comment">// 5个3 等于 [3,3,3,3,3]</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="访问数组内元素"><a href="#访问数组内元素" class="headerlink" title="访问数组内元素"></a>访问数组内元素</h3><p>数组是可以在栈上分配的已知固定大小的单个内存块。可以使用索引访问数组的元素，</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>];<br><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">first</span> = a[<span class="hljs-number">0</span>]; <span class="hljs-comment">// 获取第一个值</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">second</span> = a[<span class="hljs-number">1</span>];<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/rust/" class="category-chain-item">rust</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%AC%94%E8%AE%B0/" class="print-no-link">#笔记</a>
+      
+        <a href="/tags/rust/" class="print-no-link">#rust</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>rust学习记录</div>
+      <div>http://example.com/2024/05/11/rust学习记录/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Wangxiaowang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年5月11日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/05/16/00%E5%8C%BA%E5%9D%97%E9%93%BE%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="00 区块链基础知识">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">00 区块链基础知识</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/05/07/691python%E5%BA%93%E5%AD%A6%E4%B9%A0%E4%B9%8Blocust/" title="python库之locust">
+                        <span class="hidden-mobile">python库之locust</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appKey":"p8TvvzGc2rQ02TfZHuJppQLO","path":"window.location.pathname","placeholder":"欢迎留下评论，嘿嘿！","avatar":"monsterid","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false,"appid":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appkey":"p8TvvzGc2rQ02TfZHuJppQLO"},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

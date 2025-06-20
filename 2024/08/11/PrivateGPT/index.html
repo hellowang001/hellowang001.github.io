@@ -1,0 +1,792 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Wangxiaowang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言不写一行代码不用国外手机号国外银行卡一键部署你自己的ChatGPT  Gpt-4,Gpt-4o,Gpt-4-Turbo,Gpt-4o-mini,Gemma,Claude,Llama,Qwen都可用  什么是gpt？出门右拐 我需要准备什么？ 账号： 一个邮箱（必备，最好google） GitHub 账号（可选）   支付方式： 支付宝 国内银行卡 ETH支付 Visa信用卡支付（可选） 其他支">
+<meta property="og:type" content="article">
+<meta property="og:title" content="不写代码不用国外手机号一键部署自己的ChatGPT">
+<meta property="og:url" content="http://example.com/2024/08/11/PrivateGPT/index.html">
+<meta property="og:site_name" content="Wang">
+<meta property="og:description" content="前言不写一行代码不用国外手机号国外银行卡一键部署你自己的ChatGPT  Gpt-4,Gpt-4o,Gpt-4-Turbo,Gpt-4o-mini,Gemma,Claude,Llama,Qwen都可用  什么是gpt？出门右拐 我需要准备什么？ 账号： 一个邮箱（必备，最好google） GitHub 账号（可选）   支付方式： 支付宝 国内银行卡 ETH支付 Visa信用卡支付（可选） 其他支">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/pic/gpt.jpg">
+<meta property="article:published_time" content="2024-08-11T15:24:30.000Z">
+<meta property="article:modified_time" content="2025-06-20T04:23:54.068Z">
+<meta property="article:author" content="Wangxiaowang">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="other">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/pic/gpt.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>不写代码不用国外手机号一键部署自己的ChatGPT - Wang</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"37fd8385820c4abc0e564a2c423b7511","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?37fd8385820c4abc0e564a2c423b7511";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Home</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/pic/gpt2.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="不写代码不用国外手机号一键部署自己的ChatGPT"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-11 23:24" pubdate>
+          2024年8月11日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          572 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          5 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">不写代码不用国外手机号一键部署自己的ChatGPT</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><strong>不写一行代码不用国外手机号国外银行卡一键部署你自己的ChatGPT</strong></p>
+<blockquote>
+<p>Gpt-4,Gpt-4o,Gpt-4-Turbo,Gpt-4o-mini,Gemma,Claude,Llama,Qwen都可用</p>
+</blockquote>
+<h2 id="什么是gpt？"><a href="#什么是gpt？" class="headerlink" title="什么是gpt？"></a>什么是gpt？</h2><p>出门右拐</p>
+<h2 id="我需要准备什么？"><a href="#我需要准备什么？" class="headerlink" title="我需要准备什么？"></a>我需要准备什么？</h2><ul>
+<li>账号：<ul>
+<li>一个邮箱（必备，最好google）</li>
+<li>GitHub 账号（可选）</li>
+</ul>
+</li>
+<li>支付方式：<ul>
+<li>支付宝</li>
+<li>国内银行卡</li>
+<li>ETH支付</li>
+<li>Visa信用卡支付（可选）</li>
+<li>其他支付。。。。</li>
+</ul>
+</li>
+</ul>
+<h1 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h1><p><img src="/img/pic/MyChat.jpg" srcset="/img/loading.gif" lazyload alt="流程图"></p>
+<h1 id="用什么支付？"><a href="#用什么支付？" class="headerlink" title="用什么支付？"></a>用什么支付？</h1><p>推荐国内银行卡、支付宝、Base_ETH；</p>
+<h1 id="支付给谁？"><a href="#支付给谁？" class="headerlink" title="支付给谁？"></a>支付给谁？</h1><p><a target="_blank" rel="noopener" href="https://openrouter.ai/">https://openrouter.ai/</a>  是一家全球最大的承包服务商，可以提供ChatGPT、Gemini、Claude 等对话服务和API Key</p>
+<h2 id="登录"><a href="#登录" class="headerlink" title="登录"></a>登录</h2><p><img src="/img/pic/login.jpg" srcset="/img/loading.gif" lazyload alt="登录"></p>
+<h2 id="进入首页"><a href="#进入首页" class="headerlink" title="进入首页"></a>进入首页</h2><p><img src="/img/pic/home.jpg" srcset="/img/loading.gif" lazyload alt="首页"></p>
+<h2 id="充钱呀"><a href="#充钱呀" class="headerlink" title="充钱呀"></a>充钱呀</h2><h3 id="普通充值-需VISA卡-需要-5-手续费"><a href="#普通充值-需VISA卡-需要-5-手续费" class="headerlink" title="普通充值(需VISA卡,需要+5%手续费)"></a>普通充值(需VISA卡,需要+5%手续费)</h3><p><img src="/img/pic/deposit.jpg" srcset="/img/loading.gif" lazyload alt="普通充值"></p>
+<h3 id="也支持支持国内银行卡支付，也支持支付宝支付，也有手续费的"><a href="#也支持支持国内银行卡支付，也支持支付宝支付，也有手续费的" class="headerlink" title="也支持支持国内银行卡支付，也支持支付宝支付，也有手续费的"></a>也支持支持国内银行卡支付，也支持支付宝支付，也有手续费的</h3><p><img src="/img/pic/alipay.jpg" srcset="/img/loading.gif" lazyload alt="普通充值"></p>
+<h3 id="使用ETH充值-首推，同样需要-5-手续费"><a href="#使用ETH充值-首推，同样需要-5-手续费" class="headerlink" title="使用ETH充值(首推，同样需要+5%手续费)"></a>使用ETH充值(首推，同样需要+5%手续费)</h3><p><img src="/img/pic/crypto2.jpg" srcset="/img/loading.gif" lazyload alt="eth充值"></p>
+<h3 id="创建Api-Key-且保存"><a href="#创建Api-Key-且保存" class="headerlink" title="创建Api Key 且保存"></a>创建Api Key 且保存</h3><p><img src="/img/pic/createkey.jpg" srcset="/img/loading.gif" lazyload alt="创建key"></p>
+<p>这个平台上面可以直接使用Chatgpt4 但是贵，API便宜好多</p>
+<h1 id="拿到API-Key怎么办？"><a href="#拿到API-Key怎么办？" class="headerlink" title="拿到API Key怎么办？"></a>拿到API Key怎么办？</h1><p><a target="_blank" rel="noopener" href="https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web">https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web</a> 一个知名开源前端服务，根据教程部署即可</p>
+<h2 id="vercel一键部署"><a href="#vercel一键部署" class="headerlink" title="vercel一键部署"></a>vercel一键部署</h2><blockquote>
+<p>Vercel 是一个云服务平台，支持静态网站和动态网站的应用部署、预览和上线。如果你用过 GitHub Pages ，那么心里可能不会太陌生，但你也能通过 vercel 集成 GitHub 后，在 GitHub 项目进行代码推送，PR合并自动部署的目的，且你不需要考虑服务器问题。</p>
+</blockquote>
+<p>三个参数必须配置：</p>
+<ul>
+<li>OPENAI_API_KEY&#x3D;你的apikey</li>
+<li>CODE&#x3D;your-password密码必须要,否则容易消耗token</li>
+<li>BASE_URL&#x3D;<a target="_blank" rel="noopener" href="https://openrouter.ai/api">https://openrouter.ai/api</a></li>
+</ul>
+<p>Vercel会给你自动分配域名</p>
+<p><img src="/img/pic/createweb1.jpg" srcset="/img/loading.gif" lazyload alt="创建web"></p>
+<p><img src="/img/pic/createweb.jpg" srcset="/img/loading.gif" lazyload alt="创建web2"></p>
+<h3 id="docker本地部署（私有）"><a href="#docker本地部署（私有）" class="headerlink" title="docker本地部署（私有）"></a>docker本地部署（私有）</h3><figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs docker">docker pull yidadaa/chatgpt-next-web<br><br>docker <span class="hljs-keyword">run</span><span class="language-bash"> -d -p 3000:3000 \</span><br><span class="language-bash">   -e OPENAI_API_KEY=sk-xxxx替换你的apikey \</span><br><span class="language-bash">   -e CODE=your-password密码必须要 \</span><br><span class="language-bash">   -e BASE_URL=https://openrouter.ai/api \</span><br><span class="language-bash">   yidadaa/chatgpt-next-web</span><br> <span class="hljs-comment"># 记住，BASE_URL必须指定换成openrouter.ai的api</span><br> <br> <span class="hljs-comment"># 如果不能联网，则有可能是vpn的原因,可以尝试指定代理端口</span><br> <span class="hljs-comment"># -e PROXY_URL=&quot;http://127.0.0.1:7890&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="登录前端页面（手机或者电脑）"><a href="#登录前端页面（手机或者电脑）" class="headerlink" title="登录前端页面（手机或者电脑）"></a>登录前端页面（手机或者电脑）</h1><p>如果是vercel部署，那vercel会给你一个域名</p>
+<p>如果是docker部署，就用对应的端口即可</p>
+<p><img src="/img/pic/login2.jpg" srcset="/img/loading.gif" lazyload alt="登录"></p>
+<h1 id="切换模型"><a href="#切换模型" class="headerlink" title="切换模型"></a>切换模型</h1><p><img src="/img/pic/charge.jpg" srcset="/img/loading.gif" lazyload alt="切换模型"></p>
+<h1 id="注意扣费"><a href="#注意扣费" class="headerlink" title="注意扣费"></a>注意扣费</h1><p>使用后可以去openrouter平台看你的花费详情</p>
+<blockquote>
+<p>gpt-4,gpt-4o,gpt-4-Turbo的扣费几乎是gpt-4o-mini,gtp-3Turbo的10倍</p>
+</blockquote>
+<p><img src="/img/pic/activity1.jpg" srcset="/img/loading.gif" lazyload alt="扣费"></p>
+<p><img src="/img/pic/activity2.jpg" srcset="/img/loading.gif" lazyload alt="扣费2"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/other/" class="category-chain-item">other</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%AC%94%E8%AE%B0/" class="print-no-link">#笔记</a>
+      
+        <a href="/tags/other/" class="print-no-link">#other</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>不写代码不用国外手机号一键部署自己的ChatGPT</div>
+      <div>http://example.com/2024/08/11/PrivateGPT/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Wangxiaowang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月11日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/11/19/07-4TON%E9%92%B1%E5%8C%85%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/" title="07-4TON钱包开发流程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">07-4TON钱包开发流程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/06/10/07-3Cosmos%E9%92%B1%E5%8C%85%E5%BC%80%E5%8F%91%E6%B5%81%E7%A8%8B/" title="07-3 Cosmos 钱包开发流程">
+                        <span class="hidden-mobile">07-3 Cosmos 钱包开发流程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appKey":"p8TvvzGc2rQ02TfZHuJppQLO","path":"window.location.pathname","placeholder":"欢迎留下评论，嘿嘿！","avatar":"monsterid","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false,"appid":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appkey":"p8TvvzGc2rQ02TfZHuJppQLO"},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
