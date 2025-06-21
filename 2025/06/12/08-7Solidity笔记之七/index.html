@@ -27,7 +27,7 @@
 <meta property="og:description" content="UniswapUniswapV2Router02.sol路由合约swapTokensForExactTokens函数用户指定输入代币的精确数量，路由合约帮你按当前汇率和滑点计算能换到的最少输出代币数量，并完成兑换。 函数签名1234567function swapExactTokensForTokens(    uint amountIn,             &#x2F;&#x2F; 输入代币数量（精确）">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-06-12T12:24:09.000Z">
-<meta property="article:modified_time" content="2025-06-20T15:58:52.946Z">
+<meta property="article:modified_time" content="2025-06-21T16:09:35.792Z">
 <meta property="article:author" content="Wangxiaowang">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -248,7 +248,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.8k 字
+          6.6k 字
         
       </span>
     
@@ -259,7 +259,7 @@
         
         
         
-          24 分钟
+          56 分钟
         
       </span>
     
@@ -468,6 +468,10 @@
 <p>通过go语言调用合约方法创建币对</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">CreatePair</span><span class="hljs-params">()</span></span> &#123;<br>	factoryInstance := getFactory()<br>	aunt := getAuth()<br>	<span class="hljs-comment">// CreatePair(opts *bind.TransactOpts, tokenA common.Address, tokenB common.Address) (*types.Transaction, error)</span><br>	WETH := common.HexToAddress(<span class="hljs-string">&quot;0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d&quot;</span>)<br>	USDT := common.HexToAddress(<span class="hljs-string">&quot;0x58278ebb4EbFA82ebF183E4CdEc1968391e59b6C&quot;</span>)<br><br>	tx, err := factoryInstance.CreatePair(aunt, WETH, USDT)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;Failed to create transactor: %v\n&quot;</span>, err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;Mint tx sent: https://sepolia.abscan.org/tx/%s\n&quot;</span>, tx.Hash().Hex())<br><br>&#125;<br></code></pre></td></tr></table></figure>
 
+<p>币对合约地址：<a target="_blank" rel="noopener" href="https://sepolia.abscan.org/token/0x5c1080c5180aa87688d4064facbf7a4520bf2339">https://sepolia.abscan.org/token/0x5c1080c5180aa87688d4064facbf7a4520bf2339</a></p>
+<p>路由合约地址：<a target="_blank" rel="noopener" href="https://sepolia.abscan.org/address/0x96ff7d9dbf52fdcae79157d3b249282c7fabd409">https://sepolia.abscan.org/address/0x96ff7d9dbf52fdcae79157d3b249282c7fabd409</a></p>
+<p>工厂合约地址：<a target="_blank" rel="noopener" href="https://sepolia.abscan.org/address/0x566d7510dee58360a64c9827257cf6d0dc43985e">https://sepolia.abscan.org/address/0x566d7510dee58360a64c9827257cf6d0dc43985e</a></p>
+<p>USDT 合约我们自己的：<a target="_blank" rel="noopener" href="https://sepolia.abscan.org/token/0x58278ebb4EbFA82ebF183E4CdEc1968391e59b6C">https://sepolia.abscan.org/token/0x58278ebb4EbFA82ebF183E4CdEc1968391e59b6C</a></p>
 <h1 id="4、添加流动性"><a href="#4、添加流动性" class="headerlink" title="4、添加流动性"></a>4、添加流动性</h1><p>同上 ，添加流动性可以通过调用路由合约的addLiquidity addLiquidityETH</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">AddLiquidityETH</span><span class="hljs-params">()</span></span> &#123;<br>	deadline := big.NewInt(time.Now().Add(<span class="hljs-number">1</span> * time.Minute).Unix())<br>	<span class="hljs-comment">//client.</span><br>	routerInstance := getRouter()<br>	auth := getAuth()<br>	<span class="hljs-comment">//WETH := common.HexToAddress(&quot;0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d&quot;)</span><br>	USDT := common.HexToAddress(<span class="hljs-string">&quot;0x58278ebb4EbFA82ebF183E4CdEc1968391e59b6C&quot;</span>)<br>	routerAddress := common.HexToAddress(<span class="hljs-string">&quot;0x96ff7D9dbf52FdcAe79157d3b249282c7FABd409&quot;</span>)<br>	<span class="hljs-comment">//path := []common.Address&#123;WETH, targetTokenAddress&#125;</span><br><br>	amountTokenDesired := <span class="hljs-built_in">new</span>(big.Int).Mul(big.NewInt(<span class="hljs-number">1000</span>), big.NewInt(<span class="hljs-number">1e18</span>)) <span class="hljs-comment">// 1 // 想添加 1000 个代币</span><br>	amountTokenMin := <span class="hljs-built_in">new</span>(big.Int).Mul(big.NewInt(<span class="hljs-number">900</span>), big.NewInt(<span class="hljs-number">1e18</span>))      <span class="hljs-comment">//  最少接受 900 个代币，滑点保护</span><br>	amountETHMin := <span class="hljs-built_in">new</span>(big.Int).Mul(big.NewInt(<span class="hljs-number">1</span>), big.NewInt(<span class="hljs-number">1e17</span>))          <span class="hljs-comment">// 最少接受 0.1 个 ETH，滑点保护</span><br>	<span class="hljs-comment">// 先approve Router合约转出代币</span><br>	usdtInstance := getUsdt()<br>	txApprove, err := usdtInstance.Approve(auth, routerAddress, amountTokenDesired)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;txApprove failed: %v&quot;</span>, err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;txApprove tx sent: https://sepolia.abscan.org/tx/%s\n&quot;</span>, txApprove.Hash().Hex())<br><br>	<span class="hljs-comment">// 等待交易确认（示例用sleep，实际建议用事件监听）</span><br>	time.Sleep(<span class="hljs-number">5</span> * time.Second)<br>	auth.Value = amountETHMin<br>	<span class="hljs-comment">//AddLiquidityETH(opts *bind.TransactOpts, token common.Address, amountTokenDesired *big.Int, amountTokenMin *big.Int, amountETHMin *big.Int, to common.Address, deadline *big.Int) (*types.Transaction, error)</span><br>	tx, err := routerInstance.AddLiquidityETH(<br>		auth,<br>		USDT,<br>		amountTokenDesired,<br>		amountTokenMin,<br>		amountETHMin,<br>		auth.From,<br>		deadline,<br>	)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;AddLiquidityETH failed: %v&quot;</span>, err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;AddLiquidityETH tx sent: https://sepolia.abscan.org/tx/%s\n&quot;</span>, tx.Hash().Hex())<br><br>&#125;<br></code></pre></td></tr></table></figure>
 
@@ -475,8 +479,254 @@
 
 <h1 id="5、减少流动性"><a href="#5、减少流动性" class="headerlink" title="5、减少流动性"></a>5、减少流动性</h1><p>同上 ，减少流动性可以通过调用路由合约的removeLiquidity removeLiquidityETH</p>
 <p>不做演示了</p>
-<p>6、swap换币</p>
+<h1 id="6、swap换币"><a href="#6、swap换币" class="headerlink" title="6、swap换币"></a>6、swap换币</h1><h2 id="第一种方式，Uniswap-V2-Router-合约-Swap-方法"><a href="#第一种方式，Uniswap-V2-Router-合约-Swap-方法" class="headerlink" title="第一种方式，Uniswap V2 Router 合约 Swap 方法"></a>第一种方式，Uniswap V2 Router 合约 Swap 方法</h2><p>Uniswap V2 Router 合约提供了多种 swap 相关方法，常见的有：</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SwapExactTokensForTokens</code></td>
+<td>用固定数量的输入代币，换取尽可能多的输出代币</td>
+</tr>
+<tr>
+<td><code>SwapTokensForExactTokens</code></td>
+<td>用尽可能少的输入代币，换取固定数量的输出代币</td>
+</tr>
+<tr>
+<td><code>SwapExactETHForTokens</code></td>
+<td>用固定数量的 ETH，换取尽可能多的代币</td>
+</tr>
+<tr>
+<td><code>SwapTokensForExactETH</code></td>
+<td>用尽可能少的代币，换取固定数量的 ETH</td>
+</tr>
+<tr>
+<td><code>SwapExactTokensForETH</code></td>
+<td>用固定数量的代币，换取尽可能多的 ETH</td>
+</tr>
+<tr>
+<td><code>SwapETHForExactTokens</code></td>
+<td>用尽可能少的 ETH，换取固定数量的代币</td>
+</tr>
+</tbody></table>
+<h3 id="典型调用示例（SwapExactTokensForTokens）"><a href="#典型调用示例（SwapExactTokensForTokens）" class="headerlink" title="典型调用示例（SwapExactTokensForTokens）"></a>典型调用示例（SwapExactTokensForTokens）</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go">tx, err := routerInstance.SwapExactTokensForTokens(<br>    auth,              <span class="hljs-comment">// *bind.TransactOpts，包含签名者信息</span><br>    amountIn,          <span class="hljs-comment">// 输入代币数量 *big.Int</span><br>    amountOutMin,      <span class="hljs-comment">// 最小输出代币数量 *big.Int</span><br>    path,              <span class="hljs-comment">// 兑换路径 []common.Address，比如 [tokenA, tokenB]</span><br>    to,                <span class="hljs-comment">// 接收地址 common.Address</span><br>    deadline,          <span class="hljs-comment">// 截止时间 uint64 或 *big.Int，unix时间戳</span><br>)<br><span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>    log.Fatal(err)<br>&#125;<br>fmt.Println(<span class="hljs-string">&quot;Swap tx sent:&quot;</span>, tx.Hash().Hex())<br></code></pre></td></tr></table></figure>
 
+<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
+<li><code>auth</code>：交易签名者，使用 <code>bind.NewKeyedTransactor(privateKey)</code> 创建</li>
+<li><code>amountIn</code>：输入代币数量（要先 Approve 路由合约花费你的代币）</li>
+<li><code>amountOutMin</code>：最小接受的输出代币数量，防止滑点</li>
+<li><code>path</code>：兑换路径，数组，第一个是输入代币地址，最后一个是输出代币地址，中间是中间代币（比如 WETH）</li>
+<li><code>to</code>：接收代币地址，通常是你的钱包地址</li>
+<li><code>deadline</code>：交易截止时间，unix 时间戳，防止交易长时间挂起</li>
+</ul>
+<h3 id="什么是-path？"><a href="#什么是-path？" class="headerlink" title="什么是 path？"></a>什么是 <code>path</code>？</h3><ul>
+<li><code>path</code> 是一个 <code>[]common.Address</code> 类型的数组（Go 里），代表了兑换路径（swap 路径）。</li>
+<li>每个地址都是一个代币合约地址。</li>
+<li>路径定义了交易过程中代币如何一步步兑换。</li>
+</ul>
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>Uniswap V2 的交易是基于<strong>流动性池（Pair）</strong>的，每个池只包含一对代币，比如 <code>TokenA</code> 和 <code>TokenB</code>。</p>
+<p>如果你要直接从 <code>TokenA</code> 兑换 <code>TokenB</code>，且存在 <code>TokenA-TokenB</code> 的流动池，路径就是：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go">path := []common.Address&#123;TokenAAddress, TokenBAddress&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如果没有直接的流动池，比如你想从 <code>TokenA</code> 换成 <code>TokenC</code>，但没有 <code>TokenA-TokenC</code> 池，而有 <code>TokenA-WETH</code> 和 <code>WETH-TokenC</code> 两个池，那么路径就是：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go">path := []common.Address&#123;TokenAAddress, WETHAddress, TokenCAddress&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="路径示意"><a href="#路径示意" class="headerlink" title="路径示意"></a>路径示意</h3><ul>
+<li><p>交易按照路径依次进行：</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs clean">TokenA -&gt; WETH -&gt; TokenC<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>路由合约会先用 <code>TokenA</code> 换 <code>WETH</code>，再用 <code>WETH</code> 换 <code>TokenC</code></p>
+</li>
+</ul>
+<h3 id="典型路径示例"><a href="#典型路径示例" class="headerlink" title="典型路径示例"></a>典型路径示例</h3><table>
+<thead>
+<tr>
+<th>需求</th>
+<th>路径示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>直接换代币</td>
+<td><code>[TokenA, TokenB]</code></td>
+</tr>
+<tr>
+<td>通过 WETH 中转</td>
+<td><code>[TokenA, WETH, TokenB]</code></td>
+</tr>
+<tr>
+<td>多步中转</td>
+<td><code>[TokenA, WETH, TokenX, TokenB]</code></td>
+</tr>
+</tbody></table>
+<h3 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// SwapTokenOnRouter 在我创建的币对合约做swap ，两种方式，这里是第一种，通过路由合约</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">SwapTokenOnRouter</span><span class="hljs-params">()</span></span> &#123;<br>	deadline := big.NewInt(time.Now().Add(<span class="hljs-number">5</span> * time.Minute).Unix()) <span class="hljs-comment">// 最多等待时间</span><br>	<span class="hljs-comment">// 1、拿路由合约go对象</span><br>	routerInstance := getRouter()<br>	<span class="hljs-comment">//routerAddress := common.HexToAddress(&quot;0x96ff7D9dbf52FdcAe79157d3b249282c7FABd409&quot;)</span><br>	<span class="hljs-comment">//usdtInstance := getUsdt()</span><br>	<span class="hljs-comment">// 2、auth ,如果是</span><br>	auth := getAuth()<br>	<span class="hljs-comment">// 3、path：如果只是ETH还Token的话，path只需要WETH和token即可</span><br>	USDT := common.HexToAddress(<span class="hljs-string">&quot;0x58278ebb4EbFA82ebF183E4CdEc1968391e59b6C&quot;</span>)<br>	WETH := common.HexToAddress(<span class="hljs-string">&quot;0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d&quot;</span>)<br>	<span class="hljs-comment">//BTC := common.HexToAddress(&quot;0x216683565fbE6F3d365Ae5D73BE1549216989ff6&quot;)</span><br>	<span class="hljs-comment">// 核心，路由合约Swap方法</span><br>	<span class="hljs-comment">//Uniswap V2 Router 合约常用 Swap 方法</span><br>	<span class="hljs-comment">//Uniswap V2 Router 合约提供了多种 swap 相关方法，常见的有：</span><br>	<span class="hljs-comment">//方法名	说明</span><br><br>	<span class="hljs-comment">//* SwapExactETHForTokens	用固定数量的 ETH，换取尽可能多的代币，这个就简单了，最小输出金额固定，这里的path只需要2个</span><br>	path := []common.Address&#123;WETH, USDT&#125;                                   <span class="hljs-comment">// path 里面只有USDT ,我们只做ETH==&gt;WETH==&gt;USDT</span><br>	amountOutMin := <span class="hljs-built_in">new</span>(big.Int).Mul(big.NewInt(<span class="hljs-number">1</span>), big.NewInt(<span class="hljs-number">1e18</span>))      <span class="hljs-comment">// 1  固定数量的输出代币,就是你要得到多少个金额，至于要付出的ETH,程序会自动算出并支付</span><br>	amountsIn, err := routerInstance.GetAmountsIn(<span class="hljs-literal">nil</span>, amountOutMin, path) <span class="hljs-comment">//先询价看看要付多少eth</span><br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;GetAmountsIn failed: %v&quot;</span>, err)<br>	&#125;<br>	fmt.Printf(<span class="hljs-string">&quot;amountsIn WETH=%d\n&quot;</span>, amountsIn[<span class="hljs-number">0</span>])   <span class="hljs-comment">// amountsIn WETH=100200989823115</span><br>	fmt.Printf(<span class="hljs-string">&quot;amountsOut USDT =%d\n&quot;</span>, amountsIn[<span class="hljs-number">1</span>]) <span class="hljs-comment">//amountsOut USDT =1000000000000000000</span><br>	<span class="hljs-comment">//  设置auth.Value = 需要支付的ETH数量</span><br>	requiredETH := amountsIn[<span class="hljs-number">0</span>] <span class="hljs-comment">// 需要输入多少WETH，即ETH数量</span><br>	auth.Value = requiredETH    <span class="hljs-comment">// 这里因为要付ETH ,所以把auth者的金额设置一下，表示要支付的eth,可以比询价的结果高，不可以低</span><br>	<span class="hljs-comment">//源码 SwapExactETHForTokens(opts *bind.TransactOpts, amountOutMin *big.Int, path []common.Address, to common.Address, deadline *big.Int)</span><br>	tx, err := routerInstance.SwapExactETHForTokens(auth, amountOutMin, path, auth.From, deadline)<br>	<span class="hljs-comment">// 结果：Swap tx sent: https://sepolia.abscan.org/tx/0xfacbe55c3dc87b1aeeb08a997b99edab5777c927abe4962847160bf2b68bf36c</span><br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;SwapExactETHForTokens err: %v&quot;</span>, err)<br>	&#125;<br><br>	<span class="hljs-comment">//* SwapETHForExactTokens	用尽可能少的 ETH，换取固定数量的代币，</span><br>	<span class="hljs-comment">//path := []common.Address&#123;WETH, USDT&#125;                             // path 里面只有USDT和WETH ,我们只做 ETH==&gt;WETH==&gt;USDT</span><br>	<span class="hljs-comment">//amountOut := new(big.Int).Mul(big.NewInt(100), big.NewInt(1e18)) // 1 固定输出代币</span><br>	<span class="hljs-comment">// 先询价，看看我们要得到这个多的代币需要支付多少eth GetAmountsIn:固定得到数来预测付出数</span><br>	<span class="hljs-comment">//amountsIn, err := routerInstance.GetAmountsIn(&amp;bind.CallOpts&#123;&#125;, amountOut, path)</span><br>	<span class="hljs-comment">//if err != nil &#123;</span><br>	<span class="hljs-comment">//	log.Fatalf(&quot;GetAmountsIn err: %v&quot;, err)</span><br>	<span class="hljs-comment">//&#125;</span><br>	<span class="hljs-comment">//fmt.Printf(&quot;amountsIn WETH=%d\n&quot;, amountsIn[0])  // amountsIn WETH=10642318845770104 也就是说最少要付0.0106这么多eth</span><br>	<span class="hljs-comment">//fmt.Printf(&quot;amountsOut USDT=%d\n&quot;, amountsIn[1]) // amountsOut USDT=amountOut=100000000000000000000</span><br>	<span class="hljs-comment">// 这里要付eth，所以要设置auth.Value来确定支付</span><br>	<span class="hljs-comment">//amountETH := new(big.Int).Mul(big.NewInt(1), big.NewInt(1e17)) // 1 设置最大支付的ETH:0.1ETH,0.1&gt;0.0106</span><br>	<span class="hljs-comment">//auth.Value = amountETH</span><br>	<span class="hljs-comment">//SwapETHForExactTokens(opts *bind.TransactOpts, amountOut *big.Int, path []common.Address, to common.Address, deadline *big.Int)</span><br>	<span class="hljs-comment">//tx, err := routerInstance.SwapETHForExactTokens(auth, amountOut, path, auth.From, deadline)</span><br>	<span class="hljs-comment">// 交易结果Swap tx sent: https://sepolia.abscan.org/tx/0x9959ddaece35cc5566e65dcf15d9cf76d09617c5260b1776bae39a65f69475a7</span><br>	<span class="hljs-comment">//if err != nil &#123;</span><br>	<span class="hljs-comment">//	log.Fatalf(&quot;SwapETHForExactTokens err: %v&quot;, err)</span><br>	<span class="hljs-comment">//&#125;</span><br><br>	<span class="hljs-comment">//* SwapTokensForExactETH	用尽可能少的代币，换取固定数量的 ETH</span><br>	<span class="hljs-comment">//amountOut := new(big.Int).Mul(big.NewInt(1), big.NewInt(1e15)) // 1  固定输出的代币数量，就是你要买固定的ETH数量 0.001</span><br>	<span class="hljs-comment">//path := []common.Address&#123;USDT, WETH&#125;                           // path 里面只有USDT和WETH ,我们只做 USDT==&gt;WETH==&gt;ETH</span><br>	<span class="hljs-comment">// 可以先询价,通过GetAmountsIn来提前知道你最小要支付的数量，然后你最大支付的金额比最小的大就行</span><br>	<span class="hljs-comment">//amountsIn, err := routerInstance.GetAmountsIn(nil, amountOut, path) //先询价看看要付多少USDT</span><br>	<span class="hljs-comment">//if err != nil &#123;</span><br>	<span class="hljs-comment">//	log.Fatalf(&quot;GetAmountsIn err: %v&quot;, err)</span><br>	<span class="hljs-comment">//&#125;</span><br>	<span class="hljs-comment">//fmt.Printf(&quot;amountsIn USDT=%d\n&quot;, amountsIn[0])   // amountsIn USDT=10131344150178329676</span><br>	<span class="hljs-comment">//fmt.Printf(&quot;amountsOut WETH =%d\n&quot;, amountsIn[1]) //amountsOut WETH =1000000000000000</span><br>	<span class="hljs-comment">// 通过询价发现，我们要付至少10个usdt 才能换到0.001 个ETH</span><br>	<span class="hljs-comment">//amountInMax := new(big.Int).Mul(big.NewInt(11), big.NewInt(1e18)) // 2  最大输入代币，就是你最多付多少，最多付12个</span><br>	<span class="hljs-comment">// SwapTokensForExactETH(opts *bind.TransactOpts, amountOut *big.Int, amountInMax *big.Int, path []common.Address, to common.Address, deadline *big.Int)</span><br>	<span class="hljs-comment">//tx, err := routerInstance.SwapTokensForExactETH(auth, amountOut, amountInMax, path, auth.From, deadline)</span><br>	<span class="hljs-comment">// 交易结果 Swap tx sent: https://sepolia.abscan.org/tx/0x3307f7d4d7762d239f105cb6b206aa10375fbccc12042f40b228e63387e6a215</span><br>	<span class="hljs-comment">//if err != nil &#123;</span><br>	<span class="hljs-comment">//	log.Fatalf(&quot;SwapTokensForExactETH err: %v&quot;, err)</span><br>	<span class="hljs-comment">//&#125;</span><br><br>	<span class="hljs-comment">//* SwapExactTokensForETH	用固定数量的代币，换取尽可能多的 ETH</span><br>	<span class="hljs-comment">//path := []common.Address&#123;USDT, WETH&#125;                              // path 里面只有USDT和WETH ,我们只做 USDT==&gt;WETH==&gt;ETH</span><br>	<span class="hljs-comment">//amountIn := new(big.Int).Mul(big.NewInt(12), big.NewInt(1e18))    // 1  固定输入数量，要支付的token</span><br>	<span class="hljs-comment">//amountOutMin := new(big.Int).Mul(big.NewInt(1), big.NewInt(1e15)) // 2  最小输出金额，最低得到的金额，如果没有满足则交易失败</span><br>	<span class="hljs-comment">// 上一个已经寻过价了，此处省略询价的步骤。。。。</span><br>	<span class="hljs-comment">//SwapExactTokensForETH(opts *bind.TransactOpts, amountIn *big.Int, amountOutMin *big.Int, path []common.Address, to common.Address, deadline *big.Int)</span><br>	<span class="hljs-comment">//tx, err := routerInstance.SwapExactTokensForETH(auth, amountIn, amountOutMin, path, auth.From, deadline)</span><br>	<span class="hljs-comment">//if err != nil &#123;</span><br>	<span class="hljs-comment">//	log.Fatalf(&quot;SwapExactTokensForETH err: %v&quot;, err)</span><br>	<span class="hljs-comment">//&#125;</span><br>	<span class="hljs-comment">//* SwapExactTokensForTokens	用固定数量的输入代币，换取尽可能多的输出代币，限制一个最小得到金额</span><br>	<span class="hljs-comment">//router.SwapExactTokensForTokens()</span><br>	<span class="hljs-comment">// 指定对应的代币合约去多跳，这里演示USDT 换成BTC</span><br>	<span class="hljs-comment">//path := []common.Address&#123;USDT, WETH, BTC&#125; // 路径是 USDT--&gt;WETH--&gt;BTC</span><br>	<span class="hljs-comment">//planAmountIn := new(big.Int).Mul(big.NewInt(1), big.NewInt(1e18)) // 1  固定数量的输入代币,就是你要付出的多少个金额，是path的第一个</span><br>	<span class="hljs-comment">//expectamountOut, err := routerInstance.GetAmountsOut(&amp;bind.CallOpts&#123;&#125;, planAmountIn, path)</span><br>	<span class="hljs-comment">//fmt.Printf(&quot;amountsIn USDT=%d\n&quot;, expectamountOut[0])   // 是输入代币数量（你传入的 amountIn）//amountsIn USDT=1000000000000000000</span><br>	<span class="hljs-comment">//fmt.Printf(&quot;amountsOut WETH =%d\n&quot;, expectamountOut[1]) // 由第一个换成第二个的得到的数量//amountsOut WETH =99600698103990</span><br>	<span class="hljs-comment">//fmt.Printf(&quot;amountsOut BTC =%d\n&quot;, expectamountOut[2])  // 由第二个换成第三个的得到的数量，amounts[len(path)-1] 是最终输出代币的数量（你能拿到的目标代币数量）</span><br>	<span class="hljs-comment">//amountsOut BTC =16036488252549356056922--&gt;询价结果 1603</span><br>	<span class="hljs-comment">// 授权</span><br>	<span class="hljs-comment">//approveAmount := new(big.Int).Mul(big.NewInt(100), big.NewInt(1e18)) // 1  固定数量的输入代币,就是你要付出的多少个金额，是path的第一个</span><br>	<span class="hljs-comment">//approveTx, err := usdtInstance.Approve(auth, routerAddress, approveAmount)</span><br>	<span class="hljs-comment">//if err != nil &#123;</span><br>	<span class="hljs-comment">//	log.Fatalf(&quot;approveTx err: %v&quot;, err)</span><br>	<span class="hljs-comment">//&#125;</span><br>	<span class="hljs-comment">//fmt.Printf(&quot;approveTx tx sent: https://sepolia.abscan.org/tx/%s\n&quot;, approveTx.Hash().Hex())</span><br>	<span class="hljs-comment">//time.Sleep(5)</span><br>	<span class="hljs-comment">// approveTx tx sent: https://sepolia.abscan.org/tx/0x9c55f882628bdd2912b9b3bbe35100194f8529718a184f9be0ec98e1ff2f5da8</span><br>	<span class="hljs-comment">//testAmountOutMin := new(big.Int).Mul(big.NewInt(2), big.NewInt(1e18)) // 1  固定数量的输入代币,就是你要付出的多少个金额，是path的第一个</span><br>	<span class="hljs-comment">// 在调用SwapExactTokensForTokens之前，最好先询价，还有一定要先授权</span><br>	<span class="hljs-comment">// 源码：SwapExactTokensForTokens(opts *bind.TransactOpts, amountIn *big.Int, amountOutMin *big.Int, path []common.Address, to common.Address, deadline *big.Int)</span><br>	<span class="hljs-comment">//tx, err := routerInstance.SwapExactTokensForTokens(auth, planAmountIn, testAmountOutMin, path, auth.From, deadline)</span><br>	<span class="hljs-comment">// SwapExactTokensForTokens结果Swap tx sent: https://sepolia.abscan.org/tx/0x25f65c0ac3bef912ae1a169ed4eedfb36c21ca933579aaa95179386afc48547f</span><br>	<span class="hljs-comment">//if err != nil &#123;</span><br>	<span class="hljs-comment">//	log.Fatalf(&quot;SwapExactTokensForTokens err: %v&quot;, err)</span><br>	<span class="hljs-comment">//&#125;</span><br><br>	<span class="hljs-comment">//* SwapTokensForExactTokens	用尽可能少的输入代币，换取固定数量的输出代币，就是指定得到的金额，然后指定一个最大的付出金额</span><br>	<span class="hljs-comment">// 源码：SwapTokensForExactTokens(opts *bind.TransactOpts, amountOut *big.Int, amountInMax *big.Int, path []common.Address, to common.Address, deadline *big.Int)</span><br>	<span class="hljs-comment">//amountOut := new(big.Int).Mul(big.NewInt(1), big.NewInt(1e18))   // 1  固定数量的输出代币,就是你要得到多少个金额，</span><br>	<span class="hljs-comment">//amountInMax := new(big.Int).Mul(big.NewInt(1), big.NewInt(1e18)) // 1  最大输入代币,就是你要最多付出的多少个金额，</span><br>	<span class="hljs-comment">//tx, err := routerInstance.SwapTokensForExactTokens(auth, amountOut, amountInMax, path, auth.From, deadline)</span><br>	<span class="hljs-comment">// 交易结果Swap tx sent: https://sepolia.abscan.org/tx/0x2d53775319ec0566edfda926cc8162ad8a7023f9dd4ae9e84230797016adfa13</span><br>	<span class="hljs-comment">//if err != nil &#123;</span><br>	<span class="hljs-comment">//	log.Fatalf(&quot;SwapTokensForExactTokens err: %v&quot;, err)</span><br>	<span class="hljs-comment">//&#125;</span><br><br>	fmt.Printf(<span class="hljs-string">&quot;Swap tx sent: https://sepolia.abscan.org/tx/%s\n&quot;</span>, tx.Hash().Hex())<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="第二种方式，通过直接调用Pair合约的swap方法"><a href="#第二种方式，通过直接调用Pair合约的swap方法" class="headerlink" title="第二种方式，通过直接调用Pair合约的swap方法"></a>第二种方式，通过直接调用Pair合约的swap方法</h2><p>下面是 Uniswap V2 Pair 合约中 <code>swap</code> 方法的参数详细介绍：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs go">Swap(<br>    opts *bind.TransactOpts,<br>    amount0Out *big.Int,<br>    amount1Out *big.Int,<br>    to common.Address,<br>    data []<span class="hljs-type">byte</span>,<br>)<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h2><table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>opts</code></td>
+<td><code>*bind.TransactOpts</code></td>
+<td>交易调用选项，包含调用者地址、gas限制、gas价格、发送的ETH等。</td>
+</tr>
+<tr>
+<td><code>amount0Out</code></td>
+<td><code>*big.Int</code></td>
+<td>本次交易中，从池子中输出（发送给 <code>to</code> 地址）的 Token0 数量。</td>
+</tr>
+<tr>
+<td><code>amount1Out</code></td>
+<td><code>*big.Int</code></td>
+<td>本次交易中，从池子中输出（发送给 <code>to</code> 地址）的 Token1 数量。</td>
+</tr>
+<tr>
+<td><code>to</code></td>
+<td><code>common.Address</code></td>
+<td>接收输出代币的地址。</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td><code>[]byte</code></td>
+<td>附加数据，一般为空。若非空，则触发闪电贷回调（<code>uniswapV2Call</code>）。</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="详细解释"><a href="#详细解释" class="headerlink" title="详细解释"></a>详细解释</h2><h3 id="1-opts-bind-TransactOpts"><a href="#1-opts-bind-TransactOpts" class="headerlink" title="1. opts *bind.TransactOpts"></a>1. <code>opts *bind.TransactOpts</code></h3><ul>
+<li>这是 go-ethereum 绑定合约调用时的交易参数结构体。</li>
+<li>包含：<ul>
+<li>发起交易的账户地址（<code>From</code>）</li>
+<li>交易的 gas 限制、gas 价格</li>
+<li>发送的 ETH 数量（一般 swap 不需要额外发送 ETH）</li>
+</ul>
+</li>
+<li>你需要先用私钥或钱包生成它。</li>
+</ul>
+<h3 id="2-amount0Out-big-Int"><a href="#2-amount0Out-big-Int" class="headerlink" title="2. amount0Out *big.Int"></a>2. <code>amount0Out *big.Int</code></h3><ul>
+<li>这次交易你想从池子里“拿出”的 Token0 数量（即池子向你转出的 Token0）。</li>
+<li>如果这次交易你不想拿 Token0，填 0。</li>
+</ul>
+<h3 id="3-amount1Out-big-Int"><a href="#3-amount1Out-big-Int" class="headerlink" title="3. amount1Out *big.Int"></a>3. <code>amount1Out *big.Int</code></h3><ul>
+<li>这次交易你想从池子里“拿出”的 Token1 数量（即池子向你转出的 Token1）。</li>
+<li>如果这次交易你不想拿 Token1，填 0。</li>
+</ul>
+<p><strong>注意：</strong> 这两个参数不能同时为 0，必须至少输出一种代币。</p>
+<h3 id="4-to-common-Address"><a href="#4-to-common-Address" class="headerlink" title="4. to common.Address"></a>4. <code>to common.Address</code></h3><ul>
+<li>代币输出的接收地址，通常是你的钱包地址或者合约地址。</li>
+<li>交易成功后，池子会把对应的代币转给这个地址。</li>
+</ul>
+<h3 id="5-data-byte"><a href="#5-data-byte" class="headerlink" title="5. data []byte"></a>5. <code>data []byte</code></h3><ul>
+<li>附加数据，通常为空。</li>
+<li>如果非空，表示调用闪电贷（flash swap）功能，调用方需要实现 <code>uniswapV2Call</code> 回调函数，完成借贷逻辑并归还资金。</li>
+<li>一般普通 swap 交易传空即可。</li>
+</ul>
+<hr>
+<h2 id="总结调用逻辑"><a href="#总结调用逻辑" class="headerlink" title="总结调用逻辑"></a>总结调用逻辑</h2><ul>
+<li><strong>先把你要用来交换的输入代币转账给 Pair 合约地址（调用前转账）</strong></li>
+<li>调用 <code>swap</code>，告诉合约你想从池子中取多少输出代币（<code>amount0Out</code> 或 <code>amount1Out</code>）</li>
+<li>合约会检查输入代币数量是否满足恒定乘积公式（含手续费）</li>
+<li>如果满足，合约会把输出代币转给 <code>to</code> 地址，交易成功</li>
+<li>如果不满足，交易回滚</li>
+</ul>
+<hr>
+<p>好的！关于 <code>amount0Out</code> 和 <code>amount1Out</code> 这两个参数的传递，理解它们的含义和如何计算非常关键。下面我帮你详细讲解：</p>
+<hr>
+<h2 id="一、amount0Out-和-amount1Out-的含义"><a href="#一、amount0Out-和-amount1Out-的含义" class="headerlink" title="一、amount0Out 和 amount1Out 的含义"></a>一、<code>amount0Out</code> 和 <code>amount1Out</code> 的含义</h2><ul>
+<li>它们表示<strong>你希望从池子里“拿出”多少代币</strong>。</li>
+<li><code>amount0Out</code> 是从池子中输出（转给你）Token0 的数量。</li>
+<li><code>amount1Out</code> 是从池子中输出（转给你）Token1 的数量。</li>
+<li><strong>这两个参数不能同时为 0</strong>，必须至少输出一种代币。</li>
+</ul>
+<p>例如：</p>
+<ul>
+<li>如果你想用 Token0 换取 Token1，那么你希望<strong>从池子拿出 Token1</strong>，所以 <code>amount1Out</code> 是你想拿的 Token1 数量，<code>amount0Out</code> 设为 0。</li>
+<li>反之，如果你想用 Token1 换 Token0，则 <code>amount0Out</code> 是你想拿的 Token0 数量，<code>amount1Out</code> 设为 0。</li>
+</ul>
+<hr>
+<h2 id="二、如何确定-amount0Out-或-amount1Out-的具体数值？"><a href="#二、如何确定-amount0Out-或-amount1Out-的具体数值？" class="headerlink" title="二、如何确定 amount0Out 或 amount1Out 的具体数值？"></a>二、如何确定 <code>amount0Out</code> 或 <code>amount1Out</code> 的具体数值？</h2><h3 id="1-你想拿多少代币？"><a href="#1-你想拿多少代币？" class="headerlink" title="1. 你想拿多少代币？"></a>1. 你想拿多少代币？</h3><ul>
+<li>这是你交易的目标，比如你想换 10 个 Token1，<code>amount1Out = 10 * 10^decimals</code>（注意代币的精度）。</li>
+<li>或者你想拿 5 个 Token0，<code>amount0Out = 5 * 10^decimals</code>。</li>
+</ul>
+<h3 id="2-你必须保证输入代币数量足够支付输出代币（含手续费）"><a href="#2-你必须保证输入代币数量足够支付输出代币（含手续费）" class="headerlink" title="2. 你必须保证输入代币数量足够支付输出代币（含手续费）"></a>2. 你必须保证输入代币数量足够支付输出代币（含手续费）</h3><p>Uniswap V2 使用恒定乘积公式：</p>
+<p>(x+Δx)×(y−Δy)≥x×y(<em>x</em>+Δ<em>x</em>)×(<em>y</em>−Δ<em>y</em>)≥<em>x</em>×<em>y</em></p>
+<p>其中：</p>
+<ul>
+<li>x,y<em>x</em>,<em>y</em> 是池子中 Token0 和 Token1 的当前储备量</li>
+<li>ΔxΔ<em>x</em> 是你输入的 Token0 数量</li>
+<li>ΔyΔ<em>y</em> 是你输出的 Token1 数量（即 <code>amount1Out</code>）</li>
+</ul>
+<p>Uniswap V2 还扣除 0.3% 交易手续费，实际上计算公式是：</p>
+<p>(x+Δx×0.997)×(y−Δy)≥x×y(<em>x</em>+Δ<em>x</em>×0.997)×(<em>y</em>−Δ<em>y</em>)≥<em>x</em>×<em>y</em></p>
+<hr>
+<h3 id="3-计算示例（用-Token0-换-Token1）"><a href="#3-计算示例（用-Token0-换-Token1）" class="headerlink" title="3. 计算示例（用 Token0 换 Token1）"></a>3. 计算示例（用 Token0 换 Token1）</h3><p>假设：</p>
+<ul>
+<li>池子储备：<code>reserve0 = 1000 Token0</code>, <code>reserve1 = 500 Token1</code></li>
+<li>你想拿出 <code>amount1Out = 10 Token1</code></li>
+</ul>
+<p>计算你需要输入多少 Token0：</p>
+<p>Δx&#x3D;x×Δy(y−Δy)×0.997+1Δ<em>x</em>&#x3D;(<em>y</em>−Δ<em>y</em>)×0.997<em>x</em>×Δ<em>y</em>+1</p>
+<p>代入数值：</p>
+<p>Δx&#x3D;1000×10(500−10)×0.997+1≈10000490×0.997+1≈10000488.53+1≈20.47+1&#x3D;21.47Δ<em>x</em>&#x3D;(500−10)×0.9971000×10+1≈490×0.99710000+1≈488.5310000+1≈20.47+1&#x3D;21.47</p>
+<p>所以你需要输入约 22 个 Token0（向上取整），才能换出 10 个 Token1。</p>
+<hr>
+<h3 id="4-交易流程"><a href="#4-交易流程" class="headerlink" title="4. 交易流程"></a>4. 交易流程</h3><ul>
+<li>你先把约 22 个 Token0 转给 Pair 合约地址</li>
+<li>调用 <code>swap(0, 10, yourAddress, [])</code>，告诉合约你想拿 10 个 Token1</li>
+<li>合约检查输入的 Token0 是否足够满足恒定乘积公式</li>
+<li>如果满足，合约把 10 个 Token1 转给你，交易成功</li>
+</ul>
+<hr>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><table>
+<thead>
+<tr>
+<th>情况</th>
+<th>amount0Out</th>
+<th>amount1Out</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用 Token0 换 Token1</td>
+<td>0</td>
+<td>你想拿的 Token1 数量</td>
+<td>输出 Token1，输入 Token0</td>
+</tr>
+<tr>
+<td>用 Token1 换 Token0</td>
+<td>你想拿的 Token0 数量</td>
+<td>0</td>
+<td>输出 Token0，输入 Token1</td>
+</tr>
+<tr>
+<td>两个都不为 0（闪电贷场景）</td>
+<td>非 0</td>
+<td>非 0</td>
+<td>复杂操作，需实现回调接口</td>
+</tr>
+<tr>
+<td>两个都为 0</td>
+<td>不允许</td>
+<td>不允许</td>
+<td>交易无意义，合约会拒绝</td>
+</tr>
+</tbody></table>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs go"><br><span class="hljs-comment">// SwapTokenOnPair 在我创建的币对合约做swap ，两种方式，这里是第二种，通过直接调用我的币对合约</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">SwapTokenOnPair</span><span class="hljs-params">()</span></span> &#123;<br>	<span class="hljs-comment">// 在我创建的币对合约做swap ，两种方式，这里是第二种，通过直接调用我的币对合约</span><br>	pairInstance := getPair()<br>	usdtInstance := getUsdt()<br>	client := ethereumcli.GetEthClient()<br><br>	pairAddress := common.HexToAddress(<span class="hljs-string">&quot;0x5c1080c5180aa87688d4064facbf7a4520bf2339&quot;</span>)<br><br>	auth := getAuth()<br><br>	amount0Out := big.NewInt(<span class="hljs-number">0</span>)                                     <span class="hljs-comment">// 1  想得到Token0 USDT的数量是0</span><br>	amount1Out := <span class="hljs-built_in">new</span>(big.Int).Mul(big.NewInt(<span class="hljs-number">1</span>), big.NewInt(<span class="hljs-number">1e15</span>)) <span class="hljs-comment">// 2 想得到Token1 WETH 的数量是0</span><br>	fmt.Printf(<span class="hljs-string">&quot;期望得到的amount1的数量为：%d&quot;</span>, amount1Out)<br>	amountIn := CalcAmountIn(amount1Out)<br>	fmt.Printf(<span class="hljs-string">&quot;必须要转入的amountIn的数量为：%d&quot;</span>, amountIn)<br><br>	<span class="hljs-comment">// 通过计算期望输出金额来确定该转账的金额</span><br>	txTr, err := usdtInstance.Transfer(auth, pairAddress, amountIn)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;Transfer err: %v&quot;</span>, err)<br>	&#125;<br>	<span class="hljs-comment">// 等待转账交易确认</span><br>	receipt, err := waitTxConfirm(client, txTr.Hash())<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;Transfer tx confirmation err: %v&quot;</span>, err)<br>	&#125;<br>	<span class="hljs-keyword">if</span> receipt.Status != <span class="hljs-number">1</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;Transfer tx failed&quot;</span>)<br>	&#125;<br>	fmt.Println(<span class="hljs-string">&quot;Transfer confirmed, proceed to swap&quot;</span>)<br>	fmt.Printf(<span class="hljs-string">&quot;Swap tx sent: https://sepolia.abscan.org/tx/%s\n&quot;</span>, txTr.Hash().Hex())<br>	fmt.Println(<span class="hljs-string">&quot;转账已完毕，正在进行Swap&quot;</span>)<br><br>	<span class="hljs-comment">//Swap(opts *bind.TransactOpts, amount0Out *big.Int, amount1Out *big.Int, to common.Address, data []byte)</span><br>	<span class="hljs-keyword">var</span> data []<span class="hljs-type">byte</span> <span class="hljs-comment">// 普通 swap 传空</span><br>	<span class="hljs-comment">// 在直接调用swap之前必须要先给合约转账</span><br>	tx, err := pairInstance.Swap(auth, amount0Out, amount1Out, auth.From, data)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatalf(<span class="hljs-string">&quot;Swap err: %v&quot;</span>, err)<br>	&#125;<br><br>	fmt.Printf(<span class="hljs-string">&quot;Swap tx sent: https://sepolia.abscan.org/tx/%s\n&quot;</span>, tx.Hash().Hex())<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="7、批量查询池子流动性获取价格"><a href="#7、批量查询池子流动性获取价格" class="headerlink" title="7、批量查询池子流动性获取价格"></a>7、批量查询池子流动性获取价格</h1><h1 id="8、闪电贷"><a href="#8、闪电贷" class="headerlink" title="8、闪电贷"></a>8、闪电贷</h1>
                 
               </div>
             
