@@ -29,7 +29,7 @@
 <meta property="og:image" content="http://example.com/img/web3/arbitrage1-1.png">
 <meta property="og:image" content="http://example.com/img/web3/arbitrage1-2.png">
 <meta property="article:published_time" content="2025-06-12T12:24:09.000Z">
-<meta property="article:modified_time" content="2025-06-27T13:48:50.015Z">
+<meta property="article:modified_time" content="2025-06-29T15:18:58.668Z">
 <meta property="article:author" content="Wangxiaowang">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/img/web3/arbitrage1-1.png">
@@ -251,7 +251,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          8.7k 字
+          9.6k 字
         
       </span>
     
@@ -262,7 +262,7 @@
         
         
         
-          73 分钟
+          81 分钟
         
       </span>
     
@@ -777,10 +777,74 @@
 <p>对，没错，是借weth 还dai</p>
 <p>他这里讲解的是第二套方案，在前期我们准备一下</p>
 <ol>
-<li>创建sushi swap 的路由合约</li>
-<li>创建sushi swap 的工厂合约</li>
+<li>创建sushi swap 的工厂合约–</li>
+<li>创建sushi swap 的路由合约—路由依赖工厂合约</li>
 <li>创建dai的erc20代币</li>
 </ol>
+<h2 id="工厂合约部署"><a href="#工厂合约部署" class="headerlink" title="工厂合约部署"></a>工厂合约部署</h2><p>代码</p>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p>部署工厂合约的时候要注意，不能拿过来就直接部署了，需要加一串代码，拿到这个合约的哈希值，后面替换进路由合约里面的某个配置变量哈希值，修改合约获取init_code</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><code class="hljs solidity">pragma solidity =0.5.16;<br><br>import &#x27;./interfaces/IUniswapV2Factory.sol&#x27;;<br>import &#x27;./UniswapV2Pair.sol&#x27;;<br><br>contract UniswapV2Factory is IUniswapV2Factory &#123;<br>    address public feeTo;<br>    address public feeToSetter;<br>        bytes32  public constant INIT_CODE_PAIR_HASH = keccak256(abi.encodePacked(type(UniswapV2Pair).creationCode));<br><br><br>    mapping(address =&gt; mapping(address =&gt; address)) public getPair;<br>    address[] public allPairs;<br><br>    event PairCreated(address indexed token0, address indexed token1, address pair, uint);<br><br>    constructor(address _feeToSetter) public &#123;<br>        feeToSetter = _feeToSetter;<br>    &#125;<br><br>    function allPairsLength() external view returns (uint) &#123;<br>        return allPairs.length;<br>    &#125;<br><br>    function createPair(address tokenA, address tokenB) external returns (address pair) &#123;<br>        require(tokenA != tokenB, &#x27;UniswapV2: IDENTICAL_ADDRESSES&#x27;);<br>        // NOTE: sort tokens by address<br>        // address &lt;-&gt; 20 bytes hexadecimal &lt;-&gt; 160 bit number<br>        // 0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97 &lt;-&gt; 412311598482915581890913355723629879470649597847<br>        // address(1), address(2)<br>        (address token0, address token1) = tokenA &lt; tokenB ? (tokenA, tokenB) : (tokenB, tokenA);<br>        require(token0 != address(0), &#x27;UniswapV2: ZERO_ADDRESS&#x27;);<br>        require(getPair[token0][token1] == address(0), &#x27;UniswapV2: PAIR_EXISTS&#x27;); // single check is sufficient<br>        // NOTE: creation code = runtime code + constructor args<br>        bytes memory bytecode = type(UniswapV2Pair).creationCode;<br>        // NOTE: deploy with create2 - UniswapV2Library.pairFor<br>        // NOTE: create2 addr &lt;- keccak256(creation bytecode) &lt;- constructor args<br>        // create2 addr = keccak256(0xff, deployer, salt, keccak256(creation bytecode))<br>        bytes32 salt = keccak256(abi.encodePacked(token0, token1));<br>        assembly &#123;<br>            // NOTE: pair = address(new UniswapV2Pair&#123;salt: salt&#125;());<br>            pair := create2(0, add(bytecode, 32), mload(bytecode), salt)<br>        &#125;<br>        // NOTE: call initialize to initialize contract without constructor args<br>        IUniswapV2Pair(pair).initialize(token0, token1);<br>        getPair[token0][token1] = pair;<br>        getPair[token1][token0] = pair; // populate mapping in the reverse direction<br>        allPairs.push(pair);<br>        emit PairCreated(token0, token1, pair, allPairs.length);<br>    &#125;<br><br>    function setFeeTo(address _feeTo) external &#123;<br>        require(msg.sender == feeToSetter, &#x27;UniswapV2: FORBIDDEN&#x27;);<br>        feeTo = _feeTo;<br>    &#125;<br><br>    function setFeeToSetter(address _feeToSetter) external &#123;<br>        require(msg.sender == feeToSetter, &#x27;UniswapV2: FORBIDDEN&#x27;);<br>        feeToSetter = _feeToSetter;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>部署后查询IINIT_CODE_PAIR_HASH得到的是0x1567526c5ba241f15ce2526f20ce8fbba68eee22e5ae192edf3c23d68c07471d记得把0x去掉</p>
+</li>
+<li><p>工厂合约部署时要传手续费地址：0x0bCE5f4bC3fE031517BEdE917315142078235A28</p>
+</li>
+<li><p>部署后工厂合约地址：0xb8366B293d071eBf559e3c08dCE74135842ac68b</p>
+</li>
+<li><p>官方WETH地址：0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d</p>
+</li>
+</ul>
+<h1 id="路由合约部署"><a href="#路由合约部署" class="headerlink" title="路由合约部署"></a>路由合约部署</h1><blockquote>
+<p>[!IMPORTANT]</p>
+<p>部署路由合约的时候要注意，里面有一串hash需要替换，位置在路由合约所引用的UniswapV2Library库的pairFor方法里面的hex’96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f’ &#x2F;&#x2F; init code hash 替换成上面我们部署的</p>
+</blockquote>
+<p>部署后的路由合约地址：0x86F24A21588955Cff75A7fB7295a8F15e7523B19</p>
+<p>官方的路由地址：0x96ff7D9dbf52FdcAe79157d3b249282c7FABd409</p>
+<h1 id="使用我们自己的工厂合约和路由合约创建新的代币池子"><a href="#使用我们自己的工厂合约和路由合约创建新的代币池子" class="headerlink" title="使用我们自己的工厂合约和路由合约创建新的代币池子"></a>使用我们自己的工厂合约和路由合约创建新的代币池子</h1><p>USDT&lt;&#x3D;&gt;WETH官方币对合约：0x5c1080C5180aa87688D4064FAcbF7A4520bF2339</p>
+<p>USDT&lt;&#x3D;&gt;WETH我自己路由币对合约：0x84def32c79156DdAAB1Ef3df18F6D69229c223Ee</p>
+<p>WAYC币对合约</p>
+<p>再去路由合约添加流动性</p>
+<p>查看我们自己的币对查看储备量</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs go">=== RUN   TestQuery<br>token0Address =<span class="hljs-number">0x58278ebb4EbFA82ebF183E4CdEc1968391e59b6C</span><br>token1Address =<span class="hljs-number">0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d</span><br>token0 USDT 的储备为 <span class="hljs-number">499999999999999993000</span><br>token1 WETH 的储备为 <span class="hljs-number">400601805416248754</span><br>--- PASS: TestQuery (<span class="hljs-number">1.77</span>s)<br>PASS<br>计算一下币价，就是<span class="hljs-number">1</span>个Usdt值多少ETH<br>&gt;&gt;&gt; <span class="hljs-number">499999999999999993000</span>/<span class="hljs-number">400601805416248754</span><br><span class="hljs-number">1248.1221832749122</span><br>最小精度<span class="hljs-number">1</span>USDT 值钱 最小精度 <span class="hljs-number">1248.0</span> ETH-<span class="hljs-number">-18</span>位精度 <span class="hljs-number">1248</span>U换<span class="hljs-number">1</span>个ETH<br></code></pre></td></tr></table></figure>
+
+<p>看看我们通过官方生成的币对的储备量</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs go">=== RUN   TestQuery<br>token0Address =<span class="hljs-number">0x58278ebb4EbFA82ebF183E4CdEc1968391e59b6C</span><br>token1Address =<span class="hljs-number">0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d</span><br>token0 USDT 的储备为 <span class="hljs-number">1397388190571889679873</span><br>token1 WETH 的储备为 <span class="hljs-number">155684074817414249</span><br>&gt;&gt;&gt; <span class="hljs-number">1397388190571889679873</span>/<span class="hljs-number">155684074817414249</span><br><span class="hljs-number">8975.794038091191</span><br>&gt;&gt;&gt; <br>最小精度<span class="hljs-number">1</span>USDT 值钱 <span class="hljs-number">8998.86543198197</span> ETH-<span class="hljs-number">-18</span>位精度 <span class="hljs-number">9000</span>U换<span class="hljs-number">1</span>个ETH<br></code></pre></td></tr></table></figure>
+
+<p>发现，我们合约的USDT是要比官方合约的USDT要便宜好多的</p>
+<p>所以可以调用我们合约买，然后去官方合约卖</p>
+<p>买多少颗呢？ 买个100颗试试</p>
+<p>后面可以用multicaller批量去查</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs go">=== RUN   TestMulticallerReserves<br>Pair <span class="hljs-number">0x5c1080C5180aa87688D4064FAcbF7A4520bF2339</span> reserves: <span class="hljs-number">1379716792343398537155</span> <span class="hljs-number">157684074817414249</span> (last update <span class="hljs-number">1751191111</span>)<br>Pair <span class="hljs-number">0x84def32c79156DdAAB1Ef3df18F6D69229c223Ee</span> reserves: <span class="hljs-number">517671398228491135718</span> <span class="hljs-number">386966361486578731</span> (last update <span class="hljs-number">1751191111</span>)<br>--- PASS: TestMulticallerReserves (<span class="hljs-number">0.75</span>s)<br>PASS<br>买了<span class="hljs-number">10</span>个苹果花了<span class="hljs-number">5</span>块钱，苹果多少钱<span class="hljs-number">1</span>个？<br><span class="hljs-number">5</span>/<span class="hljs-number">10</span>=<span class="hljs-number">0.5</span>元一个<br>同理，usdt多少以太坊<span class="hljs-number">1</span>个<br><span class="hljs-comment">// 我们的</span><br>&gt;&gt;&gt; <span class="hljs-number">157684074817414249</span>/<span class="hljs-number">1379716792343398537155</span>--&gt;token0是eth所以前面的是eth<br><span class="hljs-number">0.00011428727670233948</span> eth/颗<br><span class="hljs-comment">// 官方的</span><br>&gt;&gt;&gt; <span class="hljs-number">386966361486578731</span>/<span class="hljs-number">517671398228491135718</span>--&gt;token0是eth所以前面的是eth<br><span class="hljs-number">0.0007475135053062725</span> eth/颗<br>我们的要便宜，所以要去我们的那个买代币---不对，反了，<br>应该是官方的贵，先去买官方的，然后放到我们的这里卖<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="部署套利合约V1版本"><a href="#部署套利合约V1版本" class="headerlink" title="部署套利合约V1版本"></a>部署套利合约V1版本</h2><p>合约地址：<a target="_blank" rel="noopener" href="https://sepolia.abscan.org/address/0x1D31065b35510463c906B25FE8a2fBb581a9Ff69">https://sepolia.abscan.org/address/0x1D31065b35510463c906B25FE8a2fBb581a9Ff69</a></p>
+<p>合约地址：0x1D31065b35510463c906B25FE8a2fBb581a9Ff69‘</p>
+<p>套利成功：<a target="_blank" rel="noopener" href="https://sepolia.abscan.org/tx/0x7fe08e9616d45aa4c032dfb2ee8615098f2c1bfb25c166b1b5ce4520125681ab">https://sepolia.abscan.org/tx/0x7fe08e9616d45aa4c032dfb2ee8615098f2c1bfb25c166b1b5ce4520125681ab</a></p>
+<h2 id="套利合约V1加强版，FlashSwap"><a href="#套利合约V1加强版，FlashSwap" class="headerlink" title="套利合约V1加强版，FlashSwap"></a>套利合约V1加强版，FlashSwap</h2><ul>
+<li><p>1、借币</p>
+<ul>
+<li>借哪个？自己定义，如果入参传了true 就借params的token0,否者就借token 1</li>
+<li>借多少？借params里面的amountIn</li>
+</ul>
+</li>
+<li><p>2、套利</p>
+<ul>
+<li>还是调用内部的swap方法</li>
+</ul>
+</li>
+<li><p>3、还币</p>
+<ul>
+<li>在回调函数uniswapV2Call里面写</li>
+</ul>
+</li>
+</ul>
+<p>合约地址 0x6021025064312A2c13641752Bc6D4Ed2C920483A</p>
+<p>重新生成abi文件调用</p>
 
                 
               </div>
