@@ -1,0 +1,804 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Wangxiaowang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="uniswap v3 部署相关太棒了！既然你的 Hardhat 环境已经准备好，接下来部署 Uniswap V3 相关合约。Uniswap V3 是一个模块化系统，核心合约之间有依赖关系，部署顺序很重要。下面为你详细讲解部署顺序、每个合约作用及注意事项。  一、Uniswap V3 合约结构与依赖关系Uniswap V3 主要合约有：  UniswapV3Factory    作用：负责创建和管理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="08-8Solidity笔记之八">
+<meta property="og:url" content="http://example.com/2025/07/13/08-8Solidity%E7%AC%94%E8%AE%B0%E4%B9%8B%E5%85%AB/index.html">
+<meta property="og:site_name" content="Wang">
+<meta property="og:description" content="uniswap v3 部署相关太棒了！既然你的 Hardhat 环境已经准备好，接下来部署 Uniswap V3 相关合约。Uniswap V3 是一个模块化系统，核心合约之间有依赖关系，部署顺序很重要。下面为你详细讲解部署顺序、每个合约作用及注意事项。  一、Uniswap V3 合约结构与依赖关系Uniswap V3 主要合约有：  UniswapV3Factory    作用：负责创建和管理">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/web3/eth2.jpg">
+<meta property="article:published_time" content="2025-07-13T07:27:10.000Z">
+<meta property="article:modified_time" content="2025-07-14T02:22:22.611Z">
+<meta property="article:author" content="Wangxiaowang">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/web3/eth2.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>08-8Solidity笔记之八 - Wang</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"37fd8385820c4abc0e564a2c423b7511","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?37fd8385820c4abc0e564a2c423b7511";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Home</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/web3/solidity1.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="08-8Solidity笔记之八"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-13 15:27" pubdate>
+          2025年7月13日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          974 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          9 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">08-8Solidity笔记之八</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="uniswap-v3-部署相关"><a href="#uniswap-v3-部署相关" class="headerlink" title="uniswap v3 部署相关"></a>uniswap v3 部署相关</h1><p>太棒了！既然你的 Hardhat 环境已经准备好，接下来部署 Uniswap V3 相关合约。Uniswap V3 是一个模块化系统，核心合约之间有依赖关系，部署顺序很重要。下面为你详细讲解<strong>部署顺序</strong>、<strong>每个合约作用</strong>及<strong>注意事项</strong>。</p>
+<hr>
+<h2 id="一、Uniswap-V3-合约结构与依赖关系"><a href="#一、Uniswap-V3-合约结构与依赖关系" class="headerlink" title="一、Uniswap V3 合约结构与依赖关系"></a>一、Uniswap V3 合约结构与依赖关系</h2><p>Uniswap V3 主要合约有：</p>
+<ol>
+<li><p><strong>UniswapV3Factory</strong>  </p>
+<ul>
+<li>作用：负责创建和管理所有的交易池（Pool）。</li>
+<li>其它合约依赖：无。</li>
+</ul>
+</li>
+<li><p><strong>UniswapV3Pool</strong>  </p>
+<ul>
+<li>作用：每个交易对的核心池合约，包含流动性、交换、价格等逻辑。</li>
+<li>其它合约依赖：由 Factory 创建，不需要单独部署。</li>
+</ul>
+</li>
+<li><p><strong>SwapRouter</strong>  </p>
+<ul>
+<li>作用：为用户提供便捷的路由和交易功能。</li>
+<li>其它合约依赖：需要 Factory 地址和 WETH 地址。</li>
+</ul>
+</li>
+<li><p><strong>NonfungiblePositionManager</strong>  </p>
+<ul>
+<li>作用：流动性 NFT 的管理器，负责铸造&#x2F;管理 LP NFT。</li>
+<li>其它合约依赖：需要 Factory、WETH、NFTDescriptor 地址等。</li>
+</ul>
+</li>
+<li><p><strong>NFTDescriptor &#x2F; NonfungibleTokenPositionDescriptor</strong>  </p>
+<ul>
+<li>作用：生成 LP NFT 的元数据和图像。</li>
+<li>其它合约依赖：无，但要提供给 PositionManager 用。</li>
+</ul>
+</li>
+<li><p><strong>WETH9</strong>  </p>
+<ul>
+<li>作用：包装 ETH 为 WETH，Uniswap V3 需要用 WETH 作为 ETH 代表。</li>
+<li>其它合约依赖：SwapRouter 和 PositionManager 需要。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="二、推荐部署顺序"><a href="#二、推荐部署顺序" class="headerlink" title="二、推荐部署顺序"></a>二、推荐部署顺序</h2><h3 id="1-部署-WETH9（如果你没有现成的-WETH-地址）"><a href="#1-部署-WETH9（如果你没有现成的-WETH-地址）" class="headerlink" title="1. 部署 WETH9（如果你没有现成的 WETH 地址）"></a>1. 部署 WETH9（如果你没有现成的 WETH 地址）</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 部署 WETH9</span><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">WETH9</span> = <span class="hljs-keyword">await</span> ethers.<span class="hljs-title function_">getContractFactory</span>(<span class="hljs-string">&quot;WETH9&quot;</span>);<br><span class="hljs-keyword">const</span> weth = <span class="hljs-keyword">await</span> <span class="hljs-title class_">WETH9</span>.<span class="hljs-title function_">deploy</span>();<br><span class="hljs-keyword">await</span> weth.<span class="hljs-title function_">deployed</span>();<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;WETH9 deployed to:&quot;</span>, weth.<span class="hljs-property">address</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-部署-UniswapV3Factory"><a href="#2-部署-UniswapV3Factory" class="headerlink" title="2. 部署 UniswapV3Factory"></a>2. 部署 UniswapV3Factory</h3><p>已部署</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> <span class="hljs-title class_">Factory</span> = <span class="hljs-keyword">await</span> ethers.<span class="hljs-title function_">getContractFactory</span>(<span class="hljs-string">&quot;UniswapV3Factory&quot;</span>);<br><span class="hljs-keyword">const</span> factory = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Factory</span>.<span class="hljs-title function_">deploy</span>();<br><span class="hljs-keyword">await</span> factory.<span class="hljs-title function_">deployed</span>();<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;Factory deployed to:&quot;</span>, factory.<span class="hljs-property">address</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-部署-NFTDescriptor-Library"><a href="#3-部署-NFTDescriptor-Library" class="headerlink" title="3. 部署 NFTDescriptor Library"></a>3. 部署 NFTDescriptor Library</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> <span class="hljs-title class_">NFTDescriptor</span> = <span class="hljs-keyword">await</span> ethers.<span class="hljs-title function_">getContractFactory</span>(<span class="hljs-string">&quot;NFTDescriptor&quot;</span>);<br><span class="hljs-keyword">const</span> nftDescriptor = <span class="hljs-keyword">await</span> <span class="hljs-title class_">NFTDescriptor</span>.<span class="hljs-title function_">deploy</span>();<br><span class="hljs-keyword">await</span> nftDescriptor.<span class="hljs-title function_">deployed</span>();<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;NFTDescriptor deployed to:&quot;</span>, nftDescriptor.<span class="hljs-property">address</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-部署-NonfungibleTokenPositionDescriptor"><a href="#4-部署-NonfungibleTokenPositionDescriptor" class="headerlink" title="4. 部署 NonfungibleTokenPositionDescriptor"></a>4. 部署 NonfungibleTokenPositionDescriptor</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> <span class="hljs-title class_">NonfungibleTokenPositionDescriptor</span> = <span class="hljs-keyword">await</span> ethers.<span class="hljs-title function_">getContractFactory</span>(<br>  <span class="hljs-string">&quot;NonfungibleTokenPositionDescriptor&quot;</span>,<br>  &#123;<br>    <span class="hljs-attr">libraries</span>: &#123;<br>      <span class="hljs-title class_">NFTDescriptor</span>: nftDescriptor.<span class="hljs-property">address</span>,<br>    &#125;,<br>  &#125;<br>);<br><span class="hljs-keyword">const</span> descriptor = <span class="hljs-keyword">await</span> <span class="hljs-title class_">NonfungibleTokenPositionDescriptor</span>.<span class="hljs-title function_">deploy</span>(weth.<span class="hljs-property">address</span>);<br><span class="hljs-keyword">await</span> descriptor.<span class="hljs-title function_">deployed</span>();<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;NonfungibleTokenPositionDescriptor deployed to:&quot;</span>, descriptor.<span class="hljs-property">address</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-部署-NonfungiblePositionManager"><a href="#5-部署-NonfungiblePositionManager" class="headerlink" title="5. 部署 NonfungiblePositionManager"></a>5. 部署 NonfungiblePositionManager</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> <span class="hljs-title class_">NonfungiblePositionManager</span> = <span class="hljs-keyword">await</span> ethers.<span class="hljs-title function_">getContractFactory</span>(<br>  <span class="hljs-string">&quot;NonfungiblePositionManager&quot;</span><br>);<br><span class="hljs-keyword">const</span> positionManager = <span class="hljs-keyword">await</span> <span class="hljs-title class_">NonfungiblePositionManager</span>.<span class="hljs-title function_">deploy</span>(<br>  factory.<span class="hljs-property">address</span>,<br>  weth.<span class="hljs-property">address</span>,<br>  descriptor.<span class="hljs-property">address</span><br>);<br><span class="hljs-keyword">await</span> positionManager.<span class="hljs-title function_">deployed</span>();<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;NonfungiblePositionManager deployed to:&quot;</span>, positionManager.<span class="hljs-property">address</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-部署-SwapRouter"><a href="#6-部署-SwapRouter" class="headerlink" title="6. 部署 SwapRouter"></a>6. 部署 SwapRouter</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> <span class="hljs-title class_">SwapRouter</span> = <span class="hljs-keyword">await</span> ethers.<span class="hljs-title function_">getContractFactory</span>(<span class="hljs-string">&quot;SwapRouter&quot;</span>);<br><span class="hljs-keyword">const</span> router = <span class="hljs-keyword">await</span> <span class="hljs-title class_">SwapRouter</span>.<span class="hljs-title function_">deploy</span>(factory.<span class="hljs-property">address</span>, weth.<span class="hljs-property">address</span>);<br><span class="hljs-keyword">await</span> router.<span class="hljs-title function_">deployed</span>();<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;SwapRouter deployed to:&quot;</span>, router.<span class="hljs-property">address</span>);<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、注意事项"><a href="#三、注意事项" class="headerlink" title="三、注意事项"></a>三、注意事项</h2><ul>
+<li><strong>库合约（如 NFTDescriptor）部署后地址要绑定到用到它的合约里。</strong></li>
+<li><strong>部署合约时参数顺序要严格按照官方要求。</strong></li>
+<li>部署脚本建议一步步打印每个合约的地址，方便后续参数传递。</li>
+<li>如果部署到主网或测试网，WETH 地址是固定的，无需重复部署。</li>
+</ul>
+<hr>
+<h2 id="四、实际部署脚本示例"><a href="#四、实际部署脚本示例" class="headerlink" title="四、实际部署脚本示例"></a>四、实际部署脚本示例</h2><p>你可以将上述每一步写进 Hardhat 的部署脚本（如 <code>deploy.js</code>），或者用 Hardhat Ignition 按模块拆分部署。</p>
+<hr>
+<h2 id="五、参考资料"><a href="#五、参考资料" class="headerlink" title="五、参考资料"></a>五、参考资料</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.uniswap.org/contracts/v3/reference/deployments">Uniswap V3 官方部署文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Uniswap/v3-core">Uniswap V3 Github源码</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Uniswap/v3-periphery">Uniswap V3 periphery</a></li>
+</ul>
+<hr>
+<h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><p><strong>最小可用顺序</strong>：  </p>
+<ol>
+<li><p>WETH9  【已部署】</p>
+<ol>
+<li>0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d</li>
+</ol>
+</li>
+<li><p>UniswapV3Factory  【已部署】</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://sepolia.abscan.org//address/0x1AcDD42Dc4BE0e140274B5ec93ffe1e30f000d65#code">https://sepolia.abscan.org//address/0x1AcDD42Dc4BE0e140274B5ec93ffe1e30f000d65#code</a></li>
+</ol>
+</li>
+<li><p>NFTDescriptor  这个和下面的NonfungibleTokenPositionDescriptor必须要同时部署的【已部署】</p>
+<ol>
+<li>NonfungibleTokenPositionDescriptorModule#NFTDescriptor - 0x90F315c4244e014699b5673B218E1DcC8A0fE841<br>NonfungibleTokenPositionDescriptorModule#NonfungibleTokenPositionDescriptor - 0xF188bE37e3c3934b147250De745A95377AEd87A8</li>
+</ol>
+</li>
+<li><p>NonfungibleTokenPositionDescriptor  【已部署】</p>
+<ol>
+<li>和上面一起创建</li>
+</ol>
+</li>
+<li><p>NonfungiblePositionManager  【已部署】</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://sepolia.abscan.org//address/0x0f3482B9eEAC898C668195500c176AAa8627FE99#code">https://sepolia.abscan.org//address/0x0f3482B9eEAC898C668195500c176AAa8627FE99#code</a></li>
+</ol>
+</li>
+<li><p>SwapRouter</p>
+</li>
+</ol>
+<hr>
+<p>如果你需要<strong>详细的 Hardhat 部署脚本模板</strong>，或者遇到具体报错，欢迎随时贴出来！</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// This setup uses Hardhat Ignition to manage smart contract deployments.</span><br><span class="hljs-comment">// Learn more about it at https://hardhat.org/ignition</span><br><span class="hljs-keyword">const</span> &#123;buildModule&#125; = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;@nomicfoundation/hardhat-ignition/modules&quot;</span>);<br><span class="hljs-keyword">const</span> &#123;ethers&#125; = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;hardhat&quot;</span>);<br><span class="hljs-number">0x5FbDB2315678afecb367f032d93F642f64180aa3</span><br><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-title function_">buildModule</span>(<span class="hljs-string">&quot;NonfungibleTokenPositionDescriptorModule&quot;</span>, <span class="hljs-function">(<span class="hljs-params">m</span>) =&gt;</span> &#123;<br>    <span class="hljs-comment">// 1. 先部署 NFTDescriptor 库（假设还没部署）</span><br>    <span class="hljs-keyword">const</span> <span class="hljs-title class_">NFTDescriptor</span> = m.<span class="hljs-title function_">contract</span>(<span class="hljs-string">&quot;NFTDescriptor&quot;</span>);<br><br>    <span class="hljs-comment">// 2. 获取 WETH 地址（假设你已经有了 WETH9 地址）</span><br>    <span class="hljs-keyword">const</span> <span class="hljs-title class_">WETH9Address</span> = <span class="hljs-string">&quot;0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d&quot;</span>; <span class="hljs-comment">// 你本地部署的 WETH9 地址</span><br><br>    <span class="hljs-comment">// 3. 转换 nativeCurrencyLabelBytes，Ignition 里可以用 ethers 来转换</span><br>    <span class="hljs-keyword">const</span> nativeCurrencyLabelBytes = ethers.<span class="hljs-property">utils</span>.<span class="hljs-title function_">formatBytes32String</span>(<span class="hljs-string">&quot;ETH&quot;</span>);<br><br>    <span class="hljs-comment">// 4. 部署 NonfungibleTokenPositionDescriptor，链接库并传构造参数</span><br>    <span class="hljs-keyword">const</span> <span class="hljs-title class_">NonfungibleTokenPositionDescriptor</span> = m.<span class="hljs-title function_">contract</span>(<br>        <span class="hljs-string">&quot;NonfungibleTokenPositionDescriptor&quot;</span>,<br>        &#123;<br>            <span class="hljs-attr">libraries</span>: &#123;<br>                <span class="hljs-title class_">NFTDescriptor</span>: <span class="hljs-title class_">NFTDescriptor</span>,<br>            &#125;,<br>            <span class="hljs-attr">args</span>: [<span class="hljs-title class_">WETH9Address</span>, nativeCurrencyLabelBytes],<br>        &#125;<br>    );<br><br>    <span class="hljs-comment">// 5. 返回合约实例</span><br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-title class_">NFTDescriptor</span>, <span class="hljs-title class_">NonfungibleTokenPositionDescriptor</span>&#125;;<br>&#125;);<br><span class="hljs-comment">//如果部署时需要转账</span><br><span class="hljs-comment">// const add = m.contract(&quot;Add&quot;, &#123; value: m.eth(1) &#125;);</span><br><span class="hljs-comment">// npx hardhat clean</span><br><span class="hljs-comment">// 部署到本地节点测试</span><br><span class="hljs-comment">// npx hardhat node</span><br><span class="hljs-comment">// npx hardhat run scripts/generateCalldata.js --network sepolia</span><br><span class="hljs-comment">// 本地部署合约命令</span><br><span class="hljs-comment">//  npx hardhat ignition deploy ./ignition/modules/NFTDescriptor.js --network localhost</span><br><span class="hljs-comment">//  npx hardhat ignition deploy ./ignition/modules/NFTDescriptor.js --network localhost</span><br><span class="hljs-comment">// Sepolia 部署合约命令</span><br><span class="hljs-comment">//  npx hardhat ignition deploy ./ignition/modules/NFTDescriptor.js --network abstract_test</span><br><span class="hljs-comment">//  npx hardhat ignition deploy ./ignition/modules/NFTDescriptor.js --network sepolia</span><br><span class="hljs-comment">// 带验证的部署合约命令</span><br><span class="hljs-comment">//  npx hardhat ignition deploy ./ignition/modules/NFTDescriptor.js --network abstract_test --verify</span><br><br><span class="hljs-comment">// 3. 使用 Hardhat 命令验证合约，注意可能会没有网络，复制终端代理命令</span><br><span class="hljs-comment">// npx hardhat verify --network rinkeby DEPLOYED_CONTRACT_ADDRESS &quot;constructor_arg1&quot; &quot;constructor_arg2&quot;</span><br><span class="hljs-comment">// npx hardhat verify --network sepolia 0x2eA286a6a484d9DB9749D55004018A2eE7C30E05</span><br><span class="hljs-comment">// return &#123; add &#125;;// 返回合约</span><br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>08-8Solidity笔记之八</div>
+      <div>http://example.com/2025/07/13/08-8Solidity笔记之八/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Wangxiaowang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/06/12/08-7Solidity%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%B8%83/" title="08-7Solidity笔记之七">
+                        <span class="hidden-mobile">08-7Solidity笔记之七</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appKey":"p8TvvzGc2rQ02TfZHuJppQLO","path":"window.location.pathname","placeholder":"欢迎留下评论，嘿嘿！","avatar":"monsterid","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false,"appid":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appkey":"p8TvvzGc2rQ02TfZHuJppQLO"},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
