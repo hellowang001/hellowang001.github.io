@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/web3/eth2.jpg">
 <meta property="article:published_time" content="2025-07-13T07:27:10.000Z">
-<meta property="article:modified_time" content="2025-07-24T13:30:41.360Z">
+<meta property="article:modified_time" content="2025-07-26T06:22:12.948Z">
 <meta property="article:author" content="Wangxiaowang">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/img/web3/eth2.jpg">
@@ -250,7 +250,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.1k 字
+          1.3k 字
         
       </span>
     
@@ -261,7 +261,7 @@
         
         
         
-          9 分钟
+          11 分钟
         
       </span>
     
@@ -398,6 +398,7 @@
 </li>
 <li><p>NonfungiblePositionManager  【已部署】</p>
 <ol>
+<li>0x0f3482B9eEAC898C668195500c176AAa8627FE99</li>
 <li><a target="_blank" rel="noopener" href="https://sepolia.abscan.org//address/0x0f3482B9eEAC898C668195500c176AAa8627FE99#code">https://sepolia.abscan.org//address/0x0f3482B9eEAC898C668195500c176AAa8627FE99#code</a></li>
 </ol>
 </li>
@@ -414,21 +415,53 @@
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// This setup uses Hardhat Ignition to manage smart contract deployments.</span><br><span class="hljs-comment">// Learn more about it at https://hardhat.org/ignition</span><br><span class="hljs-keyword">const</span> &#123;buildModule&#125; = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;@nomicfoundation/hardhat-ignition/modules&quot;</span>);<br><span class="hljs-keyword">const</span> &#123;ethers&#125; = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;hardhat&quot;</span>);<br><span class="hljs-number">0x5FbDB2315678afecb367f032d93F642f64180aa3</span><br><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-title function_">buildModule</span>(<span class="hljs-string">&quot;NonfungibleTokenPositionDescriptorModule&quot;</span>, <span class="hljs-function">(<span class="hljs-params">m</span>) =&gt;</span> &#123;<br>    <span class="hljs-comment">// 1. 先部署 NFTDescriptor 库（假设还没部署）</span><br>    <span class="hljs-keyword">const</span> <span class="hljs-title class_">NFTDescriptor</span> = m.<span class="hljs-title function_">contract</span>(<span class="hljs-string">&quot;NFTDescriptor&quot;</span>);<br><br>    <span class="hljs-comment">// 2. 获取 WETH 地址（假设你已经有了 WETH9 地址）</span><br>    <span class="hljs-keyword">const</span> <span class="hljs-title class_">WETH9Address</span> = <span class="hljs-string">&quot;0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d&quot;</span>; <span class="hljs-comment">// 你本地部署的 WETH9 地址</span><br><br>    <span class="hljs-comment">// 3. 转换 nativeCurrencyLabelBytes，Ignition 里可以用 ethers 来转换</span><br>    <span class="hljs-keyword">const</span> nativeCurrencyLabelBytes = ethers.<span class="hljs-property">utils</span>.<span class="hljs-title function_">formatBytes32String</span>(<span class="hljs-string">&quot;ETH&quot;</span>);<br><br>    <span class="hljs-comment">// 4. 部署 NonfungibleTokenPositionDescriptor，链接库并传构造参数</span><br>    <span class="hljs-keyword">const</span> <span class="hljs-title class_">NonfungibleTokenPositionDescriptor</span> = m.<span class="hljs-title function_">contract</span>(<br>        <span class="hljs-string">&quot;NonfungibleTokenPositionDescriptor&quot;</span>,<br>        &#123;<br>            <span class="hljs-attr">libraries</span>: &#123;<br>                <span class="hljs-title class_">NFTDescriptor</span>: <span class="hljs-title class_">NFTDescriptor</span>,<br>            &#125;,<br>            <span class="hljs-attr">args</span>: [<span class="hljs-title class_">WETH9Address</span>, nativeCurrencyLabelBytes],<br>        &#125;<br>    );<br><br>    <span class="hljs-comment">// 5. 返回合约实例</span><br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-title class_">NFTDescriptor</span>, <span class="hljs-title class_">NonfungibleTokenPositionDescriptor</span>&#125;;<br>&#125;);<br><span class="hljs-comment">//如果部署时需要转账</span><br><span class="hljs-comment">// const add = m.contract(&quot;Add&quot;, &#123; value: m.eth(1) &#125;);</span><br><span class="hljs-comment">// npx hardhat clean</span><br><span class="hljs-comment">// 部署到本地节点测试</span><br><span class="hljs-comment">// npx hardhat node</span><br><span class="hljs-comment">// npx hardhat run scripts/generateCalldata.js --network sepolia</span><br><span class="hljs-comment">// 本地部署合约命令</span><br><span class="hljs-comment">//  npx hardhat ignition deploy ./ignition/modules/NFTDescriptor.js --network localhost</span><br><span class="hljs-comment">//  npx hardhat ignition deploy ./ignition/modules/NFTDescriptor.js --network localhost</span><br><span class="hljs-comment">// Sepolia 部署合约命令</span><br><span class="hljs-comment">//  npx hardhat ignition deploy ./ignition/modules/NFTDescriptor.js --network abstract_test</span><br><span class="hljs-comment">//  npx hardhat ignition deploy ./ignition/modules/NFTDescriptor.js --network sepolia</span><br><span class="hljs-comment">// 带验证的部署合约命令</span><br><span class="hljs-comment">//  npx hardhat ignition deploy ./ignition/modules/NFTDescriptor.js --network abstract_test --verify</span><br><br><span class="hljs-comment">// 3. 使用 Hardhat 命令验证合约，注意可能会没有网络，复制终端代理命令</span><br><span class="hljs-comment">// npx hardhat verify --network rinkeby DEPLOYED_CONTRACT_ADDRESS &quot;constructor_arg1&quot; &quot;constructor_arg2&quot;</span><br><span class="hljs-comment">// npx hardhat verify --network sepolia 0x2eA286a6a484d9DB9749D55004018A2eE7C30E05</span><br><span class="hljs-comment">// return &#123; add &#125;;// 返回合约</span><br></code></pre></td></tr></table></figure>
 
 <h3 id="测试swap"><a href="#测试swap" class="headerlink" title="测试swap"></a>测试swap</h3><p>创建一个BAI代币0xad9791220D95c6068D3529fDd1eE649Bd938F131</p>
+<p>新代币0x43adb6c61b63bd44b91140d669f6156a619769f1</p>
 <p>添加池子</p>
 <p>怎么调用这个合约，怎么做一笔Swap都不会</p>
 <p>大概是干嘛的，有哪些方法</p>
 <p><a target="_blank" rel="noopener" href="https://bscscan.com/token/0xc32cc70741c3a8433dcbcb5ade071c299b55ffc8">https://bscscan.com/token/0xc32cc70741c3a8433dcbcb5ade071c299b55ffc8</a></p>
-<p>推特 tg </p>
+<h3 id="添加池子，"><a href="#添加池子，" class="headerlink" title="添加池子，"></a>添加池子，</h3><ul>
+<li><p>官方池子:0xaf7a9d74978975b4c85b62b6a54ef951a4f2efd3</p>
 <ul>
-<li><strong>Squid</strong>：功能强大的代理服务器，支持访问控制、缓存等。</li>
-<li><strong>TinyProxy</strong>：轻量级 HTTP 代理</li>
+<li><pre><code class="go">    factoryAddr := &quot;0x2E17FF9b877661bDFEF8879a4B31665157a960F0&quot;
+    client := ethereumcli.GetAbstract()
+    f := NewFactoryV3(factoryAddr, client)
+    weth9 := &quot;0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d&quot;
+    dai := &quot;0x43adb6c61b63bd44b91140d669f6156a619769f1&quot;
+    //WETH9 := common.HexToAddress(&quot;&quot;)
+    //DAI := common.HexToAddress(&quot;0xad9791220D95c6068D3529fDd1eE649Bd938F131&quot;)
+    f.CreatePool(weth9, dai)
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs css"><br>  - <br><br>- 我的池子:<span class="hljs-number">0</span>xc0eca0dd080526bfd3db77b70b45f7b3a1e5f262<br><br>  - ```go<br>    func <span class="hljs-built_in">TestFactoryV3_CreatePool</span>(t *testing.T) &#123;<br>    	//factoryAddr := <span class="hljs-string">&quot;0x2E17FF9b877661bDFEF8879a4B31665157a960F0&quot;</span> // 官方工厂<br>    	factoryAddr := <span class="hljs-string">&quot;0x1AcDD42Dc4BE0e140274B5ec93ffe1e30f000d65&quot;</span> // 我的工厂<br>    	client := ethereumcli.<span class="hljs-built_in">GetAbstract</span>()<br>    	f := <span class="hljs-built_in">NewFactoryV3</span>(factoryAddr, client)<br>    	weth9 := <span class="hljs-string">&quot;0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d&quot;</span><br>    	dai := <span class="hljs-string">&quot;0x43adb6c61b63bd44b91140d669f6156a619769f1&quot;</span><br>    	//WETH9 := common.<span class="hljs-built_in">HexToAddress</span>(<span class="hljs-string">&quot;&quot;</span>)<br>    	//DAI := common.<span class="hljs-built_in">HexToAddress</span>(<span class="hljs-string">&quot;0xad9791220D95c6068D3529fDd1eE649Bd938F131&quot;</span>)<br>    	f.<span class="hljs-built_in">CreatePool</span>(weth9, dai)<br></code></pre></td></tr></table></figure>
+</code></pre>
+</li>
 </ul>
-<p>Squid还是TinyProxy</p>
-<p>1 100</p>
-<p>0.5 200</p>
-<p>Hsr5rk56</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sql">cuadmin1047E7F06C6C<br>cuadmin1047e7f06c6c<br>cuadminyhtce7<br>cuadmin1047e7<br>cuadmin830104<br>cuadminhsr5rk56<br><br>飞牛云mycloud<br>超管账号admin<br>超管密码wzb110123<br>超管密码wzb110123<br></code></pre></td></tr></table></figure>
-
+</li>
+</ul>
+<h3 id="给-NonfungiblePositionManager-合约授权（Approve）"><a href="#给-NonfungiblePositionManager-合约授权（Approve）" class="headerlink" title="给 NonfungiblePositionManager 合约授权（Approve）"></a>给 NonfungiblePositionManager 合约授权（Approve）</h3><p>你需要先给 NonfungiblePositionManager 合约授权，允许它转移你准备提供的两种代币（token0 和 token1）。</p>
+<ul>
+<li><p>调用两次代币合约的 <code>approve(spender, amount)</code> 方法，<code>spender</code> 是 NonfungiblePositionManager 合约地址，<code>amount</code> 是你想授权的最大代币数量。</p>
+</li>
+<li><p>官方合约的授权</p>
+<ul>
+<li><pre><code class="go">    client := ethereumcli.GetAbstract()
+    //usdt := &quot;0x43adb6c61b63bd44b91140d669f6156a619769f1&quot; // dai地址
+    usdt := &quot;0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d&quot; //weth地址
+    caller := NewERC20Caller(usdt, client)
+    //addr := &quot;0x069f199763c045A294C7913E64bA80E5F362A5d7&quot; //官方的NonfungiblePositionManager合约地址
+    addr := &quot;0x0f3482B9eEAC898C668195500c176AAa8627FE99&quot;                  //我们的的NonfungiblePositionManager合约地址
+    amountUsdt := new(big.Int).Mul(big.NewInt(1000000), big.NewInt(1e18)) // ni
+    caller.Approve(addr, amountUsdt)
+</code></pre>
+</li>
+<li></li>
+</ul>
+</li>
+</ul>
+<p>几dfjjhiladsjfjhiohkjsnishuishuiabasijhfnniahuosnmnishusfdnnisdsfhnosdafjhksdjhkjnishhkninsjhuwkjwh</p>
+<h2 id="做swap"><a href="#做swap" class="headerlink" title="做swap ,"></a>做swap ,</h2><ul>
+<li>官方路由： 0xb9D4347d129a83cBC40499Cd4fF223dE172a70dF</li>
+<li>我的路由：0x4541dd7207afa33ab6530bbb9129c525800d4f6e</li>
+</ul>
 
                 
               </div>
