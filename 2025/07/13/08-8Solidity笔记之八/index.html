@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/web3/eth2.jpg">
 <meta property="article:published_time" content="2025-07-13T07:27:10.000Z">
-<meta property="article:modified_time" content="2025-07-28T14:46:07.894Z">
+<meta property="article:modified_time" content="2025-07-30T07:22:48.301Z">
 <meta property="article:author" content="Wangxiaowang">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/img/web3/eth2.jpg">
@@ -261,7 +261,7 @@
         
         
         
-          15 分钟
+          16 分钟
         
       </span>
     
@@ -374,7 +374,7 @@
 <li><a target="_blank" rel="noopener" href="https://github.com/Uniswap/v3-periphery">Uniswap V3 periphery</a></li>
 </ul>
 <hr>
-<h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><p><strong>最小可用顺序</strong>：  </p>
+<h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><h2 id="第一套uniswap-v3"><a href="#第一套uniswap-v3" class="headerlink" title="第一套uniswap v3"></a>第一套uniswap v3</h2><p><strong>最小可用顺序</strong>：  </p>
 <ol>
 <li><p>WETH9  【已部署】</p>
 <ol>
@@ -411,6 +411,32 @@
 </li>
 </ol>
 <hr>
+<h2 id="重新部署了一套uniswapv3"><a href="#重新部署了一套uniswapv3" class="headerlink" title="重新部署了一套uniswapv3"></a>重新部署了一套uniswapv3</h2><ol>
+<li>WETH9  【已部署】<ol>
+<li>0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d</li>
+</ol>
+</li>
+<li>UniswapV3Factory  【已部署】<ol>
+<li>0x6AE6C57EA1D0FBb384cF3B70f71fE96aa5783b3d</li>
+</ol>
+</li>
+<li>NFTDescriptor  这个和下面的NonfungibleTokenPositionDescriptor必须要同时部署的【已部署】<ol>
+<li>0x121F7fEC7024E76c70C385c86fae2b8B261298ED</li>
+</ol>
+</li>
+<li>NonfungibleTokenPositionDescriptor  【已部署】<ol>
+<li>和上面一起创建0xc05fF5483ff4bd1CF15A033B3D068935Ade661e3</li>
+</ol>
+</li>
+<li>NonfungiblePositionManager  【已部署】<ol>
+<li>0x13f25EB5734b5ea1ed63C808cA5Ad16a819509F6</li>
+</ol>
+</li>
+<li>SwapRouter  <ol>
+<li>0xfFbc6Ba540280651875Ee5e93802Ceb67835BF2B</li>
+</ol>
+</li>
+</ol>
 <p>如果你需要<strong>详细的 Hardhat 部署脚本模板</strong>，或者遇到具体报错，欢迎随时贴出来！</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// This setup uses Hardhat Ignition to manage smart contract deployments.</span><br><span class="hljs-comment">// Learn more about it at https://hardhat.org/ignition</span><br><span class="hljs-keyword">const</span> &#123;buildModule&#125; = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;@nomicfoundation/hardhat-ignition/modules&quot;</span>);<br><span class="hljs-keyword">const</span> &#123;ethers&#125; = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;hardhat&quot;</span>);<br><span class="hljs-number">0x5FbDB2315678afecb367f032d93F642f64180aa3</span><br><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = <span class="hljs-title function_">buildModule</span>(<span class="hljs-string">&quot;NonfungibleTokenPositionDescriptorModule&quot;</span>, <span class="hljs-function">(<span class="hljs-params">m</span>) =&gt;</span> &#123;<br>    <span class="hljs-comment">// 1. 先部署 NFTDescriptor 库（假设还没部署）</span><br>    <span class="hljs-keyword">const</span> <span class="hljs-title class_">NFTDescriptor</span> = m.<span class="hljs-title function_">contract</span>(<span class="hljs-string">&quot;NFTDescriptor&quot;</span>);<br><br>    <span class="hljs-comment">// 2. 获取 WETH 地址（假设你已经有了 WETH9 地址）</span><br>    <span class="hljs-keyword">const</span> <span class="hljs-title class_">WETH9Address</span> = <span class="hljs-string">&quot;0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d&quot;</span>; <span class="hljs-comment">// 你本地部署的 WETH9 地址</span><br><br>    <span class="hljs-comment">// 3. 转换 nativeCurrencyLabelBytes，Ignition 里可以用 ethers 来转换</span><br>    <span class="hljs-keyword">const</span> nativeCurrencyLabelBytes = ethers.<span class="hljs-property">utils</span>.<span class="hljs-title function_">formatBytes32String</span>(<span class="hljs-string">&quot;ETH&quot;</span>);<br><br>    <span class="hljs-comment">// 4. 部署 NonfungibleTokenPositionDescriptor，链接库并传构造参数</span><br>    <span class="hljs-keyword">const</span> <span class="hljs-title class_">NonfungibleTokenPositionDescriptor</span> = m.<span class="hljs-title function_">contract</span>(<br>        <span class="hljs-string">&quot;NonfungibleTokenPositionDescriptor&quot;</span>,<br>        &#123;<br>            <span class="hljs-attr">libraries</span>: &#123;<br>                <span class="hljs-title class_">NFTDescriptor</span>: <span class="hljs-title class_">NFTDescriptor</span>,<br>            &#125;,<br>            <span class="hljs-attr">args</span>: [<span class="hljs-title class_">WETH9Address</span>, nativeCurrencyLabelBytes],<br>        &#125;<br>    );<br><br>    <span class="hljs-comment">// 5. 返回合约实例</span><br>    <span class="hljs-keyword">return</span> &#123;<span class="hljs-title class_">NFTDescriptor</span>, <span class="hljs-title class_">NonfungibleTokenPositionDescriptor</span>&#125;;<br>&#125;);<br><span class="hljs-comment">//如果部署时需要转账</span><br><span class="hljs-comment">// const add = m.contract(&quot;Add&quot;, &#123; value: m.eth(1) &#125;);</span><br><span class="hljs-comment">// npx hardhat clean</span><br><span class="hljs-comment">// 部署到本地节点测试</span><br><span class="hljs-comment">// npx hardhat node</span><br><span class="hljs-comment">// npx hardhat run scripts/generateCalldata.js --network sepolia</span><br><span class="hljs-comment">// 本地部署合约命令</span><br><span class="hljs-comment">//  npx hardhat ignition deploy ./ignition/modules/NFTDescriptor.js --network localhost</span><br><span class="hljs-comment">//  npx hardhat ignition deploy ./ignition/modules/NFTDescriptor.js --network localhost</span><br><span class="hljs-comment">// Sepolia 部署合约命令</span><br><span class="hljs-comment">//  npx hardhat ignition deploy ./ignition/modules/NFTDescriptor.js --network abstract_test</span><br><span class="hljs-comment">//  npx hardhat ignition deploy ./ignition/modules/NFTDescriptor.js --network sepolia</span><br><span class="hljs-comment">// 带验证的部署合约命令</span><br><span class="hljs-comment">//  npx hardhat ignition deploy ./ignition/modules/NFTDescriptor.js --network abstract_test --verify</span><br><br><span class="hljs-comment">// 3. 使用 Hardhat 命令验证合约，注意可能会没有网络，复制终端代理命令</span><br><span class="hljs-comment">// npx hardhat verify --network rinkeby DEPLOYED_CONTRACT_ADDRESS &quot;constructor_arg1&quot; &quot;constructor_arg2&quot;</span><br><span class="hljs-comment">// npx hardhat verify --network sepolia 0x2eA286a6a484d9DB9749D55004018A2eE7C30E05</span><br><span class="hljs-comment">// return &#123; add &#125;;// 返回合约</span><br></code></pre></td></tr></table></figure>
 
@@ -435,6 +461,8 @@
 </code></pre>
 </li>
 </ul>
+</li>
+<li><p>uniswapOfficial 池子：0xa1Fb559f737A090646b5398C69b91769Da512d71</p>
 </li>
 </ul>
 <h3 id="给-NonfungiblePositionManager-合约授权（Approve）"><a href="#给-NonfungiblePositionManager-合约授权（Approve）" class="headerlink" title="给 NonfungiblePositionManager 合约授权（Approve）"></a>给 NonfungiblePositionManager 合约授权（Approve）</h3><p>你需要先给 NonfungiblePositionManager 合约授权，允许它转移你准备提供的两种代币（token0 和 token1）。</p>
