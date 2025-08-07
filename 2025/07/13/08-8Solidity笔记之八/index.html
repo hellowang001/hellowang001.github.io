@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/web3/eth2.jpg">
 <meta property="article:published_time" content="2025-07-13T07:27:10.000Z">
-<meta property="article:modified_time" content="2025-08-04T02:15:19.209Z">
+<meta property="article:modified_time" content="2025-08-07T09:41:28.736Z">
 <meta property="article:author" content="Wangxiaowang">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/img/web3/eth2.jpg">
@@ -447,7 +447,7 @@
 <p>大概是干嘛的，有哪些方法</p>
 <p><a target="_blank" rel="noopener" href="https://bscscan.com/token/0xc32cc70741c3a8433dcbcb5ade071c299b55ffc8">https://bscscan.com/token/0xc32cc70741c3a8433dcbcb5ade071c299b55ffc8</a></p>
 <h3 id="添加池子，"><a href="#添加池子，" class="headerlink" title="添加池子，"></a>添加池子，</h3><ul>
-<li><p>官方池子:0xaf7a9d74978975b4c85b62b6a54ef951a4f2efd3</p>
+<li><p>官方池子:0xaf7a9d74978975b4c85b62b6a54ef951a4f2efd3 费率为0.3%</p>
 <ul>
 <li><pre><code class="go">    factoryAddr := &quot;0x2E17FF9b877661bDFEF8879a4B31665157a960F0&quot;
     client := ethereumcli.GetAbstract()
@@ -457,7 +457,7 @@
     //WETH9 := common.HexToAddress(&quot;&quot;)
     //DAI := common.HexToAddress(&quot;0xad9791220D95c6068D3529fDd1eE649Bd938F131&quot;)
     f.CreatePool(weth9, dai)
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs css"><br>  - <br><br>- 我的池子:<span class="hljs-number">0</span>xc0eca0dd080526bfd3db77b70b45f7b3a1e5f262<br><br>  - ```go<br>    func <span class="hljs-built_in">TestFactoryV3_CreatePool</span>(t *testing.T) &#123;<br>    	//factoryAddr := <span class="hljs-string">&quot;0x2E17FF9b877661bDFEF8879a4B31665157a960F0&quot;</span> // 官方工厂<br>    	factoryAddr := <span class="hljs-string">&quot;0x1AcDD42Dc4BE0e140274B5ec93ffe1e30f000d65&quot;</span> // 我的工厂<br>    	client := ethereumcli.<span class="hljs-built_in">GetAbstract</span>()<br>    	f := <span class="hljs-built_in">NewFactoryV3</span>(factoryAddr, client)<br>    	weth9 := <span class="hljs-string">&quot;0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d&quot;</span><br>    	dai := <span class="hljs-string">&quot;0x43adb6c61b63bd44b91140d669f6156a619769f1&quot;</span><br>    	//WETH9 := common.<span class="hljs-built_in">HexToAddress</span>(<span class="hljs-string">&quot;&quot;</span>)<br>    	//DAI := common.<span class="hljs-built_in">HexToAddress</span>(<span class="hljs-string">&quot;0xad9791220D95c6068D3529fDd1eE649Bd938F131&quot;</span>)<br>    	f.<span class="hljs-built_in">CreatePool</span>(weth9, dai)<br></code></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs css"><br>- 官方池子:xx 费率为<span class="hljs-number">1%</span> <span class="hljs-number">0</span>xb0e690a1F158E94A704aba2E920C6C431B01758e<br><br>- <br><br>- 我的池子:<span class="hljs-number">0</span>xc0eca0dd080526bfd3db77b70b45f7b3a1e5f262<br><br>  - ```go<br>    func <span class="hljs-built_in">TestFactoryV3_CreatePool</span>(t *testing.T) &#123;<br>    	//factoryAddr := <span class="hljs-string">&quot;0x2E17FF9b877661bDFEF8879a4B31665157a960F0&quot;</span> // 官方工厂<br>    	factoryAddr := <span class="hljs-string">&quot;0x1AcDD42Dc4BE0e140274B5ec93ffe1e30f000d65&quot;</span> // 我的工厂<br>    	client := ethereumcli.<span class="hljs-built_in">GetAbstract</span>()<br>    	f := <span class="hljs-built_in">NewFactoryV3</span>(factoryAddr, client)<br>    	weth9 := <span class="hljs-string">&quot;0x9EDCde0257F2386Ce177C3a7FCdd97787F0D841d&quot;</span><br>    	dai := <span class="hljs-string">&quot;0x43adb6c61b63bd44b91140d669f6156a619769f1&quot;</span><br>    	//WETH9 := common.<span class="hljs-built_in">HexToAddress</span>(<span class="hljs-string">&quot;&quot;</span>)<br>    	//DAI := common.<span class="hljs-built_in">HexToAddress</span>(<span class="hljs-string">&quot;0xad9791220D95c6068D3529fDd1eE649Bd938F131&quot;</span>)<br>    	f.<span class="hljs-built_in">CreatePool</span>(weth9, dai)<br></code></pre></td></tr></table></figure>
 </code></pre>
 </li>
 </ul>
