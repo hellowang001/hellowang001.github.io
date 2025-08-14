@@ -19,11 +19,15 @@
   <meta name="author" content="Wangxiaowang">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="website">
-<meta property="og:title" content="归档">
-<meta property="og:url" content="http://example.com/archives/2023/index.html">
+    <meta name="description" content="uniswap v2 &lt;&#x3D;&#x3D;&#x3D;&gt;v3 两个池子之间套利 思路是由v2发起，由v3出来， v2的时候是直接调用池子进行闪电贷 v3的时候是调用路由合约进行swap 第一步：在v2池子添加流动性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="08-9Solidity笔记之九">
+<meta property="og:url" content="http://example.com/2025/08/14/08-9Solidity%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%B9%9D/index.html">
 <meta property="og:site_name" content="Wang">
+<meta property="og:description" content="uniswap v2 &lt;&#x3D;&#x3D;&#x3D;&gt;v3 两个池子之间套利 思路是由v2发起，由v3出来， v2的时候是直接调用池子进行闪电贷 v3的时候是调用路由合约进行swap 第一步：在v2池子添加流动性">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-08-14T03:24:18.000Z">
+<meta property="article:modified_time" content="2025-08-14T03:25:52.768Z">
 <meta property="article:author" content="Wangxiaowang">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -31,11 +35,17 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>归档 - Wang</title>
+  <title>08-9Solidity笔记之九 - Wang</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
 
@@ -109,7 +119,7 @@
   <header>
     
 
-<div class="header-inner" style="height: 60vh;">
+<div class="header-inner" style="height: 70vh;">
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -215,9 +225,49 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="归档"></span>
+            <span id="subtitle" data-typed-text="08-9Solidity笔记之九"></span>
           
         </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-08-14 11:24" pubdate>
+          2025年8月14日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          65 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          1 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
 
         
       </div>
@@ -233,88 +283,191 @@
 
   <main>
     
-      <div class="container nopadding-x-md">
-        <div id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
-
-<div class="list-group">
-  <p class="h4">共计 79 篇文章</p>
-  <hr>
-  
-  
-    
       
-      <p class="h5">2023</p>
-    
-    <a href="/2023/12/25/694Python%E4%B9%8BUI%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%9D%E7%AA%A5/" class="list-group-item list-group-item-action">
-      <time>12-25</time>
-      <div class="list-group-item-title">【python】之UI自动化初窥</div>
-    </a>
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">08-9Solidity笔记之九</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>uniswap v2 &lt;&#x3D;&#x3D;&#x3D;&gt;v3 两个池子之间套利</p>
+<p>思路是由v2发起，由v3出来，</p>
+<p>v2的时候是直接调用池子进行闪电贷</p>
+<p>v3的时候是调用路由合约进行swap</p>
+<p>第一步：在v2池子添加流动性</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
   
-    
-    <a href="/2023/12/24/httprunner%E6%8E%A5%E5%8F%A3%E8%87%AA%E5%8A%A8%E5%8C%96%E6%A1%86%E6%9E%B6/" class="list-group-item list-group-item-action">
-      <time>12-24</time>
-      <div class="list-group-item-title">【python】httprunner接口自动化框架</div>
-    </a>
   
-    
-    <a href="/2023/12/23/WSL%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" class="list-group-item list-group-item-action">
-      <time>12-23</time>
-      <div class="list-group-item-title">【other】WSL基础使用指南</div>
-    </a>
+</div>
+
+
+              
   
-    
-    <a href="/2023/12/15/djangoAdmin%E9%83%A8%E7%BD%B2%E8%AE%B0%E5%BD%95/" class="list-group-item list-group-item-action">
-      <time>12-15</time>
-      <div class="list-group-item-title">【python】djangoAdmin部署记录</div>
-    </a>
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>08-9Solidity笔记之九</div>
+      <div>http://example.com/2025/08/14/08-9Solidity笔记之九/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Wangxiaowang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年8月14日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/13/08-8Solidity%E7%AC%94%E8%AE%B0%E4%B9%8B%E5%85%AB/" title="08-8Solidity笔记之八">
+                        <span class="hidden-mobile">08-8Solidity笔记之八</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
   
-    
-    <a href="/2023/12/07/802go%E8%AF%AD%E8%A8%80%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80%EF%BC%88goroutine%E3%80%81channel%E3%80%81SELECT%EF%BC%89/" class="list-group-item list-group-item-action">
-      <time>12-07</time>
-      <div class="list-group-item-title">【Golang】go语言之并发编程基础（goroutine、channel、SELECT）</div>
-    </a>
   
-    
-    <a href="/2023/12/07/808go%E8%AF%AD%E8%A8%80%E6%89%B9%E9%87%8F%E7%94%9F%E6%88%905W%E5%9C%B0%E5%9D%80/" class="list-group-item list-group-item-action">
-      <time>12-07</time>
-      <div class="list-group-item-title">【Golang】go语言批量生成5W地址</div>
-    </a>
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appKey":"p8TvvzGc2rQ02TfZHuJppQLO","path":"window.location.pathname","placeholder":"欢迎留下评论，嘿嘿！","avatar":"monsterid","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false,"appid":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appkey":"p8TvvzGc2rQ02TfZHuJppQLO"},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
   
-    
-    <a href="/2023/12/06/804go%E8%AF%AD%E8%A8%80%E4%B9%8B%E6%8E%A5%E5%8F%A3(interface)/" class="list-group-item list-group-item-action">
-      <time>12-06</time>
-      <div class="list-group-item-title">【Golang】go语言之接口(interface)</div>
-    </a>
-  
-    
-    <a href="/2023/12/06/801go%E8%AF%AD%E8%A8%80%E4%B9%8B%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D/" class="list-group-item list-group-item-action">
-      <time>12-06</time>
-      <div class="list-group-item-title">【Golang】go语言之基础介绍</div>
-    </a>
-  
-    
-    <a href="/2023/12/06/803go%E8%AF%AD%E8%A8%80json%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="list-group-item list-group-item-action">
-      <time>12-06</time>
-      <div class="list-group-item-title">【Golang】go语言之json、YAML的序列化和反序列化</div>
-    </a>
-  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
 </div>
 
 
 
 
 
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
     
 
     
@@ -433,6 +586,99 @@
 
 
 
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
 
   <script  src="/js/local-search.js" ></script>
 
