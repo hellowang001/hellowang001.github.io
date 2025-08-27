@@ -19,16 +19,16 @@
   <meta name="author" content="Wangxiaowang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="S01 重入攻击重入攻击。曾经导致以太坊分叉为ETH和ETC（以太经典） 有很多大公司被盗了币 重入攻击时合约中最常见的一种攻击，攻击者通过合约漏洞(例如 fallback函数)循环调用合约，将合约中资产转走或者铸造大量代币 0xAA 抢银行的故事为了让大家更好理解，这里讲一个”黑客0xAA抢银行”的故事。 以太坊银行的柜员都是机器人（Robot），由智能合约控制。当正常用户（User）来银行取钱">
+    <meta name="description" content="先看总结 S01 重入攻击重入攻击。曾经导致以太坊分叉为ETH和ETC（以太经典） 有很多大公司被盗了币 重入攻击时合约中最常见的一种攻击，攻击者通过合约漏洞(例如 fallback函数)循环调用合约，将合约中资产转走或者铸造大量代币 0xAA 抢银行的故事为了让大家更好理解，这里讲一个”黑客0xAA抢银行”的故事。 以太坊银行的柜员都是机器人（Robot），由智能合约控制。当正常用户（User）">
 <meta property="og:type" content="article">
 <meta property="og:title" content="08-9Solidity笔记之十合约安全项">
 <meta property="og:url" content="http://example.com/2025/08/21/08-9Solidity%E7%AC%94%E8%AE%B0%E4%B9%8B%E5%8D%81%E5%90%88%E7%BA%A6%E5%AE%89%E5%85%A8%E9%A1%B9/index.html">
 <meta property="og:site_name" content="Wang">
-<meta property="og:description" content="S01 重入攻击重入攻击。曾经导致以太坊分叉为ETH和ETC（以太经典） 有很多大公司被盗了币 重入攻击时合约中最常见的一种攻击，攻击者通过合约漏洞(例如 fallback函数)循环调用合约，将合约中资产转走或者铸造大量代币 0xAA 抢银行的故事为了让大家更好理解，这里讲一个”黑客0xAA抢银行”的故事。 以太坊银行的柜员都是机器人（Robot），由智能合约控制。当正常用户（User）来银行取钱">
+<meta property="og:description" content="先看总结 S01 重入攻击重入攻击。曾经导致以太坊分叉为ETH和ETC（以太经典） 有很多大公司被盗了币 重入攻击时合约中最常见的一种攻击，攻击者通过合约漏洞(例如 fallback函数)循环调用合约，将合约中资产转走或者铸造大量代币 0xAA 抢银行的故事为了让大家更好理解，这里讲一个”黑客0xAA抢银行”的故事。 以太坊银行的柜员都是机器人（Robot），由智能合约控制。当正常用户（User）">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/web3/eth2.jpg">
 <meta property="article:published_time" content="2025-08-21T02:29:30.000Z">
-<meta property="article:modified_time" content="2025-08-26T08:56:12.666Z">
+<meta property="article:modified_time" content="2025-08-27T07:27:37.118Z">
 <meta property="article:author" content="Wangxiaowang">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/img/web3/eth2.jpg">
@@ -303,7 +303,8 @@
             
               <div class="markdown-body">
                 
-                <h1 id="S01-重入攻击"><a href="#S01-重入攻击" class="headerlink" title="S01 重入攻击"></a>S01 重入攻击</h1><p>重入攻击。曾经导致以太坊分叉为ETH和ETC（以太经典） 有很多大公司被盗了币</p>
+                <h1 id="先看总结"><a href="#先看总结" class="headerlink" title="先看总结"></a>先看总结</h1><p><img src="/img/web3/contract_safe.png" srcset="/img/loading.gif" lazyload alt="contract_safe"></p>
+<h1 id="S01-重入攻击"><a href="#S01-重入攻击" class="headerlink" title="S01 重入攻击"></a>S01 重入攻击</h1><p>重入攻击。曾经导致以太坊分叉为ETH和ETC（以太经典） 有很多大公司被盗了币</p>
 <p>重入攻击时合约中最常见的一种攻击，攻击者通过合约漏洞(例如 fallback函数)循环调用合约，将合约中资产转走或者铸造大量代币</p>
 <h2 id="0xAA-抢银行的故事"><a href="#0xAA-抢银行的故事" class="headerlink" title="0xAA 抢银行的故事"></a><code>0xAA</code> 抢银行的故事</h2><p>为了让大家更好理解，这里讲一个”黑客<code>0xAA</code>抢银行”的故事。</p>
 <p>以太坊银行的柜员都是机器人（Robot），由智能合约控制。当正常用户（User）来银行取钱时，它的服务流程：</p>
@@ -788,7 +789,7 @@
 </blockquote>
 <h2 id="总结-3"><a href="#总结-3" class="headerlink" title="总结"></a>总结</h2><p>至此，我们审阅了几个实际发生的，各种花样的重入攻击的逻辑本体和它们的简易代码，相信各位同学应该不难看出，这些合约被攻击，是由于它们都共有一个缺陷。那就是这些合约的设计对于重入攻击的防范，都太过于依赖一个直截了当的工具（重入锁）的保护，而没有贯彻另一条良好的设计习惯 <em>检查-影响-交互模式</em> 。 简单的工具永远不会是完美防御，贯彻的方法论才是你永远的后盾 <em>（报告首长，本节代码课的思政任务已传达，请验收）</em></p>
 <p>所以，对于使用小工具，还是使用方法论的取舍，我们作为solidity devs，答案我想应该是：既要…又要…！从跨函数的攻击，再到跨合约，跨项目的攻击，若是要求devs和auditors记住这越来越庞大的乐高之间的千丝万缕的联系，实在是有些强人所难。于是，在构造过程中的每一步，都标准地布置多道不同防御机制，便能省心地获得更好的结果。</p>
-
+<h1 id="总结-4"><a href="#总结-4" class="headerlink" title="总结"></a>总结</h1>
                 
               </div>
             
