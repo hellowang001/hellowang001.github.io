@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/web3/eth2.jpg">
 <meta property="article:published_time" content="2025-05-09T11:02:27.000Z">
-<meta property="article:modified_time" content="2025-08-20T10:13:31.891Z">
+<meta property="article:modified_time" content="2025-08-29T07:29:59.401Z">
 <meta property="article:author" content="Wangxiaowang">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/img/web3/eth2.jpg">
@@ -261,7 +261,7 @@
         
         
         
-          152 分钟
+          154 分钟
         
       </span>
     
@@ -325,6 +325,7 @@
 <p><strong>注意</strong>：用<code>override</code>修饰<code>public</code>变量，会重写继承自父合约的与变量同名的<code>getter</code>函数，比如<code>IERC20</code>中的<code>balanceOf()</code>函数。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// SPDX-License-Identifier: MIT<br>pragma solidity ^0.8.21;<br><br><br>import &quot;./31_IERC20.sol&quot;;<br>// ERC20 是约束<br>// IERC20 就得是具体的实现了<br><br>contract ERC20 is IERC20&#123;<br>    // mapping(address =&gt; uint256) public override balanceOf;<br>    mapping(address =&gt; uint256 )public override balanceOf;<br>    // override 是用来 覆盖（重写）继承自父合约的同名变量或函数 的。<br>    // 注意：用override修饰public变量，会重写继承自父合约的与变量同名的getter函数，比如IERC20中的balanceOf()函数。<br><br>    mapping(address=&gt;mapping(address=&gt;uint256) )public override allowance;//授权余额<br>    uint256 public  override totalSupply;//总供应量<br>    string public name ;<br>    string public symbol ; // 币种symbol 留到传入的时候<br>    uint8 public decimals =18; // 18位小数精度写死<br>    // 接下来实现 balancesOf() 、 allowance() totalSupply()<br>    // 不用实现，public变量会自动生成同名的getter函数用来实现IERC20规定的方法<br>    // function balancesOf(address account)external view returns (uint256) &#123;<br>    //     // code<br>    // &#125;<br><br>    //  allowance，默认是0，变量会自动生成同名的getter函数用来实现IERC20规定的方法<br>    // function allowance(address owner,address spender)external view returns (uint256) &#123;<br>    //     // code<br>    // &#125;<br>    //  获取代币的总供应量--这个方法不用了，因为totalSupply变量会自动生成同名的getter函数用来实现IERC20规定的方法<br>    // function totalSupply()external view returns (uint256) &#123;<br>    //     // code<br>    // &#125;<br><br><br>    // 构造方法，部署合约的时候用来初始化 name 和 symbol<br>    constructor(string memory _name, string memory _symbol)&#123;<br>        name=_name;<br>        symbol=_symbol;<br>    &#125;<br>    // 授权方法，实现IERC20的approve函数，授权代币，<br>    // 被授权方spender可以支配授权方的amount数量的代币<br>    // spender 可以是EOA账户，也可以是合约账户，<br>    // 当你用uniswap交易代币的时候，，你需要将代币授权给uniswap合约<br>    function approve(address spender, uint256 amount) public  override  returns (bool) &#123;<br>        // code<br>        allowance[msg.sender][spender]=amount;<br>        emit Approval(msg.sender,spender,amount);<br>        return true;<br>    &#125;<br>    // 转账方法，实现IERC20的转账，<br>    // 调用方扣除自己的amunt 代币数量，接收方增加相应的代币数量<br>    // 土狗代币还会魔改这个函数，比如说加上税收、分红、抽奖等逻辑<br>    function transfer(address to,uint256 amount )public override returns (bool) &#123;<br>        // code<br>        balanceOf[msg.sender]-=amount;<br>        balanceOf[to]+=amount;<br>        emit  Transfer(msg.sender,to,amount);<br>        return true;<br><br>    &#125;<br>     // 转账方法，实现IERC20的转账，<br>     // 授权转账逻辑，被授权方将授权方sender的amount数量的代币的转账给接收方 recipient<br>    function transferFrom(address sender,address recipient,uint256 amount )public override returns (bool) &#123;<br>        // code<br>        allowance[sender][msg.sender]-=amount;<br>        balanceOf[sender]-=amount;<br>        balanceOf[recipient]+=amount;<br><br><br>        emit  Transfer(sender,recipient,amount);<br>        return true;<br>    &#125;<br>    // 最后还要有铸造和销毁，不然代币改怎么来勒？<br>    function mint(uint256 amount)external  &#123;<br>        balanceOf[msg.sender]+=amount;<br>        totalSupply+=amount;<br>        // address(0)就是0地址<br><br>        emit Transfer(address(0), msg.sender, amount); // 触发转移事件，给到铸造者<br>      <br>      //  emit Transfer(msg.sender, address(0), amount)<br>        // return true ;<br>    &#125;<br>    function burn(uint256 amount)external  &#123;<br>        balanceOf[msg.sender]-=amount;<br>        totalSupply-=amount;<br>        // address(0)就是0地址<br>        <br>        emit Transfer(msg.sender,address(0), amount); // 触发转移事件，给到铸造者<br>      <br>    &#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
 
+<h1 id="31-EIp"><a href="#31-EIp" class="headerlink" title="31.EIp"></a>31.EIp</h1><p>e</p>
 <h1 id="32-代币水龙头"><a href="#32-代币水龙头" class="headerlink" title="32. 代币水龙头"></a>32. 代币水龙头</h1><h2 id="ERC20水龙头合约"><a href="#ERC20水龙头合约" class="headerlink" title="ERC20水龙头合约"></a>ERC20水龙头合约</h2><p>这里，我们实现一个简版的<code>ERC20</code>水龙头，逻辑非常简单：我们将一些<code>ERC20</code>代币转到水龙头合约里，用户可以通过合约的<code>requestToken()</code>函数来领取<code>100</code>单位的代币，每个地址只能领一次。</p>
 <h3 id="状态变量-1"><a href="#状态变量-1" class="headerlink" title="状态变量"></a>状态变量</h3><p>我们在水龙头合约中定义3个状态变量</p>
 <ul>
@@ -367,7 +368,46 @@
 <p><code>ERC</code>全称 Ethereum Request For Comment (以太坊意见征求稿), 用以记录以太坊上应用级的各种开发标准和协议。如典型的Token标准(<code>ERC20</code>, <code>ERC721</code>)、名字注册(<code>ERC26</code>, <code>ERC13</code>), URI范式(<code>ERC67</code>), Library&#x2F;Package格式(<code>EIP82</code>), 钱包格式(<code>EIP75</code>,<code>EIP85</code>)。</p>
 <p>ERC协议标准是影响以太坊发展的重要因素, 像<code>ERC20</code>, <code>ERC223</code>, <code>ERC721</code>, <code>ERC777</code>等, 都是对以太坊生态产生了很大影响。</p>
 <p>所以最终结论：<code>EIP</code>包含<code>ERC</code>。</p>
-<h2 id="IERC721"><a href="#IERC721" class="headerlink" title="IERC721"></a>IERC721</h2><h2 id="ERC165"><a href="#ERC165" class="headerlink" title="ERC165"></a>ERC165</h2><p>通过<a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-165">ERC165标准</a>，智能合约可以声明它支持的接口，供其他合约检查。简单的说，ERC165就是检查一个智能合约是不是支持了<code>ERC721</code>，<code>ERC1155</code>的接口。</p>
+<h1 id="EIP1559"><a href="#EIP1559" class="headerlink" title="EIP1559"></a>EIP1559</h1><p>EIP-1559 是以太坊网络的一个重大协议升级，旨在改进交易费用机制。它在 2021 年 8 月的 London 硬分叉中被引入</p>
+<h3 id="传统-Gas-定价模型-之前"><a href="#传统-Gas-定价模型-之前" class="headerlink" title="传统 Gas 定价模型 (之前)"></a>传统 Gas 定价模型 (之前)</h3><p>在 EIP-1559 之前：</p>
+<ul>
+<li>用户必须手动设置 gas price</li>
+<li>竞价系统导致高峰期 gas 费用波动剧烈</li>
+<li>矿工可以任意选择最高 gas price 的交易</li>
+</ul>
+<h3 id="EIP-1559-的新机制"><a href="#EIP-1559-的新机制" class="headerlink" title="EIP-1559 的新机制"></a>EIP-1559 的新机制</h3><h4 id="1-费用组成"><a href="#1-费用组成" class="headerlink" title="1. 费用组成"></a>1. 费用组成</h4><p>交易费现在由两部分组成：</p>
+<ul>
+<li><strong>Base Fee</strong>：基础费用（动态调整）</li>
+<li><strong>Priority Fee</strong>（小费&#x2F;矿工费）：激励矿工打包交易</li>
+</ul>
+<h4 id="2-Base-Fee-特点"><a href="#2-Base-Fee-特点" class="headerlink" title="2. Base Fee 特点"></a>2. Base Fee 特点</h4><ul>
+<li>根据网络拥塞自动调整</li>
+<li>随网络使用率波动</li>
+<li>部分 Base Fee 会被”烧掉”（销毁）</li>
+</ul>
+<h4 id="3-价格计算示例"><a href="#3-价格计算示例" class="headerlink" title="3. 价格计算示例"></a>3. 价格计算示例</h4><figure class="highlight tex"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs tex">总交易费 = (Base Fee + Priority Fee) * Gas Used<br></code></pre></td></tr></table></figure>
+
+<h4 id="4-优势"><a href="#4-优势" class="headerlink" title="4. 优势"></a>4. 优势</h4><ul>
+<li>更可预测的交易费用</li>
+<li>减少网络拥塞</li>
+<li>通缩机制（销毁部分 ETH）</li>
+<li>更透明的定价</li>
+</ul>
+<h3 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs solidity">// Solidity 中的 EIP-1559 交易<br>function sendTransaction() public &#123;<br>    // EIP-1559 交易参数<br>    tx.gasPrice;       // 最大 gas price<br>    tx.maxFeePerGas;   // 最大每 gas 费用<br>    tx.maxPriorityFeePerGas;  // 最大小费<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="不同网络支持情况"><a href="#不同网络支持情况" class="headerlink" title="不同网络支持情况"></a>不同网络支持情况</h3><ul>
+<li>✅ 以太坊主网</li>
+<li>✅ 大多数 EVM 兼容链</li>
+<li>❌ 一些较新或定制链可能不完全支持</li>
+</ul>
+<h3 id="实践建议"><a href="#实践建议" class="headerlink" title="实践建议"></a>实践建议</h3><ol>
+<li>检查网络 EIP-1559 支持</li>
+<li>不支持时使用 <code>--legacy</code></li>
+<li>动态调整 <code>maxFeePerGas</code></li>
+</ol>
+<h3 id="Foundry-中的使用"><a href="#Foundry-中的使用" class="headerlink" title="Foundry 中的使用"></a>Foundry 中的使用</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">自动 EIP-1559</span><br>forge create Contract <br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">强制传统模式</span><br>forge create Contract --legacy<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">手动设置 gas</span><br>forge create Contract \<br>  --legacy \<br>  --gas-price 20gwei<br></code></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><h2 id="IERC721"><a href="#IERC721" class="headerlink" title="IERC721"></a>IERC721</h2><h2 id="ERC165"><a href="#ERC165" class="headerlink" title="ERC165"></a>ERC165</h2><p>通过<a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-165">ERC165标准</a>，智能合约可以声明它支持的接口，供其他合约检查。简单的说，ERC165就是检查一个智能合约是不是支持了<code>ERC721</code>，<code>ERC1155</code>的接口。</p>
 <p><code>IERC165</code>接口合约只声明了一个<code>supportsInterface</code>函数，输入要查询的<code>interfaceId</code>接口id，若合约实现了该接口id，则返回<code>true</code>：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs solidity">interface IERC165 &#123;<br>    /**<br>     * @dev 如果合约实现了查询的`interfaceId`，则返回true<br>     * 规则详见：https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section]<br>     *<br>     */<br>    function supportsInterface(bytes4 interfaceId) external view returns (bool);<br>&#125;<br></code></pre></td></tr></table></figure>
 
