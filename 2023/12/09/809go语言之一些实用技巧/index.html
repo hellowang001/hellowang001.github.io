@@ -19,27 +19,23 @@
   <meta name="author" content="Wangxiaowang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="接口interface关于接口的概念 接口interface是定义了一组方法的集合，  接口提供了一种标准化的方式，用来规定对象的行为，。  通过接口，你定义了对象必须具备的方法。而不必关心对象的具体实现。这种抽象的方式，可以更加灵活和复用  通过定义接口interface，然后让对象来调用或者实现  接口interface可以作为函数的入参参数，也可以作为返回值 实现多态  接口Interfac">
+    <meta name="description" content="一些技巧缓存所谓缓存，就是在代码中创建一个数组、map、集合等等一些数据容器，当服务运行的时候，可以从这个容器里面取数据和塞数据（当然增删改查都可以，只是这两个最常用） 数组缓存把数据放到数组里面，用的时候再遍历出来，如果匹配就是我们想要的数据，但是这样做是错误的 123456789101112131415161718192021const cacheSize &#x3D; 100 var cache&#x3D;[c">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【Golang】go语言之接口(interface)">
-<meta property="og:url" content="http://example.com/2023/12/06/804go%E8%AF%AD%E8%A8%80%E4%B9%8B%E6%8E%A5%E5%8F%A3(interface)/index.html">
+<meta property="og:title" content="809go语言之一些实用技巧">
+<meta property="og:url" content="http://example.com/2023/12/09/809go%E8%AF%AD%E8%A8%80%E4%B9%8B%E4%B8%80%E4%BA%9B%E5%AE%9E%E7%94%A8%E6%8A%80%E5%B7%A7/index.html">
 <meta property="og:site_name" content="Wang">
-<meta property="og:description" content="接口interface关于接口的概念 接口interface是定义了一组方法的集合，  接口提供了一种标准化的方式，用来规定对象的行为，。  通过接口，你定义了对象必须具备的方法。而不必关心对象的具体实现。这种抽象的方式，可以更加灵活和复用  通过定义接口interface，然后让对象来调用或者实现  接口interface可以作为函数的入参参数，也可以作为返回值 实现多态  接口Interfac">
+<meta property="og:description" content="一些技巧缓存所谓缓存，就是在代码中创建一个数组、map、集合等等一些数据容器，当服务运行的时候，可以从这个容器里面取数据和塞数据（当然增删改查都可以，只是这两个最常用） 数组缓存把数据放到数组里面，用的时候再遍历出来，如果匹配就是我们想要的数据，但是这样做是错误的 123456789101112131415161718192021const cacheSize &#x3D; 100 var cache&#x3D;[c">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/img/114.jpg">
-<meta property="article:published_time" content="2023-12-06T11:18:48.000Z">
-<meta property="article:modified_time" content="2025-06-20T04:23:54.067Z">
+<meta property="article:published_time" content="2023-12-09T03:51:13.000Z">
+<meta property="article:modified_time" content="2025-11-20T10:34:51.504Z">
 <meta property="article:author" content="Wangxiaowang">
-<meta property="article:tag" content="go">
-<meta property="article:tag" content="编程">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/img/114.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>【Golang】go语言之接口(interface) - Wang</title>
+  <title>809go语言之一些实用技巧 - Wang</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -223,13 +219,13 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('/img/117.jpg') no-repeat center center; background-size: cover;">
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="【Golang】go语言之接口(interface)"></span>
+            <span id="subtitle" data-typed-text="809go语言之一些实用技巧"></span>
           
         </div>
 
@@ -240,8 +236,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-12-06 19:18" pubdate>
-          2023年12月6日 晚上
+        <time datetime="2023-12-09 11:51" pubdate>
+          2023年12月9日 中午
         </time>
       </span>
     
@@ -252,7 +248,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          995 字
+          560 字
         
       </span>
     
@@ -263,7 +259,7 @@
         
         
         
-          9 分钟
+          5 分钟
         
       </span>
     
@@ -300,49 +296,21 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">【Golang】go语言之接口(interface)</h1>
+            <h1 id="seo-header">809go语言之一些实用技巧</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="接口interface"><a href="#接口interface" class="headerlink" title="接口interface"></a>接口interface</h1><h2 id="关于接口的概念"><a href="#关于接口的概念" class="headerlink" title="关于接口的概念"></a>关于接口的概念</h2><ul>
-<li><p>接口interface是定义了一组方法的集合，</p>
-</li>
-<li><p>接口提供了一种标准化的方式，用来规定对象的行为，。</p>
-</li>
-<li><p>通过接口，你定义了对象必须具备的方法。而不必关心对象的具体实现。这种抽象的方式，可以更加灵活和复用</p>
-</li>
-<li><p>通过定义接口interface，然后让对象来调用或者实现</p>
-</li>
-<li><p>接口interface可以作为函数的入参参数，也可以作为返回值 实现多态</p>
-</li>
-<li><p>接口Interface 是一种规范，是一种限制，</p>
-</li>
-</ul>
-<p> <strong>当你把接口interface定义好后，作为入参，那你这个函数的入参，就必须有你定义的接口interface有的方法，不然就会报错，</strong></p>
-<ul>
-<li><p>同理你把interface类型的东西作为return出去的东西，那你就在定义return的对象时就必须定义他有哪些方法，</p>
-</li>
-<li><p>总的说，接口等同于python的基类，基类用于子类必须实现方法，接口也是子类必须实现方法。</p>
-</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;fmt&quot;</span><br><br><span class="hljs-keyword">type</span> animal <span class="hljs-keyword">interface</span> &#123; <span class="hljs-comment">//在定义接口interface类型，这个类型有一个say方法</span><br>	say()<br>&#125;<br><span class="hljs-keyword">type</span> cat <span class="hljs-keyword">struct</span> &#123; <span class="hljs-comment">// 结构体</span><br>	Name <span class="hljs-type">string</span><br>&#125;<br><span class="hljs-keyword">type</span> dog <span class="hljs-keyword">struct</span> &#123; <span class="hljs-comment">// 结构体</span><br>	Name <span class="hljs-type">string</span><br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c cat)</span></span> say() &#123; <span class="hljs-comment">// 这个是方法，结构体的方法</span><br>	fmt.Printf(<span class="hljs-string">&quot;%v小花猫，喵喵叫\n&quot;</span>, c.Name)<br>&#125;<br><br><span class="hljs-comment">// 这两个结构体都有say方法</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(d dog)</span></span> say() &#123; <span class="hljs-comment">// 这个say也是方法，结构体的方法</span><br>	fmt.Printf(<span class="hljs-string">&quot;%v小土狗，汪汪叫\n&quot;</span>, d.Name)<br><br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">aaa</span><span class="hljs-params">(a animal)</span></span> <span class="hljs-type">string</span> &#123; <span class="hljs-comment">//这个方法的入参是一个animal接口类，所以传进来的参数必须要是animal类型，必须要有say方法</span><br>	a.say()<br>	<span class="hljs-keyword">return</span> <span class="hljs-string">&quot;aaa&quot;</span><br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">bbb</span><span class="hljs-params">(s <span class="hljs-type">string</span>)</span></span> animal &#123; <span class="hljs-comment">// 这是在定义一个返回值为interface接口类型的函数</span><br>	<span class="hljs-comment">//a.say()</span><br>	<span class="hljs-comment">//a.say()</span><br>	c := cat&#123;<span class="hljs-string">&quot;小白&quot;</span>&#125;<br>	<span class="hljs-keyword">return</span> c<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>	c := cat&#123;<span class="hljs-string">&quot;小白&quot;</span>&#125;    <span class="hljs-comment">//这个C是cat结构体的实例化对象</span><br>	d := aaa(c)       <span class="hljs-comment">//这个d是函数aaa的实例化对象 需要传入参，入参就是C 且这个入参必须要有say方法，不然就会报错</span><br>	fmt.Printf(d)     <span class="hljs-comment">//打印这个d，此时d是有返回值string的所以可以打印出来</span><br>	e := bbb(<span class="hljs-string">&quot;hello&quot;</span>) <span class="hljs-comment">//这是在实例化bbb函数，e就是上面的c，是一个interface接口类型的。</span><br>	e.say()           <span class="hljs-comment">// e是不可以直接打印的，因为你无法打印接口类型。但是你可以调用这个interface接口的方法</span><br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+                <h1 id="一些技巧"><a href="#一些技巧" class="headerlink" title="一些技巧"></a>一些技巧</h1><h1 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h1><p>所谓缓存，就是在代码中创建一个数组、map、集合等等一些数据容器，当服务运行的时候，可以从这个容器里面取数据和塞数据（当然增删改查都可以，只是这两个最常用）</p>
+<h2 id="数组缓存"><a href="#数组缓存" class="headerlink" title="数组缓存"></a>数组缓存</h2><p>把数据放到数组里面，用的时候再遍历出来，如果匹配就是我们想要的数据，但是这样做是错误的</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">const</span> cacheSize = <span class="hljs-number">100</span> <br><span class="hljs-keyword">var</span> cache=[cacheSize]*mywallet.BalanceResponse         <span class="hljs-comment">// 创建一个切片，最大长度为缓存长度，一上来就开辟了100个空间</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">getCache</span><span class="hljs-params">(address <span class="hljs-type">string</span>)</span></span> *mywallet.BalanceResponse &#123;<br><br>	<span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; cacheSize; i++ &#123; <span class="hljs-comment">// 问题1 每次拿都要遍历，很复杂</span><br>		data := cache[i]<br>		<span class="hljs-keyword">if</span> data == <span class="hljs-literal">nil</span> &#123;<br>			<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span><br>		&#125;<br>		<span class="hljs-keyword">if</span> data.Address == address &#123;<br>			<span class="hljs-keyword">return</span> data<br>		&#125;<br>	&#125;<br>  <span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span>&#125;<br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">putCache</span><span class="hljs-params">(data *mywallet.BalanceResponse)</span></span> &#123;<br>	logrus.Infof(<span class="hljs-string">&quot;putCache %s&quot;</span>, data.Address)<br>	cache[cacheIndex] = data<br>  cacheIndex = (cacheIndex + <span class="hljs-number">1</span>) % cacheSize <span class="hljs-comment">// 问题2 竞态条件！线程并发会有竞争场景</span><br>&#125;<br><span class="hljs-comment">//问题3 没有过期机制</span><br><span class="hljs-comment">// 问题 4：数据丢失 如果缓存大小为 100，第 101 个数据会覆盖第 1 个数据</span><br></code></pre></td></tr></table></figure>
 
-<h1 id="接口也是一种类型，可以定义变量"><a href="#接口也是一种类型，可以定义变量" class="headerlink" title="接口也是一种类型，可以定义变量"></a>接口也是一种类型，可以定义变量</h1><ul>
-<li>结构体—结构体方法—接口</li>
-<li>接口类型的变量，能够储存所有实现了该接口的结构体。</li>
-<li>实例化一个变量（对象）</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;fmt&quot;</span><br><br><span class="hljs-keyword">type</span> animal <span class="hljs-keyword">interface</span> &#123;<br>	say()<br>&#125;<br><br><span class="hljs-keyword">type</span> cat <span class="hljs-keyword">struct</span> &#123;<br>	Name <span class="hljs-type">string</span><br>&#125;<br><span class="hljs-keyword">type</span> dog <span class="hljs-keyword">struct</span> &#123;<br>	Name <span class="hljs-type">string</span><br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c cat)</span></span> say() &#123;<br>	fmt.Printf(<span class="hljs-string">&quot;%v小猫喵喵叫\n&quot;</span>, c.Name)<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(d dog)</span></span> say() &#123;<br>	fmt.Printf(<span class="hljs-string">&quot;%v小狗汪汪叫\n&quot;</span>, d.Name)<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>	<span class="hljs-keyword">var</span> a animal<br>	fmt.Printf(<span class="hljs-string">&quot;类型是:%T\n&quot;</span>, a)    <span class="hljs-comment">//打印的类型是nil 类型</span><br>	fmt.Printf(<span class="hljs-string">&quot;打印的内容是:%v\n&quot;</span>, a) <span class="hljs-comment">// 这个a 是一个接口类型的实例化对象，所以打印是没有数据的 打印的是nil</span><br>	c := cat&#123;<span class="hljs-string">&quot;小花&quot;</span>&#125;<br>	a = c          <span class="hljs-comment">//这个时候把c赋值给了a，所以a有c的属性</span><br>	fmt.Println(a) <span class="hljs-comment">//所以打印的时候，就可以打印a了，</span><br>	a.say()<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+<h1 id="强化版，map缓存"><a href="#强化版，map缓存" class="headerlink" title="强化版，map缓存"></a>强化版，map缓存</h1><p>把数据放到map里面，再加入线程锁读取和写入</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">var</span> (<br>	cache    [cacheSize]*mywallet.BalanceResponse         <span class="hljs-comment">// 创建一个切片，最大长度为缓存长度</span><br>	cacheMap = <span class="hljs-built_in">make</span>(<span class="hljs-keyword">map</span>[<span class="hljs-type">string</span>]*mywallet.BalanceResponse) <span class="hljs-comment">// 新版的，mao缓存</span><br>	mu       sync.RWMutex                                 <span class="hljs-comment">// 线程锁，保障缓存在读写的时候更安全</span><br>)<br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">getCacheMap</span><span class="hljs-params">(address <span class="hljs-type">string</span>)</span></span> *mywallet.BalanceResponse &#123;<br>	mu.RLock()               <span class="hljs-comment">// 取之前锁一下，R就代表是 Read 读取锁</span><br>	<span class="hljs-keyword">defer</span> mu.RUnlock()       <span class="hljs-comment">// 函数返回时自动释放读取锁</span><br>	<span class="hljs-keyword">return</span> cacheMap[address] <span class="hljs-comment">// 在锁保护下读数据</span><br>&#125;<br><span class="hljs-comment">// ✅ 设置缓存</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Put</span><span class="hljs-params">(data *mywallet.BalanceResponse)</span></span> &#123;<br>	c.mu.Lock()<br>	<span class="hljs-keyword">defer</span> c.mu.Unlock()<br>	c.data[data.address]=data<br>	fmt.Printf(<span class="hljs-string">&quot;putCache %s\n&quot;</span>, data.Address)<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<h1 id="定义指针类型和值类型接收器实现接口"><a href="#定义指针类型和值类型接收器实现接口" class="headerlink" title="定义指针类型和值类型接收器实现接口"></a>定义指针类型和值类型接收器实现接口</h1><ul>
-<li>值类型接口实现后，不管是结构体还是结构体指针的变量，都可以赋值给接口变量</li>
-<li>只要是值接收器，修改的都是新的。</li>
-<li>使用指针接收器实现接口之后，只能将结构体指针变量赋值给该接口变量</li>
-<li>只要是指针接收器，修改的都是原来的。、</li>
-</ul>
-<p><strong>你在定义结构体方法的时候，将入参定义为指针类型入参即可，</strong></p>
-<p><strong>这样你在实例化这个结构体的时候，传入指针类型即可</strong> </p>
+<h1 id="强化版，带生命周期的map缓存"><a href="#强化版，带生命周期的map缓存" class="headerlink" title="强化版，带生命周期的map缓存"></a>强化版，带生命周期的map缓存</h1><p>增加一个时间字段</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">const</span> timeout = <span class="hljs-number">2</span> * time.Second<br><br><span class="hljs-keyword">type</span> BalanceResponse <span class="hljs-keyword">struct</span> &#123;<br>	Address   <span class="hljs-type">string</span><br>	Balance   <span class="hljs-type">string</span><br>	Time      time.Time<br>&#125;<br><br><span class="hljs-keyword">type</span> CacheItem <span class="hljs-keyword">struct</span> &#123;<br>	Data      *BalanceResponse<br>	ExpiresAt time.Time<br>&#125;<br><br><span class="hljs-keyword">type</span> Cache <span class="hljs-keyword">struct</span> &#123;<br>	data <span class="hljs-keyword">map</span>[<span class="hljs-type">string</span>]*CacheItem<br>	mu   sync.RWMutex<br>	ttl  time.Duration<br>&#125;<br><br><span class="hljs-comment">// ✅ 创建缓存</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">NewCache</span><span class="hljs-params">(ttl time.Duration)</span></span> *Cache &#123;<br>	<span class="hljs-keyword">return</span> &amp;Cache&#123;<br>		data: <span class="hljs-built_in">make</span>(<span class="hljs-keyword">map</span>[<span class="hljs-type">string</span>]*CacheItem),<br>		ttl:  ttl,<br>	&#125;<br>&#125;<br><br><span class="hljs-comment">// ✅ 设置缓存</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c *Cache)</span></span> Put(data *BalanceResponse) &#123;<br>	c.mu.Lock()<br>	<span class="hljs-keyword">defer</span> c.mu.Unlock()<br><br>	fmt.Printf(<span class="hljs-string">&quot;putCache %s\n&quot;</span>, data.Address)<br>	c.data[data.Address] = &amp;CacheItem&#123;<br>		Data:      data,<br>		ExpiresAt: time.Now().Add(c.ttl),<br>	&#125;<br>&#125;<br><br><span class="hljs-comment">// ✅ 获取缓存</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c *Cache)</span></span> Get(address <span class="hljs-type">string</span>) *BalanceResponse &#123;<br>	c.mu.RLock()<br>	<span class="hljs-keyword">defer</span> c.mu.RUnlock()<br><br>	item, exists := c.data[address]<br>	<span class="hljs-keyword">if</span> !exists &#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span><br>	&#125;<br><br>	<span class="hljs-comment">// ✅ 检查是否过期</span><br>	<span class="hljs-keyword">if</span> time.Now().After(item.ExpiresAt) &#123;<br>		<span class="hljs-keyword">return</span> <span class="hljs-literal">nil</span><br>	&#125;<br><br>	<span class="hljs-keyword">return</span> item.Data<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
 
                 
               </div>
@@ -351,36 +319,6 @@
             <div>
               <div class="post-metas my-3">
   
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Golang/" class="category-chain-item">Golang</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/go/" class="print-no-link">#go</a>
-      
-        <a href="/tags/%E7%BC%96%E7%A8%8B/" class="print-no-link">#编程</a>
-      
-    </div>
   
 </div>
 
@@ -390,8 +328,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>【Golang】go语言之接口(interface)</div>
-      <div>http://example.com/2023/12/06/804go语言之接口(interface)/</div>
+      <div>809go语言之一些实用技巧</div>
+      <div>http://example.com/2023/12/09/809go语言之一些实用技巧/</div>
     </div>
     <div class="license-meta">
       
@@ -403,7 +341,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年12月6日</div>
+          <div>2023年12月9日</div>
         </div>
       
       
@@ -435,9 +373,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/12/06/801go%E8%AF%AD%E8%A8%80%E4%B9%8B%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D/" title="【Golang】go语言之基础介绍">
+                      <a href="/2023/12/15/699djangoAdmin%E9%83%A8%E7%BD%B2%E8%AE%B0%E5%BD%95/" title="【python】djangoAdmin部署记录">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">【Golang】go语言之基础介绍</span>
+                        <span class="hidden-mobile">【python】djangoAdmin部署记录</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -445,8 +383,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/12/06/803go%E8%AF%AD%E8%A8%80json%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" title="【Golang】go语言之json、YAML的序列化和反序列化">
-                        <span class="hidden-mobile">【Golang】go语言之json、YAML的序列化和反序列化</span>
+                      <a href="/2023/12/07/802go%E8%AF%AD%E8%A8%80%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%9F%BA%E7%A1%80%EF%BC%88goroutine%E3%80%81channel%E3%80%81SELECT%EF%BC%89/" title="【Golang】go语言之并发编程基础（goroutine、channel、SELECT）">
+                        <span class="hidden-mobile">【Golang】go语言之并发编程基础（goroutine、channel、SELECT）</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
