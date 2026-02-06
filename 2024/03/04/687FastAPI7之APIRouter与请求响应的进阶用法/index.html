@@ -574,20 +574,21 @@
   
     <article id="comments" lazyload>
       
-  <div id="valine"></div>
+  <div id="waline"></div>
   <script type="text/javascript">
-    Fluid.utils.loadComments('#valine', function() {
-      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/waline.css')
+      Fluid.utils.createScript('https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/waline.js', function() {
         var options = Object.assign(
-          {"appId":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appKey":"p8TvvzGc2rQ02TfZHuJppQLO","path":"window.location.pathname","placeholder":"欢迎留下评论，嘿嘿！","avatar":"monsterid","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false,"appid":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appkey":"p8TvvzGc2rQ02TfZHuJppQLO"},
+          {"serverURL":"https://my-waline-rosy-one.vercel.app","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":[],"lang":"zh-cn","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo"],"dark":"auto","wordLimit":0,"pageSize":10,"enable":true,"placeholder":"欢迎留下评论，嘿嘿！","avatar":"mm","visitor":true,"comment_count":true,"libUrl":null},
           {
-            el: "#valine",
+            el: '#waline',
             path: window.location.pathname
           }
         )
-        new Valine(options);
-        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
-          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
           Fluid.plugins.imageCaption(imgSelector);
           Fluid.plugins.fancyBox(imgSelector);
         })

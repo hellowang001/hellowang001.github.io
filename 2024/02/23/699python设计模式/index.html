@@ -488,9 +488,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/02/26/906UML%E7%B1%BB%E5%9B%BE%E7%AE%80%E5%8D%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="【other】UML类图简单学习笔记">
+                      <a href="/2024/02/23/701JavaScript%E5%88%9D%E7%AA%A5%E4%B8%80/" title="701JavaScript初窥一">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">【other】UML类图简单学习笔记</span>
+                        <span class="hidden-mobile">701JavaScript初窥一</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -498,8 +498,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/02/23/701JavaScript%E5%88%9D%E7%AA%A5%E4%B8%80/" title="701JavaScript初窥一">
-                        <span class="hidden-mobile">701JavaScript初窥一</span>
+                      <a href="/2024/02/23/904Ubuntu%E4%B8%8A%E4%BD%BF%E7%94%A8Charles/" title="【linux】Ubuntu上使用Charles">
+                        <span class="hidden-mobile">【linux】Ubuntu上使用Charles</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -514,20 +514,21 @@
   
     <article id="comments" lazyload>
       
-  <div id="valine"></div>
+  <div id="waline"></div>
   <script type="text/javascript">
-    Fluid.utils.loadComments('#valine', function() {
-      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/waline.css')
+      Fluid.utils.createScript('https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/waline.js', function() {
         var options = Object.assign(
-          {"appId":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appKey":"p8TvvzGc2rQ02TfZHuJppQLO","path":"window.location.pathname","placeholder":"欢迎留下评论，嘿嘿！","avatar":"monsterid","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false,"appid":"QE69Ypw2FdG2cP7zRWgtj8ii-gzGzoHsz","appkey":"p8TvvzGc2rQ02TfZHuJppQLO"},
+          {"serverURL":"https://my-waline-rosy-one.vercel.app","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":[],"lang":"zh-cn","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo"],"dark":"auto","wordLimit":0,"pageSize":10,"enable":true,"placeholder":"欢迎留下评论，嘿嘿！","avatar":"mm","visitor":true,"comment_count":true,"libUrl":null},
           {
-            el: "#valine",
+            el: '#waline',
             path: window.location.pathname
           }
         )
-        new Valine(options);
-        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
-          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
           Fluid.plugins.imageCaption(imgSelector);
           Fluid.plugins.fancyBox(imgSelector);
         })
