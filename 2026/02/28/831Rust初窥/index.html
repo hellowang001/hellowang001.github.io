@@ -19,27 +19,25 @@
   <meta name="author" content="Wangxiaowang">
   <meta name="keywords" content="">
   
-    <meta name="description" content="接口interface关于接口的概念 接口interface是定义了一组方法的集合，  接口提供了一种标准化的方式，用来规定对象的行为，。  通过接口，你定义了对象必须具备的方法。而不必关心对象的具体实现。这种抽象的方式，可以更加灵活和复用  通过定义接口interface，然后让对象来调用或者实现  接口interface可以作为函数的入参参数，也可以作为返回值 实现多态  接口Interfac">
+    <meta name="description" content="hello worldaa 12345678fn main() &#123;    println!(&quot;Hello, world!&quot;);&#125;cargo run wang@MacBook-Airlocal src % cargo run">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【Golang】go语言之接口(interface)">
-<meta property="og:url" content="http://example.com/2023/12/06/804go%E8%AF%AD%E8%A8%80%E4%B9%8B%E6%8E%A5%E5%8F%A3(interface)/index.html">
+<meta property="og:title" content="Rust初窥">
+<meta property="og:url" content="http://example.com/2026/02/28/831Rust%E5%88%9D%E7%AA%A5/index.html">
 <meta property="og:site_name" content="Wang">
-<meta property="og:description" content="接口interface关于接口的概念 接口interface是定义了一组方法的集合，  接口提供了一种标准化的方式，用来规定对象的行为，。  通过接口，你定义了对象必须具备的方法。而不必关心对象的具体实现。这种抽象的方式，可以更加灵活和复用  通过定义接口interface，然后让对象来调用或者实现  接口interface可以作为函数的入参参数，也可以作为返回值 实现多态  接口Interfac">
+<meta property="og:description" content="hello worldaa 12345678fn main() &#123;    println!(&quot;Hello, world!&quot;);&#125;cargo run wang@MacBook-Airlocal src % cargo run">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/img/114.jpg">
-<meta property="article:published_time" content="2023-12-06T11:18:48.000Z">
-<meta property="article:modified_time" content="2025-06-20T04:23:54.067Z">
+<meta property="og:image" content="http://example.com/img/bing_2020_OHR.MistyVineyard.jpg">
+<meta property="article:published_time" content="2026-02-28T09:03:04.000Z">
+<meta property="article:modified_time" content="2026-03-01T05:33:13.961Z">
 <meta property="article:author" content="Wangxiaowang">
-<meta property="article:tag" content="go">
-<meta property="article:tag" content="编程">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://example.com/img/114.jpg">
+<meta name="twitter:image" content="http://example.com/img/bing_2020_OHR.MistyVineyard.jpg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>【Golang】go语言之接口(interface) - Wang</title>
+  <title>Rust初窥 - Wang</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -223,13 +221,13 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('/img/117.jpg') no-repeat center center; background-size: cover;">
+     style="background: url('/img/bing_2017_RotenbergVineyards.jpg') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="【Golang】go语言之接口(interface)"></span>
+            <span id="subtitle" data-typed-text="Rust初窥"></span>
           
         </div>
 
@@ -240,8 +238,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-12-06 19:18" pubdate>
-          2023年12月6日 晚上
+        <time datetime="2026-02-28 17:03" pubdate>
+          2026年2月28日 下午
         </time>
       </span>
     
@@ -252,7 +250,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          995 字
+          397 字
         
       </span>
     
@@ -263,7 +261,7 @@
         
         
         
-          9 分钟
+          4 分钟
         
       </span>
     
@@ -300,50 +298,31 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">【Golang】go语言之接口(interface)</h1>
+            <h1 id="seo-header">Rust初窥</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="接口interface"><a href="#接口interface" class="headerlink" title="接口interface"></a>接口interface</h1><h2 id="关于接口的概念"><a href="#关于接口的概念" class="headerlink" title="关于接口的概念"></a>关于接口的概念</h2><ul>
-<li><p>接口interface是定义了一组方法的集合，</p>
-</li>
-<li><p>接口提供了一种标准化的方式，用来规定对象的行为，。</p>
-</li>
-<li><p>通过接口，你定义了对象必须具备的方法。而不必关心对象的具体实现。这种抽象的方式，可以更加灵活和复用</p>
-</li>
-<li><p>通过定义接口interface，然后让对象来调用或者实现</p>
-</li>
-<li><p>接口interface可以作为函数的入参参数，也可以作为返回值 实现多态</p>
-</li>
-<li><p>接口Interface 是一种规范，是一种限制，</p>
-</li>
-</ul>
-<p> <strong>当你把接口interface定义好后，作为入参，那你这个函数的入参，就必须有你定义的接口interface有的方法，不然就会报错，</strong></p>
-<ul>
-<li><p>同理你把interface类型的东西作为return出去的东西，那你就在定义return的对象时就必须定义他有哪些方法，</p>
-</li>
-<li><p>总的说，接口等同于python的基类，基类用于子类必须实现方法，接口也是子类必须实现方法。</p>
-</li>
-</ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;fmt&quot;</span><br><br><span class="hljs-keyword">type</span> animal <span class="hljs-keyword">interface</span> &#123; <span class="hljs-comment">//在定义接口interface类型，这个类型有一个say方法</span><br>	say()<br>&#125;<br><span class="hljs-keyword">type</span> cat <span class="hljs-keyword">struct</span> &#123; <span class="hljs-comment">// 结构体</span><br>	Name <span class="hljs-type">string</span><br>&#125;<br><span class="hljs-keyword">type</span> dog <span class="hljs-keyword">struct</span> &#123; <span class="hljs-comment">// 结构体</span><br>	Name <span class="hljs-type">string</span><br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c cat)</span></span> say() &#123; <span class="hljs-comment">// 这个是方法，结构体的方法</span><br>	fmt.Printf(<span class="hljs-string">&quot;%v小花猫，喵喵叫\n&quot;</span>, c.Name)<br>&#125;<br><br><span class="hljs-comment">// 这两个结构体都有say方法</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(d dog)</span></span> say() &#123; <span class="hljs-comment">// 这个say也是方法，结构体的方法</span><br>	fmt.Printf(<span class="hljs-string">&quot;%v小土狗，汪汪叫\n&quot;</span>, d.Name)<br><br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">aaa</span><span class="hljs-params">(a animal)</span></span> <span class="hljs-type">string</span> &#123; <span class="hljs-comment">//这个方法的入参是一个animal接口类，所以传进来的参数必须要是animal类型，必须要有say方法</span><br>	a.say()<br>	<span class="hljs-keyword">return</span> <span class="hljs-string">&quot;aaa&quot;</span><br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">bbb</span><span class="hljs-params">(s <span class="hljs-type">string</span>)</span></span> animal &#123; <span class="hljs-comment">// 这是在定义一个返回值为interface接口类型的函数</span><br>	<span class="hljs-comment">//a.say()</span><br>	<span class="hljs-comment">//a.say()</span><br>	c := cat&#123;<span class="hljs-string">&quot;小白&quot;</span>&#125;<br>	<span class="hljs-keyword">return</span> c<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>	c := cat&#123;<span class="hljs-string">&quot;小白&quot;</span>&#125;    <span class="hljs-comment">//这个C是cat结构体的实例化对象</span><br>	d := aaa(c)       <span class="hljs-comment">//这个d是函数aaa的实例化对象 需要传入参，入参就是C 且这个入参必须要有say方法，不然就会报错</span><br>	fmt.Printf(d)     <span class="hljs-comment">//打印这个d，此时d是有返回值string的所以可以打印出来</span><br>	e := bbb(<span class="hljs-string">&quot;hello&quot;</span>) <span class="hljs-comment">//这是在实例化bbb函数，e就是上面的c，是一个interface接口类型的。</span><br>	e.say()           <span class="hljs-comment">// e是不可以直接打印的，因为你无法打印接口类型。但是你可以调用这个interface接口的方法</span><br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+                <h1 id="hello-world"><a href="#hello-world" class="headerlink" title="hello world"></a>hello world</h1><p>aa</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>    <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;Hello, world!&quot;</span>);<br>&#125;<br>cargo run <br>wang@MacBook-Airlocal src % cargo run                                                                                                                   <br>    Finished `dev` profile [unoptimized + debuginfo] <span class="hljs-title function_ invoke__">target</span>(s) <span class="hljs-keyword">in</span> <span class="hljs-number">0.03</span>s<br>     Running `/Users/wang/code/rustLearning/hello_cargo/target/debug/hello_cargo`<br>Hello, world!<br></code></pre></td></tr></table></figure>
 
-<h1 id="接口也是一种类型，可以定义变量"><a href="#接口也是一种类型，可以定义变量" class="headerlink" title="接口也是一种类型，可以定义变量"></a>接口也是一种类型，可以定义变量</h1><ul>
-<li>结构体—结构体方法—接口</li>
-<li>接口类型的变量，能够储存所有实现了该接口的结构体。</li>
-<li>实例化一个变量（对象）</li>
+<h1 id="原生类型"><a href="#原生类型" class="headerlink" title="原生类型"></a>原生类型</h1><h2 id="标量类型"><a href="#标量类型" class="headerlink" title="标量类型"></a>标量类型</h2><ul>
+<li>有符号整数：<code>i8</code>、<code>i16</code>、<code>i32</code>、<code>i64</code>、<code>i128</code> 和 <code>isize</code>（指针大小）</li>
+<li>无符号整数：<code>u8</code>、<code>u16</code>、<code>u32</code>、<code>u64</code>、<code>u128</code> 和 <code>usize</code>（指针大小）</li>
+<li>浮点数：<code>f32</code>、<code>f64</code></li>
+<li><code>char</code> Unicode 标量值，如 <code>&#39;a&#39;</code>、<code>&#39;α&#39;</code> 和 <code>&#39;∞&#39;</code>（每个都是 4 字节）</li>
+<li><code>bool</code> 值为 <code>true</code> 或 <code>false</code></li>
+<li>单元类型 <code>()</code>，其唯一可能的值是空元组：<code>()</code></li>
 </ul>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;fmt&quot;</span><br><br><span class="hljs-keyword">type</span> animal <span class="hljs-keyword">interface</span> &#123;<br>	say()<br>&#125;<br><br><span class="hljs-keyword">type</span> cat <span class="hljs-keyword">struct</span> &#123;<br>	Name <span class="hljs-type">string</span><br>&#125;<br><span class="hljs-keyword">type</span> dog <span class="hljs-keyword">struct</span> &#123;<br>	Name <span class="hljs-type">string</span><br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c cat)</span></span> say() &#123;<br>	fmt.Printf(<span class="hljs-string">&quot;%v小猫喵喵叫\n&quot;</span>, c.Name)<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(d dog)</span></span> say() &#123;<br>	fmt.Printf(<span class="hljs-string">&quot;%v小狗汪汪叫\n&quot;</span>, d.Name)<br>&#125;<br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>	<span class="hljs-keyword">var</span> a animal<br>	fmt.Printf(<span class="hljs-string">&quot;类型是:%T\n&quot;</span>, a)    <span class="hljs-comment">//打印的类型是nil 类型</span><br>	fmt.Printf(<span class="hljs-string">&quot;打印的内容是:%v\n&quot;</span>, a) <span class="hljs-comment">// 这个a 是一个接口类型的实例化对象，所以打印是没有数据的 打印的是nil</span><br>	c := cat&#123;<span class="hljs-string">&quot;小花&quot;</span>&#125;<br>	a = c          <span class="hljs-comment">//这个时候把c赋值给了a，所以a有c的属性</span><br>	fmt.Println(a) <span class="hljs-comment">//所以打印的时候，就可以打印a了，</span><br>	a.say()<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
-
-<h1 id="定义指针类型和值类型接收器实现接口"><a href="#定义指针类型和值类型接收器实现接口" class="headerlink" title="定义指针类型和值类型接收器实现接口"></a>定义指针类型和值类型接收器实现接口</h1><ul>
-<li>值类型接口实现后，不管是结构体还是结构体指针的变量，都可以赋值给接口变量</li>
-<li>只要是值接收器，修改的都是新的。</li>
-<li>使用指针接收器实现接口之后，只能将结构体指针变量赋值给该接口变量</li>
-<li>只要是指针接收器，修改的都是原来的。、</li>
+<p>尽管单元类型的值是一个元组，但它不被视为复合类型，因为它不包含多个值。</p>
+<h2 id="复合类型"><a href="#复合类型" class="headerlink" title="复合类型"></a>复合类型</h2><ul>
+<li>数组，如 <code>[1, 2, 3]</code></li>
+<li>元组，如 <code>(1, true)</code></li>
 </ul>
-<p><strong>你在定义结构体方法的时候，将入参定义为指针类型入参即可，</strong></p>
-<p><strong>这样你在实例化这个结构体的时候，传入指针类型即可</strong> </p>
+<p>变量总是可以进行<strong>类型标注</strong>。数字还可以通过<strong>后缀</strong>或<strong>默认方式</strong>来标注。整数默认为 <code>i32</code> 类型，浮点数默认为 <code>f64</code> 类型。请注意，Rust 也可以从上下文中推断类型。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>    <span class="hljs-comment">// 变量可以被类型标注。</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">logical</span>: <span class="hljs-type">bool</span> = <span class="hljs-literal">true</span>;<br><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">a_float</span>: <span class="hljs-type">f64</span> = <span class="hljs-number">1.0</span>;  <span class="hljs-comment">// 常规标注</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">an_integer</span>   = <span class="hljs-number">5i32</span>; <span class="hljs-comment">// 后缀标注</span><br><br>    <span class="hljs-comment">// 或者使用默认类型。</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">default_float</span>   = <span class="hljs-number">3.0</span>; <span class="hljs-comment">// `f64`</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">default_integer</span> = <span class="hljs-number">7</span>;   <span class="hljs-comment">// `i32`</span><br><br>    <span class="hljs-comment">// 类型也可以从上下文中推断。</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">inferred_type</span> = <span class="hljs-number">12</span>; <span class="hljs-comment">// 从另一行推断出类型为 i64。</span><br>    inferred_type = <span class="hljs-number">4294967296i64</span>;<br><br>    <span class="hljs-comment">// 可变变量的值可以改变。</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">mutable</span> = <span class="hljs-number">12</span>; <span class="hljs-comment">// 可变的 `i32`</span><br>    mutable = <span class="hljs-number">21</span>;<br><br>    <span class="hljs-comment">// 报错！变量的类型不能改变。</span><br>    mutable = <span class="hljs-literal">true</span>;<br><br>    <span class="hljs-comment">// 变量可以通过遮蔽（shadowing）来覆盖。</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">mutable</span> = <span class="hljs-literal">true</span>;<br><br>    <span class="hljs-comment">/* 复合类型 - 数组和元组 */</span><br><br>    <span class="hljs-comment">// 数组的签名由类型 T 和长度组成，表示为 [T; length]。</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">my_array</span>: [<span class="hljs-type">i32</span>; <span class="hljs-number">5</span>] = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>];<br><br>    <span class="hljs-comment">// 元组是不同类型值的集合，</span><br>    <span class="hljs-comment">// 使用圆括号 () 构造。</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-variable">my_tuple</span> = (<span class="hljs-number">5u32</span>, <span class="hljs-number">1u8</span>, <span class="hljs-literal">true</span>, -<span class="hljs-number">5.04f32</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
 
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3>
                 
               </div>
             
@@ -351,36 +330,6 @@
             <div>
               <div class="post-metas my-3">
   
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Golang/" class="category-chain-item">Golang</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/go/" class="print-no-link">#go</a>
-      
-        <a href="/tags/%E7%BC%96%E7%A8%8B/" class="print-no-link">#编程</a>
-      
-    </div>
   
 </div>
 
@@ -390,8 +339,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>【Golang】go语言之接口(interface)</div>
-      <div>http://example.com/2023/12/06/804go语言之接口(interface)/</div>
+      <div>Rust初窥</div>
+      <div>http://example.com/2026/02/28/831Rust初窥/</div>
     </div>
     <div class="license-meta">
       
@@ -403,7 +352,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年12月6日</div>
+          <div>2026年2月28日</div>
         </div>
       
       
@@ -435,18 +384,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/12/07/808go%E8%AF%AD%E8%A8%80%E6%89%B9%E9%87%8F%E7%94%9F%E6%88%905W%E5%9C%B0%E5%9D%80/" title="【Golang】go语言批量生成5W地址">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">【Golang】go语言批量生成5W地址</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/12/06/801go%E8%AF%AD%E8%A8%80%E4%B9%8B%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D/" title="【Golang】go语言之基础介绍">
-                        <span class="hidden-mobile">【Golang】go语言之基础介绍</span>
+                      <a href="/2026/02/04/08-10Solidity%E7%AC%94%E8%AE%B0%E4%B9%8B%E5%8D%81%E4%B8%80%E9%A2%84%E8%A8%80%E6%9C%BA/" title="08-10Solidity笔记之十一预言机">
+                        <span class="hidden-mobile">08-10Solidity笔记之十一预言机</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
