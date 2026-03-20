@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/rust/rust3.png">
 <meta property="article:published_time" content="2026-03-17T12:03:03.000Z">
-<meta property="article:modified_time" content="2026-03-19T12:47:45.816Z">
+<meta property="article:modified_time" content="2026-03-20T07:13:01.201Z">
 <meta property="article:author" content="Wangxiaowang">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/img/rust/rust3.png">
@@ -250,7 +250,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.1k 字
+          6.9k 字
         
       </span>
     
@@ -261,7 +261,7 @@
         
         
         
-          35 分钟
+          58 分钟
         
       </span>
     
@@ -434,6 +434,90 @@
 <p>在上面的代码中，<code>OWNER</code> 变量存储与我本地Solana钱包关联的公钥（地址）。在测试之前，请确保替换 OWNER 变量为你的钱包的公钥。你可以通过运行 <code>solana address</code> 命令轻松检索到你的公钥。</p>
 <p><code>#[access_control]</code> 属性在运行主要指令之前执行给定的访问控制方法。当调用 initialize 函数时，访问控制方法 (<code>check</code>) 会在 initialize 函数之前执行。<code>check</code> 方法接受引用上下文作为参数，然后检查交易的签名者是否等于 <code>OWNER</code> 变量的值。<code>require_keys_eq!</code> 宏确保两个公钥值相等，如果为真，则执行 initialize 函数，否则它会以 <code>NotOwner</code> 自定义错误进行回滚。</p>
 <p>和solidity里的modifier 装饰器一样的</p>
+<h1 id="Solana-计算单元与交易费用介绍"><a href="#Solana-计算单元与交易费用介绍" class="headerlink" title="Solana 计算单元与交易费用介绍"></a>Solana 计算单元与交易费用介绍</h1><p>在以太坊中，交易的价格计算为 gasUsed×gasPricegasUsed×gasPrice。这告诉我们，将交易包含在区块链中将花费多少 Ether。在发送交易之前，会指定并预付 gasLimit。如果交易用尽了 gas，它将被回滚。</p>
+<p>与 EVM 链不同，Solana 的操作码&#x2F;指令消耗的是“计算单元”（可以说是一个更好的名称），而不是 gas，每笔交易的软上限为 200,000 个计算单元。如果交易消耗的计算单元超过 200,000，它将被回滚。</p>
+<p>在以太坊中，计算所需的 gas 成本与存储相关的 gas 成本是相同的。在 Solana 中，存储的处理方式不同，因此 Solana 中持久化数据的定价是一个不同的讨论话题。</p>
+<p>然而，从运行操作码的定价角度来看，以太坊和 Solana 的行为是相似的。</p>
+<p>两条链都执行编译后的字节码，并对每条执行的指令收取费用。以太坊使用 EVM 字节码，但 Solana 运行的是 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Berkeley_Packet_Filter">Berkeley Packet Filter</a> 的修改版本，称为 Solana Packet Filter。</p>
+<p>以太坊根据执行时间的长短对不同操作码收取不同的费用，范围从 1 gas 到数千 gas。在 Solana 中，每个操作码消耗 1 个计算单元。</p>
+<h2 id="当计算单元不足时该怎么办"><a href="#当计算单元不足时该怎么办" class="headerlink" title="当计算单元不足时该怎么办"></a>当计算单元不足时该怎么办</h2><p>在执行无法在限制内完成的重计算操作时，传统策略是“保存你的工作”并在多个交易中完成。</p>
+<p>“保存你的工作”部分需要放入永久存储中，这是我们尚未涉及的内容。这类似于在以太坊中尝试遍历一个巨大的循环；你会有一个存储变量来保存你离开时的索引，以及一个存储变量来保存到该点为止的计算结果。</p>
+<h2 id="计算单元优化"><a href="#计算单元优化" class="headerlink" title="计算单元优化"></a>计算单元优化</h2><p>正如我们所知，Solana 使用计算单元来防止停机问题，并防止运行永远执行的代码。每笔交易的计算单元限制为 200,000 CU（可以以额外成本增加到 1.4m CU），如果超过（选择的限制），程序将终止，所有更改的状态将回滚，费用不会退还给调用者。这可以防止攻击者意图在节点上运行永不结束或计算密集型的程序以减慢或停止链。</p>
+<p>然而，与 EVM 链不同，交易中使用的计算资源不会影响为该交易支付的费用。无论你使用了整个限制还是只使用了很少的一部分，你都将被收取相同的费用。例如，400 计算单元的交易与 200,000 计算单元的交易费用相同。</p>
+<p>除了计算单元之外，<a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/11372">Solana 交易的签名者数量</a>也会影响计算单元成本。根据 Solana <a target="_blank" rel="noopener" href="https://docs.solana.com/developing/intro/transaction_fees#transaction-fee-calculation">文档</a>：</p>
+<p><em>“目前，交易费用仅由交易中需要验证的签名数量决定。交易中签名数量的唯一限制是交易本身的最大大小。交易中的每个签名（64 字节）（最大 1232 字节）必须引用一个唯一的公钥（32 字节），因此单个交易最多可以包含 12 个签名（不确定为什么要这样做）。”</em></p>
+<p>我们可以通过这个小例子看到这一点。从一个空的 Solana 程序开始：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-comment">// 一个空白的函数，看看调用花了多少钱</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">spend</span>(_ctx: Context&lt;Initialize&gt;) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Result</span>&lt;()&gt; &#123;<br>        <span class="hljs-title function_ invoke__">Ok</span>(())<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>测试代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs javascript">  <span class="hljs-keyword">const</span> defaultKeyPair = <span class="hljs-keyword">new</span> anchor.<span class="hljs-property">web3</span>.<span class="hljs-title class_">PublicKey</span>(<br>      <span class="hljs-string">&quot;28QdAWmR5Tn5NsifTBvB8DxJDXN5eaQbFVwHactRxmff&quot;</span><br>  );<br>  <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;计算单元花费测试&#x27;</span>,<span class="hljs-keyword">async</span> () =&gt; &#123;<br>    <span class="hljs-comment">// 交易之前记录余额</span><br>    <span class="hljs-keyword">let</span> bal_before = <span class="hljs-keyword">await</span> program.<span class="hljs-property">provider</span>.<span class="hljs-property">connection</span>.<span class="hljs-title function_">getBalance</span>(<br>        defaultKeyPair<br>    )<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;balances before = &quot;</span>,bal_before)<br>    <span class="hljs-keyword">const</span> tx = <span class="hljs-keyword">await</span> program.<span class="hljs-property">methods</span>.<span class="hljs-title function_">spend</span>().<span class="hljs-title function_">rpc</span>()<br><br>    <span class="hljs-comment">// 交易之后记录余额</span><br>    <span class="hljs-keyword">let</span> bal_after = <span class="hljs-keyword">await</span> program.<span class="hljs-property">provider</span>.<span class="hljs-property">connection</span>.<span class="hljs-title function_">getBalance</span>(<br>        defaultKeyPair<br>    )<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;balances after = &quot;</span>,bal_after)<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;diff = &quot;</span>,<span class="hljs-title class_">BigInt</span>(bal_before.<span class="hljs-title function_">toString</span>())-<span class="hljs-title class_">BigInt</span>(bal_after.<span class="hljs-title function_">toString</span>()))<br><br>  &#125;);<br>&#125;)<br><span class="hljs-comment">// 运行结果</span><br>balances before =  <span class="hljs-number">499999998740415360</span><br>balances after =  <span class="hljs-number">499999998740410400</span><br>diff =  <span class="hljs-number">4960n</span><br>    ✔ 计算单元花费测试 (72ms)<br><br><br>  <span class="hljs-number">2</span> passing (75ms)<br></code></pre></td></tr></table></figure>
+
+<p>看看日志花费:花费了 254个计算单元</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">Log Messages:<br>  Program ApfcbYE4FcrTPwkYZe25jn89XyQEmi22XQB1of1bqLG5 invoke [1]<br>  Program <span class="hljs-built_in">log</span>: Instruction: Blank<br>  Program ApfcbYE4FcrTPwkYZe25jn89XyQEmi22XQB1of1bqLG5 consumed 254 of 200000 compute units<br>  Program ApfcbYE4FcrTPwkYZe25jn89XyQEmi22XQB1of1bqLG5 success<br></code></pre></td></tr></table></figure>
+
+<p>余额差异为 <code>5000</code> lamports，因为我们在发送此交易时只需要&#x2F;使用 1 个签名（我们的默认提供者地址的签名）。这与我们上面建立的结论一致，即 <code>1 * 5000 = 5000</code>。另外请注意，这消耗了 254 个计算单元，但这个数量不会影响我们的交易费用。</p>
+<p>现在，让我们为我们的程序增加一些复杂性，看看会发生什么：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">spend</span>(ctx: Context&lt;Initialize&gt;) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Result</span>&lt;()&gt; &#123;<br>    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">a</span> = <span class="hljs-type">Vec</span>::<span class="hljs-title function_ invoke__">new</span>();<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">2</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">3</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">4</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">5</span>);<br><br>    <span class="hljs-title function_ invoke__">Ok</span>(())<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>当然，这应该会对我们的交易费用产生影响，对吧？</p>
+<p>当我们运行 <code>anchor test --skip-local-validator</code> 时，我们得到以下输出作为测试日志和 Solana 验证器日志：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">## 测试日志</span><br>balances before =  499999998812041100<br>balances after =  499999998812036100<br>diff =  5000n<br>    ✔ 计算单元话费测试 (71ms)<br><br><br><span class="hljs-comment">## solana 日志</span><br>  Log Messages:<br>    Program ApfcbYE4FcrTPwkYZe25jn89XyQEmi22XQB1of1bqLG5 invoke [1]<br>    Program <span class="hljs-built_in">log</span>: Instruction: Spend<br>    Program ApfcbYE4FcrTPwkYZe25jn89XyQEmi22XQB1of1bqLG5 consumed 445 of 200000 compute units<br>    Program ApfcbYE4FcrTPwkYZe25jn89XyQEmi22XQB1of1bqLG5 success<br></code></pre></td></tr></table></figure>
+
+<p>我们可以看到，这消耗了更多的计算单元，几乎是第一个例子的两倍。但这并不影响我们的交易费用。这是预期的，表明计算单元确实不会影响用户支付的交易费用。</p>
+<p><strong>无论消耗了多少计算单元，交易都收取了 5000 lamports 或 0.000005 SOL。</strong></p>
+<p>回到计算单元。那么，既然计算单元不影响交易费用，我们为什么要优化计算单元呢？</p>
+<ul>
+<li>首先，这只是目前的情况，未来 Solana 可能会决定将限制提高到更高，并且必须激励节点不将这些复杂交易与简单交易区别对待。这将意味着在计算交易费用时考虑消耗的计算单元。</li>
+<li>其次，如果网络活动竞争区块空间，较小的交易更有可能被包含在区块中。</li>
+<li>第三，这将使你的程序更容易与其他程序组合。如果另一个程序调用你的程序，交易不会获得额外的计算限制。如果交易使用了太多计算单元，其他程序可能不愿意与你的程序集成，因为这会为原始程序留下很少的计算单元。</li>
+</ul>
+<h2 id="较小的整数节省计算单元"><a href="#较小的整数节省计算单元" class="headerlink" title="较小的整数节省计算单元"></a>较小的整数节省计算单元</h2><p>使用的值类型越大，消耗的计算单元越多。在适用的情况下，最好使用较小的类型。让我们以代码示例和注释为例：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">spend</span>(ctx: Context&lt;Initialize&gt;) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Result</span>&lt;()&gt; &#123;<br>    <span class="hljs-comment">// 这消耗 600 CU（类型默认为 Vec&lt;i32&gt;）</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">a</span> = <span class="hljs-type">Vec</span>::<span class="hljs-title function_ invoke__">new</span>();<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br><br>    <span class="hljs-comment">// 这消耗 618 CU</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">a</span>: <span class="hljs-type">Vec</span>&lt;<span class="hljs-type">u64</span>&gt; = <span class="hljs-type">Vec</span>::<span class="hljs-title function_ invoke__">new</span>();<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br><br>    <span class="hljs-comment">// 这消耗 600 CU（与第一个相同，但类型已明确表示）</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">a</span>: <span class="hljs-type">Vec</span>&lt;<span class="hljs-type">i32</span>&gt; = <span class="hljs-type">Vec</span>::<span class="hljs-title function_ invoke__">new</span>();<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br><br>    <span class="hljs-comment">// 这消耗 618 CU（与 u64 占用相同的空间）</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">a</span>: <span class="hljs-type">Vec</span>&lt;<span class="hljs-type">i64</span>&gt; = <span class="hljs-type">Vec</span>::<span class="hljs-title function_ invoke__">new</span>();<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br><br>    <span class="hljs-comment">// 这消耗 459 CU</span><br>    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">a</span>: <span class="hljs-type">Vec</span>&lt;<span class="hljs-type">u8</span>&gt; = <span class="hljs-type">Vec</span>::<span class="hljs-title function_ invoke__">new</span>();<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br>    a.<span class="hljs-title function_ invoke__">push</span>(<span class="hljs-number">1</span>);<br><br>    <span class="hljs-title function_ invoke__">Ok</span>(())<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>注意随着整数类型的减小，计算单元成本的减少。这是预期的，因为较大的类型在内存中占用的空间比较小的类型大，无论表示的值如何。</p>
+<p>使用 <code>find_program_address</code> 在链上生成程序派生账户（PDA）可能会消耗更多的计算单元，因为此方法会迭代调用 <code>create_program_address</code>，直到找到不在 ed25519 曲线上的 PDA。为了减少计算成本，尽可能在链外使用 <code>find_program_address()</code> 并将生成的 bump seed 传递给程序。更多内容将在后面的部分讨论，因为这超出了本节的范围。</p>
+<p>这不是一个详尽的列表，但几点可以让你了解什么会使一个程序比另一个程序更计算密集。</p>
+<h2 id="什么是-eBPF？"><a href="#什么是-eBPF？" class="headerlink" title="什么是 eBPF？"></a>什么是 eBPF？</h2><p>Solana 的字节码主要源自 BPF。“eBPF” 简单来说就是“扩展的 BPF”。</p>
+<p>本节解释了 Linux 上下文中的 BPF。</p>
+<p>正如你所料，Solana VM 不理解 Rust 或 C。用这些语言编写的程序被编译为 eBPF（扩展的 Berkeley Packet Filter）。</p>
+<p>简而言之，eBPF 允许在内核中（在沙盒环境中）执行任意的 eBPF 字节码，当内核发出 eBPF 字节码订阅的事件时，例如：</p>
+<ul>
+<li>网络：打开&#x2F;关闭套接字</li>
+<li>磁盘：写入&#x2F;读取</li>
+<li>进程的创建</li>
+<li>线程的创建</li>
+<li>CPU 指令调用</li>
+<li>支持高达 64 位（这就是为什么 Solana 的最大 uint 类型是 u64）</li>
+</ul>
+<p>你可以将其视为内核的 JavaScript。JavaScript 在浏览器中发出事件时执行操作，eBPF 在内核中发出事件时执行类似的操作，例如当执行系统调用时。</p>
+<p>这使我们能够为各种用例构建程序，例如（基于上面列出的事件）：</p>
+<ul>
+<li>网络：分析路由等</li>
+<li>安全：根据某些规则过滤流量并报告任何不良&#x2F;被阻止的流量</li>
+<li>跟踪和分析：从用户空间程序到内核指令收集详细的执行流程</li>
+<li>可观察性：报告和分析内核活动</li>
+</ul>
+<p>程序仅在我们需要时执行（即当内核中发出事件时）。例如，假设你想在文件被写入时获取文件名和写入的数据，我们监听&#x2F;注册&#x2F;订阅 <code>vfs_write()</code> 系统调用事件。现在，每当该文件被写入时，我们就可以使用这些数据。</p>
+<p>想象一下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">🏠 你的房子（操作系统内核）<br>├── 🚪 门铃（事件触发器）<br>├── 📹 监控摄像头（eBPF 程序）<br>└── 🔔 警报系统（响应动作）<br><br>当有人按门铃（事件发生）→ 摄像头自动录像（eBPF 程序执行）→ 发送通知（执行操作）<br><br></code></pre></td></tr></table></figure>
+
+<p>编译流程</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">Rust/C 源代码<br>    ↓ [编译器]<br>LLVM IR（中间表示）<br>    ↓ [LLVM 后端]<br>eBPF 字节码<br>    ↓ [加载到内核/VM]<br>执行<br><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="Solana-字节码格式（SBF）"><a href="#Solana-字节码格式（SBF）" class="headerlink" title="Solana 字节码格式（SBF）"></a>Solana 字节码格式（SBF）</h2><p>Solana 字节码格式是 eBPF 的一个变体，具有某些变化，最突出的是移除了字节码验证器。字节码验证器存在于 eBPF 中，以确保所有可能的执行路径都是有限且安全执行的。</p>
+<p>Solana 使用计算单元限制来处理这个问题。<strong>拥有一个限制计算资源消耗的计算单元计量器将安全检查移到运行时，并允许任意内存访问、间接跳转、循环和其他有趣的行为</strong>。</p>
+<p>在后面的教程中，我们将深入探讨一个简单的程序及其字节码，调整它，了解不同的计算单元成本，并确切了解 Solana 字节码的工作原理以及如何分析它。</p>
+<p>对比</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash">┌─────────────────────────────────────────────────┐<br>│              eBPF (Linux)                       │<br>├─────────────────────────────────────────────────┤<br>│ ✅ 有字节码验证器                                │<br>│ ✅ 限制循环                                      │<br>│ ✅ 限制内存访问                                  │<br>│ ✅ 静态安全检查                                  │<br>│ ❌ 不支持任意跳转                                │<br>└─────────────────────────────────────────────────┘<br><br>┌─────────────────────────────────────────────────┐<br>│         SBF (Solana)                            │<br>├─────────────────────────────────────────────────┤<br>│ ❌ 移除了字节码验证器                            │<br>│ ✅ 允许循环                                      │<br>│ ✅ 允许任意内存访问                              │<br>│ ✅ 允许间接跳转                                  │<br>│ ✅ 使用计算单元（CU）限制                        │<br>│ ✅ 运行时安全检查                                │<br>└─────────────────────────────────────────────────┘<br><br></code></pre></td></tr></table></figure>
+
+<p>为什么限制计算单元</p>
+<ul>
+<li>防止无限循环</li>
+<li>限制资源消耗</li>
+<li>运行时安全保证</li>
+</ul>
 
                 
               </div>
