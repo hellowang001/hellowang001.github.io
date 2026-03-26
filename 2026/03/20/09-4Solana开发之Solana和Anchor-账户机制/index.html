@@ -1,0 +1,949 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Wangxiaowang">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="在 Solana 和 Anchor 中初始化账户在 Solidity 和 Ethereum 中，另一种更为特殊的设计模式是 SSTORE2 或 SSTORE3，其中数据存储在另一个智能合约的字节码中。 在 Solana 中，这并不是一种特殊的设计模式，而是一种常规做法！ 回想一下，除非程序被标记为不可变，否则我们可以随意更新 Solana 程序的字节码（如果我们是原始部署者）。 Solana 使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="09-4Solana开发之Solana和Anchor 账户机制">
+<meta property="og:url" content="http://example.com/2026/03/20/09-4Solana%E5%BC%80%E5%8F%91%E4%B9%8BSolana%E5%92%8CAnchor-%E8%B4%A6%E6%88%B7%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="Wang">
+<meta property="og:description" content="在 Solana 和 Anchor 中初始化账户在 Solidity 和 Ethereum 中，另一种更为特殊的设计模式是 SSTORE2 或 SSTORE3，其中数据存储在另一个智能合约的字节码中。 在 Solana 中，这并不是一种特殊的设计模式，而是一种常规做法！ 回想一下，除非程序被标记为不可变，否则我们可以随意更新 Solana 程序的字节码（如果我们是原始部署者）。 Solana 使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/rust/rust3.png">
+<meta property="article:published_time" content="2026-03-20T07:14:19.000Z">
+<meta property="article:modified_time" content="2026-03-25T10:28:54.633Z">
+<meta property="article:author" content="Wangxiaowang">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/img/rust/rust3.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>09-4Solana开发之Solana和Anchor 账户机制 - Wang</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"37fd8385820c4abc0e564a2c423b7511","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?37fd8385820c4abc0e564a2c423b7511";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Home</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/rust/rust2.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="09-4Solana开发之Solana和Anchor 账户机制"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-03-20 15:14" pubdate>
+          2026年3月20日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          9.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          77 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">09-4Solana开发之Solana和Anchor 账户机制</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="在-Solana-和-Anchor-中初始化账户"><a href="#在-Solana-和-Anchor-中初始化账户" class="headerlink" title="在 Solana 和 Anchor 中初始化账户"></a>在 Solana 和 Anchor 中初始化账户</h1><p>在 Solidity 和 Ethereum 中，另一种更为特殊的设计模式是 SSTORE2 或 SSTORE3，其中数据存储在另一个智能合约的字节码中。</p>
+<p>在 Solana 中，这并不是一种特殊的设计模式，而是一种<strong>常规做法</strong>！</p>
+<p>回想一下，除非程序被标记为不可变，否则我们可以随意更新 Solana 程序的字节码（如果我们是原始部署者）。</p>
+<p>Solana 使用相同的机制来存储数据。</p>
+<p>以太坊中的存储槽实际上是一个巨大的键值存储：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>    key<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>smart_contract_address<span class="hljs-punctuation">,</span> storage slot<span class="hljs-punctuation">]</span><br>    value<span class="hljs-punctuation">:</span> <span class="hljs-number">32</span>_byte_slot <span class="hljs-comment">// (例如: 0x00)</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>Solana 的模型类似：它是一个巨大的键值存储，其中“键”是一个 base 58 编码的地址，而值是一个可以大到 10MB 的数据块（或可选择不存储任何内容）。它可以这样可视化：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-comment">// key 是一个 base58 编码的 32 字节序列</span><br>    key<span class="hljs-punctuation">:</span> ETnqC8mvPRyUVXyXoph22EQ1GS5sTs1zndkn5eGMYWfs<br>    value<span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>        data<span class="hljs-punctuation">:</span> <span class="hljs-number">020000006</span>ad1897139ac2bdb67a3c66a...<br>        <span class="hljs-comment">// 其他字段省略</span><br>    <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>以下图表展示了以太坊如何维护状态。每个帐户都是 Merkle 树中的一个叶子。请注意，“存储变量”被存储在智能合约的帐户（帐户 1）“内部”。</p>
+<p><img src="/img/solana/Merkle1.jpeg" srcset="/img/loading.gif" lazyload alt="Merkle1"></p>
+<p>在 Solana 中，<strong>一切都是帐户</strong>，可以潜在地保存数据。有时我们将一个帐户称为“<strong>程序帐户</strong>”，另一个帐户称为“<strong>存储帐户</strong>”，但唯一的区别在于可执行标志是否设置为真，以及我们打算如何使用帐户的数据字段。</p>
+<p>这就是solana 中的 账户模型的意思，一个账户（地址）存储一些数据</p>
+<p>下面，我们可以看到 Solana 存储是一个从 Solana 地址到帐户的巨大键值存储：</p>
+<p><img src="/img/solana/account.jpeg" srcset="/img/loading.gif" lazyload alt="account"></p>
+<p>想象一下，如果以太坊没有存储变量，智能合约默认是可变的。<strong>要存储数据，你必须创建其他“智能合约”，</strong>并将数据保存在它们的字节码中，然后在必要时修改它。这是 Solana 的一种心理模型。</p>
+<blockquote>
+<p>另一种心理模型是 Unix 中的一切都是文件，有些文件是可执行的。可以将 Solana 帐户视为文件。它们保存内容，但它们也具有元数据，指示谁拥有该文件，它是否可执行，等等。</p>
+</blockquote>
+<p>在 Ethereum 中，存储变量直接与智能合约耦合。除非智能合约通过公共变量、delegatecall 或某些设置方法授予读写访问权限，否则存储变量默认只能由单个合约写入或读取（尽管任何人都可以从链下读取存储变量）。在 Solana 中，所有“存储变量”可以被任何程序读取，但只有其所有者程序可以写入它（换句话说：只有这个地址的拥有者才可以修改这个地址内的数据）。</p>
+<p>存储与程序“绑定”的方式是通过<strong>所有者字段</strong>。</p>
+<p>在下图中，我们看到帐户 B 是由程序帐户 A 所拥有。我们知道 A 是程序帐户，因为“<strong>可执行</strong>”设置为 <code>true</code>。这表明 B 的数据字段将存储 A 的数据：</p>
+<p><img src="/img/solana/account2.jpeg" srcset="/img/loading.gif" lazyload alt="account2"></p>
+<h2 id="Solana-程序必须在使用之前初始化"><a href="#Solana-程序必须在使用之前初始化" class="headerlink" title="Solana 程序必须在使用之前初始化"></a>Solana 程序必须在使用之前初始化</h2><p>在 Ethereum 中，我们可以直接写入一个我们之前未使用的存储变量。然而，Solana 程序需要一个显式的初始化事务。也就是说，我们必须先创建帐户，然后才能向其中写入数据。</p>
+<p><em>可以在一个事务中初始化并写入一个 Solana 帐户——然而这会引入安全问题，这将使讨论变得复杂。如果我们现在处理它，暂时只需说 Solana 帐户必须在使用之前进行初始化。</em></p>
+<h2 id="基本存储示例"><a href="#基本存储示例" class="headerlink" title="基本存储示例"></a>基本存储示例</h2><p>让我们将以下 Solidity 代码翻译为 Solana：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract BasicStorage &#123;<br>    Struct MyStorage &#123;<br>        uint64 x;<br>    &#125;<br><br>    MyStorage public myStorage;<br><br>    function set(uint64 _x) external &#123;<br>        myStorage.x = _x;<br>    &#125;<br>&#125; <br></code></pre></td></tr></table></figure>
+
+<p>将单个变量包裹在一个结构中可能看起来很奇怪。</p>
+<p>但在 Solana 程序中，特别是在 Anchor 中，<strong>所有存储，或者说帐户数据，都被视为结构</strong>。原因在于帐户数据的灵活性。由于帐户是可以非常大的数据块（最大可达 10MB），我们需要某种“结构”来解读数据，否则它只是一个毫无意义的字节序列。</p>
+<p>在后台，Anchor 在我们尝试读取或写入数据时会对帐户数据进行反序列化和序列化为结构。</p>
+<p>如上所述，我们需要在使用 Solana 帐户之前对其进行初始化，因此在实现 <code>set()</code> 函数之前，我们需要编写 <code>initialize()</code> 函数。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-meta">#[program]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">mod</span> basic_storage &#123;<br>    <span class="hljs-keyword">use</span> super::*;<br><br>    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">initialize</span>(ctx: Context&lt;Initialize&gt;) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Result</span>&lt;()&gt; &#123;<br>        <span class="hljs-title function_ invoke__">Ok</span>(())<br>    &#125;<br>&#125;<br><br><span class="hljs-meta">#[derive(Accounts)]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">Initialize</span>&lt;<span class="hljs-symbol">&#x27;info</span>&gt; &#123;<br>    <span class="hljs-comment">// #[]是一个属性宏，用于增强 my_storage 用的，account()带参数的属性增强宏</span><br>    <span class="hljs-comment">// payer = signer, // 谁在为分配存储支付 SOL,签名者被指定为mut,表示可变，因为他们的账户余额将会变化</span><br>    <span class="hljs-comment">// 即会从他们账户扣除一些SOL，因此，我们将他们的账户注释为 “可变”，这个signer为my_storage 支付</span><br>    <span class="hljs-comment">// space 空间，表示将会占用多少空间，+8表示除了 结构所需直接，额外加8个字节</span><br>    <span class="hljs-comment">// seeds = [] 和bump ,种子一个程序可以拥有多个账户，它通过“种子”在账户自己按进行区分，该宗旨用于计算“鉴别符”，</span><br>    <span class="hljs-comment">// “鉴别符”占8个自己额，这就是为什么除了我们结构所需要的空间外还要额外分配8个直接，bump目前可以看作是样板代码</span><br>    <span class="hljs-comment">// 这些基本都是样板代码，不必过于纠结</span><br>    <span class="hljs-meta">#[account(init,// 初始化</span><br><span class="hljs-meta">              payer = signer, // 谁在为分配存储支付 SOL,签名者被指定为mut,表示可变，因为他们的账户余额将会变化</span><br><span class="hljs-meta">              space=size_of::&lt;MyStorage&gt;() + 8,// 空间，表示将会占用多少空间，+8后面说</span><br><span class="hljs-meta">              seeds = []</span>,<br>              bump)]<br>    <span class="hljs-keyword">pub</span> my_storage: Account&lt;<span class="hljs-symbol">&#x27;info</span>, MyStorage&gt;,<span class="hljs-comment">// my_storage 在初始化MyStorage这个结构体</span><br><br>    <span class="hljs-meta">#[account(mut)]</span><br>    <span class="hljs-keyword">pub</span> signer: Signer&lt;<span class="hljs-symbol">&#x27;info</span>&gt;, <span class="hljs-comment">// 负责为结构的存储支付 “gas 费”的钱包，就是签名者嘛</span><br><br>    <span class="hljs-keyword">pub</span> system_program: Program&lt;<span class="hljs-symbol">&#x27;info</span>, System&gt;, <span class="hljs-comment">// 系统程序</span><br>    <span class="hljs-comment">// 内置于Solana运行时的程序（有点像以太坊的预编译），它从一个账户向另一个账户转移SOL,</span><br>    <span class="hljs-comment">// 现在我们需要将SOL从支付MyStruct 存储的签名者那里转移，因此 system program 总是初始化事物的一部分。</span><br>&#125;<br><br><span class="hljs-meta">#[account]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">MyStorage</span> &#123;<br>    x: <span class="hljs-type">u64</span>,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-Initialize-结构"><a href="#2-Initialize-结构" class="headerlink" title="2) Initialize 结构"></a>2) Initialize 结构</h3><p><code>Initialize</code> 结构包含初始化帐户所需资源的引用：</p>
+<ul>
+<li><code>my_storage</code>: 我们正在初始化的 <code>MyStorage</code> 类型的结构。</li>
+<li><code>signer</code>: 负责为结构的存储支付“Gas费”的钱包。 （关于存储的Gas费用将在后面讨论）。</li>
+<li><code>system_program</code>:  <code>system program</code> 是一个内置于 Solana 运行时的程序（有点像 <a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/11236">Ethereum 预编译</a>），它从一个帐户向另一个帐户转移 SOL。我们将在后面的教程中重新访问这个概念。现在，我们需要将 SOL 从支付 <code>MyStruct</code> 存储的签名者那里转移，因此 <code>system program</code> 总是初始化事务的一部分。</li>
+</ul>
+<p>这里重要的关键字是 <code>init</code>。</p>
+<p>当我们 <code>init</code> 一个帐户时，必须提供额外的信息：</p>
+<ul>
+<li><code>payer</code>：谁在为分配存储支付 SOL。签名者被指定为 <code>mut</code>，因为他们的帐户余额将会变化，即会从他们的帐户中扣除一些 SOL。因此，我们将他们的帐户注释为“可变”。</li>
+<li><code>space</code>（ ：这指示帐户将占用多少空间。我们可以使用 <code>std::mem::size_of</code> 工具，并将我们正在尝试存储的结构 <code>MyStorage</code>（绿色框）作为参数。<code>+ 8</code>（粉色框）的含义将在下一点中讨论。</li>
+<li><code>seeds</code> 和 &#96;bump ：一个程序可以拥有多个帐户，它通过“种子”在帐户之间进行“区分”，该种子用于计算“鉴别符”。“鉴别符”占 8 个字节，这就是为什么除了我们结构所占的空间外还需要分配额外的 8 个字节。bump 目前可以视为样板代码。</li>
+</ul>
+<p>这可能听起来有点复杂，但不用担心。<strong>初始化帐户在很大程度上可以视为样板代码。</strong></p>
+<h3 id="4-什么是系统程序？"><a href="#4-什么是系统程序？" class="headerlink" title="4) 什么是系统程序？"></a>4) 什么是系统程序？</h3><p><code>system program</code> 是一个内置于 Solana 运行时的程序（有点像 <a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/11236">Ethereum 预编译</a>），它从一个帐户向另一个帐户转移 SOL。我们将在后面的教程中重新访问这个概念。现在，我们需要将 SOL 从支付 <code>MyStruct</code> 存储的签名者那里转移，因此 <code>system program</code> 总是初始化事务的一部分。</p>
+<h3 id="5-MyStorage-结构"><a href="#5-MyStorage-结构" class="headerlink" title="5) MyStorage 结构"></a>5) MyStorage 结构</h3><p>回想一下 Solana 帐户内的数据字段：</p>
+<p><img src="/img/solana/account5.jpeg" srcset="/img/loading.gif" lazyload alt="account3"></p>
+<p>在幕后，这是一串字节序列。上面示例中的结构：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-meta">#[account]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">MyStorage</span> &#123;<br>    x: <span class="hljs-type">u64</span>,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在写入时被序列化为字节序列并存储在 <code>data</code> 字段中。在写入期间，<code>data</code> 字段根据该结构被反序列化。</p>
+<p>在 示例中，我们仅使用了结构中的一个变量，尽管如果我们想的话，可以添加更多变量或其他类型的变量。</p>
+<p>Solana 运行时并不强制我们使用结构来存储数据。从 Solana 的角度来看，帐户只是保存数据块。但是，Rust 有很多方便的库将结构转换为数据块和反之亦然，因此结构是惯例。Anchor 在幕后利用这些库。</p>
+<p>你不需要使用结构来使用 Solana 帐户。可以直接写入字节序列，但这不是存储数据的便捷方式。</p>
+<p><code>#[account]</code> 宏透明地实现了所有魔法。</p>
+<p>单元测试</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;初始化测试&#x27;</span>,<span class="hljs-keyword">async</span> () =&gt; &#123;<br>    <span class="hljs-keyword">const</span> seeds = []<br>    <span class="hljs-keyword">const</span> [myStorage,_bump] = anchor.<span class="hljs-property">web3</span>.<span class="hljs-property">PublicKey</span>.<span class="hljs-title function_">findProgramAddressSync</span>(seeds,program.<span class="hljs-property">programId</span>);<br><br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;the storage account address is &quot;</span>,myStorage.<span class="hljs-title function_">toBase58</span>());<br>    <span class="hljs-keyword">await</span> program.<span class="hljs-property">methods</span>.<span class="hljs-title function_">initialize</span>().<span class="hljs-title function_">accounts</span>(&#123;<span class="hljs-attr">myStorage</span>:myStorage&#125;).<span class="hljs-title function_">rpc</span>();<br><br>  &#125;);<br></code></pre></td></tr></table></figure>
+
+<p>测试结果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">the storage account address is  AckSAk8e3JgL1e4gbBpmip7xVRHZcrTaKtxdEtJDSj8K<br>    ✔ 初始化测试 (512ms)<br></code></pre></td></tr></table></figure>
+
+<p>Solana 要求我们提前指定一笔交易将与哪些帐户交互。由于我们正在与存储 <code>MyStruct</code> 的帐户交互，因此我们需要提前计算其“地址”，并将其传递给 <code>initialize()</code> 函数。这可以通过以下 Typescript 代码来完成：</p>
+<p>所以必须调用findProgramAddressSync(seeds,program.programId)方法来完成</p>
+<h3 id="预测-Solana-中的帐户地址就像以太坊中的-create2"><a href="#预测-Solana-中的帐户地址就像以太坊中的-create2" class="headerlink" title="预测 Solana 中的帐户地址就像以太坊中的 create2"></a>预测 Solana 中的帐户地址就像以太坊中的 create2</h3><p>在以太坊中，使用 create2 创建的合约地址依赖于：</p>
+<ul>
+<li>部署合约的地址</li>
+<li>一个盐值</li>
+<li>以及创建合约的字节码</li>
+</ul>
+<p>预测 Solana 中初始化帐户的地址则非常相似，只是忽略了“字节码”。具体而言，它依赖于：</p>
+<ul>
+<li>拥有存储帐户的程序 <code>basic_storage</code>（这类似于部署合约的地址）</li>
+<li>以及 <code>seeds</code>（这类似于 create2 的“盐”）</li>
+</ul>
+<p> ，<code>seeds</code> 是一个空数组，后面探讨非空数组。</p>
+<h3 id="不要忘记将-my-storage-转为-myStorage"><a href="#不要忘记将-my-storage-转为-myStorage" class="headerlink" title="不要忘记将 my_storage 转为 myStorage"></a>不要忘记将 my_storage 转为 myStorage</h3><p>Anchor 将 Rust 的蛇形命名法默默转换为 Typescript 的驼峰命名法。当我们在 Typescript 中向 initialize 函数提供 <code>.accounts(&#123;myStorage: myStorage&#125;)</code> 时，它是在“填写” Rust 中 <code>Initialize</code> 结构的 <code>my_storage</code> 键（下方绿色圆圈）。<code>system_program</code> 和 <code>Signer</code> 会由 Anchor 静默填充：</p>
+<h2 id="帐户不能被初始化两次"><a href="#帐户不能被初始化两次" class="headerlink" title="帐户不能被初始化两次"></a>帐户不能被初始化两次</h2><p>如果我们可以重新初始化一个帐户，那将非常麻烦，因为用户可能会清除系统中的数据！幸运的是，Anchor 在后台对此进行了防护。</p>
+<p>当我们运行测试时，测试失败，因为第二次调用 <code>initialize</code> 抛出了错误。预期输出如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash">1) day_5<br>       初始化测试:<br>     Simulation failed. <br>Message: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x0.                                                              <br>Logs:                                                                                                                                                           <br>[                                                                                                                                                               <br>  <span class="hljs-string">&quot;Program ApfcbYE4FcrTPwkYZe25jn89XyQEmi22XQB1of1bqLG5 invoke [1]&quot;</span>,                                                                                            <br>  <span class="hljs-string">&quot;Program log: Instruction: Initialize&quot;</span>,                                                                                                                       <br>  <span class="hljs-string">&quot;Program 11111111111111111111111111111111 invoke [2]&quot;</span>,                                                                                                        <br>  <span class="hljs-string">&quot;Allocate: account Address &#123; address: AckSAk8e3JgL1e4gbBpmip7xVRHZcrTaKtxdEtJDSj8K, base: None &#125; already in use&quot;</span>,                                             <br>  <span class="hljs-string">&quot;Program 11111111111111111111111111111111 failed: custom program error: 0x0&quot;</span>,                                                                                 <br>  <span class="hljs-string">&quot;Program ApfcbYE4FcrTPwkYZe25jn89XyQEmi22XQB1of1bqLG5 consumed 7293 of 200000 compute units&quot;</span>,                                                                 <br>  <span class="hljs-string">&quot;Program ApfcbYE4FcrTPwkYZe25jn89XyQEmi22XQB1of1bqLG5 failed: custom program error: 0x0&quot;</span>                                                                      <br>].                                                                                                                                                              <br>Catch the `SendTransactionError` and call `getLogs()` on it <span class="hljs-keyword">for</span> full details.<br></code></pre></td></tr></table></figure>
+
+<h2 id="初始化帐户的总结"><a href="#初始化帐户的总结" class="headerlink" title="初始化帐户的总结"></a>初始化帐户的总结</h2><p>对大多数 EVM 开发者来说，初始化帐户的必要性可能感觉不自然。</p>
+<p>别担心，你会不断看到这一代码序列，它会随着时间的推移而成为你的第二天性。</p>
+<p>在本教程中，我们只考虑了初始化存储，在接下来的教程中，我们将学习读取、写入和删除存储。将有很多机会让你直观地了解我们今天查看的所有代码的作用。</p>
+<p><strong>练习：</strong> 修改 <code>MyStorage</code> 以保存 <code>x</code> 和 <code>y</code>，就像它是一个笛卡尔坐标。这意味着在 <code>MyStorage</code> 结构中添加 <code>y</code> 并将它们的类型从 <code>u64</code> 改为 <code>i64</code>。你无需修改代码的其他部分，因为 <code>size_of</code> 会为你重新计算大小。确保重置验证器，以便原始存储帐户被擦除，从而不阻止你再次初始化该帐户。</p>
+<h1 id="Solana-计数器：在账户中读写数据"><a href="#Solana-计数器：在账户中读写数据" class="headerlink" title="Solana 计数器：在账户中读写数据"></a>Solana 计数器：在账户中读写数据</h1><p>以下是之前关于初始化 Solana 账户的教程中的代码。我们添加了一个 <code>set()</code> 函数，用于在 MyStorage 中存储一个数字，并添加了相关的 Set 结构体。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">pub</span> <span class="hljs-keyword">mod</span> day_2 &#123;<br>    <span class="hljs-keyword">use</span> super::*;<br><br>    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">initialize</span>(ctx: Context&lt;Initialize&gt;) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Result</span>&lt;()&gt; &#123;<br>        <span class="hljs-title function_ invoke__">Ok</span>(())<br>    &#125;<br><br>    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">set</span>(ctx: Context&lt;Set&gt;, new_x: <span class="hljs-type">u64</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Result</span>&lt;()&gt; &#123;<br>        ctx.accounts.my_storage.x=new_x;<br>        <span class="hljs-title function_ invoke__">Ok</span>(())<br>    &#125;<br>&#125;<br><br><span class="hljs-meta">#[account]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">MyStorage</span> &#123;<br>    x: <span class="hljs-type">u64</span>,<br>&#125;<br><br><br><span class="hljs-meta">#[derive(Accounts)]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">Set</span>&lt;<span class="hljs-symbol">&#x27;info</span>&gt; &#123;<br>    <span class="hljs-meta">#[account(mut,seeds = []</span>,bump)]<br>    <span class="hljs-keyword">pub</span> my_storage: Account&lt;<span class="hljs-symbol">&#x27;info</span>, MyStorage&gt;,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="set-函数解释"><a href="#set-函数解释" class="headerlink" title="set() 函数解释"></a><code>set()</code> 函数解释</h3><p><img src="/img/solana/account7.jpeg" srcset="/img/loading.gif" lazyload alt="account3"></p>
+<p>解释 <code>ctx.accounts.my_storage.x = new_x</code> 的工作原理：</p>
+<ul>
+<li><p><code>ctx</code>中的<code>accounts</code>字段表示我们可以访问Set 结构体中的所有键，这不是Rust 列出结构体键的语法方式，<code>accounts</code>能够引用<code>set</code>结构体中的键，是因为<code>#[derive(Accounts)]</code>宏的神奇插入</p>
+</li>
+<li><p><code>my_storage</code>账户被设置为 <code>mut</code>表示可变的，因为我们打算更改其中的值<code>x</code></p>
+</li>
+<li><p>键<code>my_storage</code>通过将<code>MyStorage</code>作为泛型参数传递给<code>Account</code>，为我们提供了对 <code>MyStorage</code> 账户的引用。我们使用键 <code>my_storage</code> 和存储结构体 <code>MyStorage</code> 是为了可读性，它们不需要是彼此的大小写变体。将它们“绑定在一起”的是黄色框和黄色箭头。</p>
+</li>
+</ul>
+<p>本质上，当调用 <code>set()</code> 时，调用者（Typescript 客户端）将 <code>myStorage</code> 账户传递给 <code>set()</code>。在这个账户内部是存储的地址。在幕后，<code>set</code> 将加载存储，写入 <code>x</code> 的新值，序列化结构体，然后将其存储回去。</p>
+<h3 id="Set-的-Context-结构体"><a href="#Set-的-Context-结构体" class="headerlink" title="Set 的 Context 结构体"></a><code>Set</code> 的 <code>Context</code> 结构体</h3><p><code>set()</code> 的 <code>Context</code> 结构体比 <code>initialize</code> 简单得多，因为它只需要一个资源：对 <code>MyStorage</code> 账户的可变引用。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs rust">#<span class="hljs-meta">#[derive(Accounts)]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">Set</span>&lt;<span class="hljs-symbol">&#x27;info</span>&gt; &#123;<br>    <span class="hljs-meta">#[account(mut, seeds = []</span>, bump)]<br>    <span class="hljs-keyword">pub</span> my_storage: Account&lt;<span class="hljs-symbol">&#x27;info</span>, MyStorage&gt;,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>回想一下，<strong>Solana 交易必须提前指定它将访问哪些账户</strong>。<code>set()</code> 函数的结构体指定它将可变地（<code>mut</code>）访问 <code>my_storage</code> 账户。</p>
+<p><code>seeds = []</code> 和 <code>bump</code> 用于派生我们将修改的账户的地址。尽管用户正在为我们传递账户，但 Anchor 通过重新派生地址并将其与用户提供的内容进行比较来验证用户是否传递了该程序真正拥有的账户。</p>
+<p><code>bump</code> 这个术语现在可以视为样板代码。但对于好奇的人来说，它用于确保账户不是加密有效的公钥。这是运行时知道这将用于程序数据存储的方式。</p>
+<p>即使我们的 Solana 程序可以自行派生存储账户的地址，用户仍然需要提供 <code>myStorage</code> 账户。这是 Solana 运行时要求的 </p>
+<h1 id="在Solana中创建“映射”和“嵌套映射”"><a href="#在Solana中创建“映射”和“嵌套映射”" class="headerlink" title="在Solana中创建“映射”和“嵌套映射”"></a>在Solana中创建“映射”和“嵌套映射”</h1><p>考虑以下示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs solidity">contract ExampleMapping &#123;<br><br>    struct SomeNum &#123;<br>        uint64 num;<br>    &#125;<br><br>    mapping(uint64 =&gt; SomeNum) public exampleMap;<br><br>    function setExampleMap(uint64 key, uint64 val) public &#123;<br>        exampleMap[key] = SomeNum(val);<br>    &#125;<br>&#125;<br><br><br></code></pre></td></tr></table></figure>
+
+<p>我们现在创建一个 Solana Anchor 程序 <code>example_map</code>。</p>
+<h2 id="初始化映射：Rust"><a href="#初始化映射：Rust" class="headerlink" title="初始化映射：Rust"></a>初始化映射：Rust</h2><p>起初，我们只会展示初始化步骤，因为它将引入一些需要解释的新语法。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">use</span> anchor_lang::prelude::*;<br><span class="hljs-keyword">use</span> std::mem::size_of;<br><br>declare_id!(<span class="hljs-string">&quot;DntexDPByFxpVeBSjd6nLqQQSqZmSaDkP8TUbcJ9jAgt&quot;</span>);<br><br><span class="hljs-meta">#[program]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">mod</span> example_map &#123;<br>    <span class="hljs-keyword">use</span> super::*;<br><br>    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">initialize</span>(ctx: Context&lt;Initialize&gt;, key: <span class="hljs-type">u64</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Result</span>&lt;()&gt; &#123;<br>        <span class="hljs-title function_ invoke__">Ok</span>(())<br>    &#125;<br>&#125;<br><br><span class="hljs-meta">#[derive(Accounts)]</span><br><span class="hljs-meta">#[instruction(key: u64)]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">Initialize</span>&lt;<span class="hljs-symbol">&#x27;info</span>&gt; &#123;<br><br>    <span class="hljs-meta">#[account(init,</span><br><span class="hljs-meta">              payer = signer,</span><br><span class="hljs-meta">              space = size_of::&lt;Val&gt;() + 8,</span><br><span class="hljs-meta">              seeds=[&amp;key.to_le_bytes().as_ref()]</span>,<br>              bump)]<br>    val: Account&lt;<span class="hljs-symbol">&#x27;info</span>, Val&gt;,<br>    <br>    <span class="hljs-meta">#[account(mut)]</span><br>    signer: Signer&lt;<span class="hljs-symbol">&#x27;info</span>&gt;,<br>    <br>    system_program: Program&lt;<span class="hljs-symbol">&#x27;info</span>, System&gt;,<br>&#125;<br><br><span class="hljs-meta">#[account]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">Val</span> &#123;<br>    value: <span class="hljs-type">u64</span>,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>以下是你可以将映射视为的方式：</p>
+<p><code>&amp;key.to_le_bytes().as_ref()</code> 中的 seeds 参数 <code>key</code> 可以看作是一个类似于 Solidity 构造形式的“键”：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs solidity">mapping(uint256 =&gt; uint256) myMap;<br>myMap[key] = val<br></code></pre></td></tr></table></figure>
+
+<p>代码中不熟悉的部分是 <code>#[instruction(key: u64)]</code> 和 <code>seeds=[&amp;key.to_le_bytes().as_ref()]</code>。</p>
+<h3 id="seeds-key-to-le-bytes-as-ref"><a href="#seeds-key-to-le-bytes-as-ref" class="headerlink" title="seeds &#x3D; [&amp;key.to_le_bytes().as_ref()]"></a>seeds &#x3D; [&amp;key.to_le_bytes().as_ref()]</h3><p><code>seeds</code> 中的项预期是字节。然而，我们传入的是一个 <code>u64</code>，它不是字节类型。为了将其转换为字节，我们使用 <code>to_le_bytes()</code>。“le” 是指 “<a target="_blank" rel="noopener" href="https://www.freecodecamp.org/news/what-is-endianness-big-endian-vs-little-endian/">小端</a>”。seeds 不必编码为小端字节，我们只是在这个例子中选择了它。只要你保持一致，大端也可以使用。如果要转换为大端，我们将使用 <code>to_be_bytes()</code>。</p>
+<h3 id="instruction-key-u64"><a href="#instruction-key-u64" class="headerlink" title="[instruction(key: u64)]"></a>[instruction(key: u64)]</h3><p>为了在 <code>initialize(ctx: Context&lt;Initialize&gt;, key: u64)</code> 中“传递”参数 <code>key</code>，我们需要使用 <code>instruction</code> 宏，否则我们的 <code>init</code> 宏没有办法“看到”来自 <code>initialize</code> 的 <code>key</code> 参数。</p>
+<p>所以其实这些操作都由宏给完成了</p>
+<h2 id="初始化映射：Typescript"><a href="#初始化映射：Typescript" class="headerlink" title="初始化映射：Typescript"></a>初始化映射：Typescript</h2><p>以下代码展示了如何初始化账户：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> anchor <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@coral-xyz/anchor&quot;</span>;<br><span class="hljs-keyword">import</span> &#123; <span class="hljs-title class_">Program</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@coral-xyz/anchor&quot;</span>;<br><span class="hljs-keyword">import</span> &#123; <span class="hljs-title class_">ExampleMap</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../target/types/example_map&quot;</span>;<br><br><span class="hljs-title function_">describe</span>(<span class="hljs-string">&quot;example_map&quot;</span>, <span class="hljs-function">() =&gt;</span> &#123;<br>  anchor.<span class="hljs-title function_">setProvider</span>(anchor.<span class="hljs-property">AnchorProvider</span>.<span class="hljs-title function_">env</span>());<br><br>  <span class="hljs-keyword">const</span> program = anchor.<span class="hljs-property">workspace</span>.<span class="hljs-property">ExampleMap</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">Program</span>&lt;<span class="hljs-title class_">ExampleMap</span>&gt;;<br><br>  <span class="hljs-title function_">it</span>(<span class="hljs-string">&quot;Initialize mapping storage&quot;</span>, <span class="hljs-keyword">async</span> () =&gt; &#123;<br>    <span class="hljs-keyword">const</span> key = <span class="hljs-keyword">new</span> anchor.<span class="hljs-title function_">BN</span>(<span class="hljs-number">42</span>);<br>    <span class="hljs-keyword">const</span> seeds = [key.<span class="hljs-title function_">toArrayLike</span>(<span class="hljs-title class_">Buffer</span>, <span class="hljs-string">&quot;le&quot;</span>, <span class="hljs-number">8</span>)];<br><br>    <span class="hljs-keyword">let</span> valueAccount = anchor.<span class="hljs-property">web3</span>.<span class="hljs-property">PublicKey</span>.<span class="hljs-title function_">findProgramAddressSync</span>(<br>      seeds,<br>      program.<span class="hljs-property">programId</span><br>    )[<span class="hljs-number">0</span>];<br><br>    <span class="hljs-keyword">await</span> program.<span class="hljs-property">methods</span>.<span class="hljs-title function_">initialize</span>(key).<span class="hljs-title function_">accounts</span>(&#123;<span class="hljs-attr">val</span>: valueAccount&#125;).<span class="hljs-title function_">rpc</span>();<br>  &#125;);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>代码 <code>key.toArrayLike(Buffer, &quot;le&quot;, 8)</code> 指定我们试图使用来自 <code>key</code> 的值创建一个大小为 8 字节的字节缓冲区。我们选择 8 字节，因为我们的键是 64 位，64 位是 8 字节。“le” 是小端，以便与 Rust 代码匹配。</p>
+<p>映射中的每个“值”都是一个单独的账户，必须单独初始化。</p>
+<h2 id="设置映射：Rust"><a href="#设置映射：Rust" class="headerlink" title="设置映射：Rust"></a>设置映射：Rust</h2><p>我们需要的额外 Rust 代码来设置值。这里的语法应该是熟悉的。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-comment">// 在 #[program] 模块内</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">set</span>(ctx: Context&lt;Set&gt;, key: <span class="hljs-type">u64</span>, val: <span class="hljs-type">u64</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Result</span>&lt;()&gt; &#123;<br>    ctx.accounts.val.value = val;<br>    <span class="hljs-title function_ invoke__">Ok</span>(())<br>&#125;<br><br><span class="hljs-comment">//...</span><br><br><span class="hljs-meta">#[derive(Accounts)]</span><br><span class="hljs-meta">#[instruction(key: u64)]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">Set</span>&lt;<span class="hljs-symbol">&#x27;info</span>&gt; &#123;<br>    <span class="hljs-meta">#[account(mut)]</span><br>    val: Account&lt;<span class="hljs-symbol">&#x27;info</span>, Val&gt;,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="设置和读取映射：Typescript"><a href="#设置和读取映射：Typescript" class="headerlink" title="设置和读取映射：Typescript"></a>设置和读取映射：Typescript</h2><p>因为我们在客户端（Typescript）推导出存储值的账户地址，所以我们就像处理 <code>seeds</code> 数组为空的账户那样读取和写入它。读取和写入 <a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/11427">Solana 账户数据</a> 的语法与之前的教程是相同的：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> anchor <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@coral-xyz/anchor&quot;</span>;<br><span class="hljs-keyword">import</span> &#123; <span class="hljs-title class_">Program</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@coral-xyz/anchor&quot;</span>;<br><span class="hljs-keyword">import</span> &#123; <span class="hljs-title class_">ExampleMap</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../target/types/example_map&quot;</span>;<br><br><span class="hljs-title function_">describe</span>(<span class="hljs-string">&quot;example_map&quot;</span>, <span class="hljs-function">() =&gt;</span> &#123;<br>  anchor.<span class="hljs-title function_">setProvider</span>(anchor.<span class="hljs-property">AnchorProvider</span>.<span class="hljs-title function_">env</span>());<br><br>  <span class="hljs-keyword">const</span> program = anchor.<span class="hljs-property">workspace</span>.<span class="hljs-property">ExampleMap</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">Program</span>&lt;<span class="hljs-title class_">ExampleMap</span>&gt;;<br><br>  <span class="hljs-title function_">it</span>(<span class="hljs-string">&quot;Initialize and set value&quot;</span>, <span class="hljs-keyword">async</span> () =&gt; &#123;<br>    <span class="hljs-keyword">const</span> key = <span class="hljs-keyword">new</span> anchor.<span class="hljs-title function_">BN</span>(<span class="hljs-number">42</span>);<br>    <span class="hljs-keyword">const</span> value = <span class="hljs-keyword">new</span> anchor.<span class="hljs-title function_">BN</span>(<span class="hljs-number">1337</span>);<br><br>    <span class="hljs-keyword">const</span> seeds = [key.<span class="hljs-title function_">toArrayLike</span>(<span class="hljs-title class_">Buffer</span>, <span class="hljs-string">&quot;le&quot;</span>, <span class="hljs-number">8</span>)];<br>    <span class="hljs-keyword">let</span> valueAccount = anchor.<span class="hljs-property">web3</span>.<span class="hljs-property">PublicKey</span>.<span class="hljs-title function_">findProgramAddressSync</span>(<br>      seeds,<br>      program.<span class="hljs-property">programId</span><br>    )[<span class="hljs-number">0</span>];<br>    <br>    <span class="hljs-comment">// 初始化initialize 账户，把 key 42 放在了valueAccount的 seeds 中</span><br>    <span class="hljs-keyword">await</span> program.<span class="hljs-property">methods</span>.<span class="hljs-title function_">initialize</span>(key).<span class="hljs-title function_">accounts</span>(&#123;<span class="hljs-attr">val</span>: valueAccount&#125;).<span class="hljs-title function_">rpc</span>();<br><br>    <span class="hljs-comment">// 设置账户</span><br>    <span class="hljs-comment">// 修改了这个账户的 seeds</span><br>    <span class="hljs-keyword">await</span> program.<span class="hljs-property">methods</span>.<span class="hljs-title function_">set</span>(key, value).<span class="hljs-title function_">accounts</span>(&#123;<span class="hljs-attr">val</span>: valueAccount&#125;).<span class="hljs-title function_">rpc</span>();<br><br>    <span class="hljs-comment">// 读取账户</span><br>    <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> program.<span class="hljs-property">account</span>.<span class="hljs-property">val</span>.<span class="hljs-title function_">fetch</span>(valueAccount);<br><br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`值 <span class="hljs-subst">$&#123;result.value&#125;</span> 被存储在 <span class="hljs-subst">$&#123;valueAccount.toBase58()&#125;</span>`</span>);<br>  &#125;);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<h2 id="澄清“嵌套映射”"><a href="#澄清“嵌套映射”" class="headerlink" title="澄清“嵌套映射”"></a>澄清“嵌套映射”</h2><p>在像 Python 或 JavaScript 这样的语言中，真正的嵌套映射是一个指向另一个哈希图的哈希图。</p>
+<p>然而，在 Solidity 中，“嵌套映射”只是一个拥有多个键的单一映射，表现得就像它们是一个键。</p>
+<p>在“真正的”嵌套映射中，你可以只提供第一个键并返回另一个哈希图。</p>
+<p>Solidity 的“嵌套映射”不是“真正的”嵌套映射：你不能提供一个键并获得一个映射返回：你必须提供所有的键才能得到最终结果。</p>
+<p>如果你使用 seeds 来模拟类似于 Solidity 的嵌套映射，你将面临相同的限制。你必须提供所有的 seeds——Solana 不会接受只有一个 seed。</p>
+<h2 id="初始化嵌套映射：Rust"><a href="#初始化嵌套映射：Rust" class="headerlink" title="初始化嵌套映射：Rust"></a>初始化嵌套映射：Rust</h2><p><code>seeds</code> 数组可以容纳任意数量的项，这类似于 Solidity 中的嵌套映射。当然，它受到每笔交易施加的计算限制。下面显示了初始化和设置的代码。</p>
+<p>我们不需要任何特殊的语法，只是需要更多的函数参数并在 <code>seeds</code> 中放入更多的项，因此我们将展示完整的代码，而不再进一步解释。</p>
+<h3 id="Rust-嵌套映射"><a href="#Rust-嵌套映射" class="headerlink" title="Rust 嵌套映射"></a>Rust 嵌套映射</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">use</span> anchor_lang::prelude::*;<br><span class="hljs-keyword">use</span> std::mem::size_of;<br><br>declare_id!(<span class="hljs-string">&quot;DntexDPByFxpVeBSjd6nLqQQSqZmSaDkP8TUbcJ9jAgt&quot;</span>);<br><br><span class="hljs-meta">#[program]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">mod</span> example_map &#123;<br>    <span class="hljs-keyword">use</span> super::*;<br><br>    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">initialize</span>(ctx: Context&lt;Initialize&gt;, key1: <span class="hljs-type">u64</span>, key2: <span class="hljs-type">u64</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Result</span>&lt;()&gt; &#123;<br>        <span class="hljs-title function_ invoke__">Ok</span>(())<br>    &#125;<br><br>    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">set</span>(ctx: Context&lt;Set&gt;, key1: <span class="hljs-type">u64</span>, key2: <span class="hljs-type">u64</span>, val: <span class="hljs-type">u64</span>) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Result</span>&lt;()&gt; &#123;<br>        ctx.accounts.val.value = val;<br>        <span class="hljs-title function_ invoke__">Ok</span>(())<br>    &#125;<br>&#125;<br><br><span class="hljs-meta">#[derive(Accounts)]</span><br><span class="hljs-meta">#[instruction(key1: u64, key2: u64)]</span> <span class="hljs-comment">// 添加的新键参数</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">Initialize</span>&lt;<span class="hljs-symbol">&#x27;info</span>&gt; &#123;<br><br>    <span class="hljs-meta">#[account(init,</span><br><span class="hljs-meta">              payer = signer,</span><br><span class="hljs-meta">              space = size_of::&lt;Val&gt;() + 8,</span><br><span class="hljs-meta">              seeds=[&amp;key1.to_le_bytes().as_ref(), &amp;key2.to_le_bytes().as_ref()]</span>, <span class="hljs-comment">// 2 个 seeds</span><br>              bump)]<br>    val: Account&lt;<span class="hljs-symbol">&#x27;info</span>, Val&gt;,<br>    <br>    <span class="hljs-meta">#[account(mut)]</span><br>    signer: Signer&lt;<span class="hljs-symbol">&#x27;info</span>&gt;,<br>    <br>    system_program: Program&lt;<span class="hljs-symbol">&#x27;info</span>, System&gt;,<br>&#125;<br><br><span class="hljs-meta">#[derive(Accounts)]</span><br><span class="hljs-meta">#[instruction(key1: u64, key2: u64)]</span> <span class="hljs-comment">// 添加的新键参数</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">Set</span>&lt;<span class="hljs-symbol">&#x27;info</span>&gt; &#123;<br>    <span class="hljs-meta">#[account(mut)]</span><br>    val: Account&lt;<span class="hljs-symbol">&#x27;info</span>, Val&gt;,<br>&#125;<br><br><span class="hljs-meta">#[account]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">Val</span> &#123;<br>    value: <span class="hljs-type">u64</span>,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Typescript-嵌套映射"><a href="#Typescript-嵌套映射" class="headerlink" title="Typescript 嵌套映射"></a>Typescript 嵌套映射</h3><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> anchor <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@coral-xyz/anchor&quot;</span>;<br><span class="hljs-keyword">import</span> &#123; <span class="hljs-title class_">Program</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@coral-xyz/anchor&quot;</span>;<br><span class="hljs-keyword">import</span> &#123; <span class="hljs-title class_">ExampleMap</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;../target/types/example_map&quot;</span>;<br><br><span class="hljs-title function_">describe</span>(<span class="hljs-string">&quot;example_map&quot;</span>, <span class="hljs-function">() =&gt;</span> &#123;<br>  anchor.<span class="hljs-title function_">setProvider</span>(anchor.<span class="hljs-property">AnchorProvider</span>.<span class="hljs-title function_">env</span>());<br><br>  <span class="hljs-keyword">const</span> program = anchor.<span class="hljs-property">workspace</span>.<span class="hljs-property">ExampleMap</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">Program</span>&lt;<span class="hljs-title class_">ExampleMap</span>&gt;;<br><br>  <span class="hljs-title function_">it</span>(<span class="hljs-string">&quot;Initialize and set value&quot;</span>, <span class="hljs-keyword">async</span> () =&gt; &#123;<br>    <span class="hljs-comment">// 我们现在有两个键</span><br>    <span class="hljs-keyword">const</span> key1 = <span class="hljs-keyword">new</span> anchor.<span class="hljs-title function_">BN</span>(<span class="hljs-number">42</span>);<br>    <span class="hljs-keyword">const</span> key2 = <span class="hljs-keyword">new</span> anchor.<span class="hljs-title function_">BN</span>(<span class="hljs-number">43</span>);<br>    <span class="hljs-keyword">const</span> value = <span class="hljs-keyword">new</span> anchor.<span class="hljs-title function_">BN</span>(<span class="hljs-number">1337</span>);<br><br>    <span class="hljs-comment">// seeds 现在有两个值</span><br>    <span class="hljs-keyword">const</span> seeds = [key1.<span class="hljs-title function_">toArrayLike</span>(<span class="hljs-title class_">Buffer</span>, <span class="hljs-string">&quot;le&quot;</span>, <span class="hljs-number">8</span>), key2.<span class="hljs-title function_">toArrayLike</span>(<span class="hljs-title class_">Buffer</span>, <span class="hljs-string">&quot;le&quot;</span>, <span class="hljs-number">8</span>)];<br>    <span class="hljs-keyword">let</span> valueAccount = anchor.<span class="hljs-property">web3</span>.<span class="hljs-property">PublicKey</span>.<span class="hljs-title function_">findProgramAddressSync</span>(<br>      seeds,<br>      program.<span class="hljs-property">programId</span><br>    )[<span class="hljs-number">0</span>];<br><br>    <span class="hljs-comment">// 函数现在使用两个键</span><br>    <span class="hljs-keyword">await</span> program.<span class="hljs-property">methods</span>.<span class="hljs-title function_">initialize</span>(key1, key2).<span class="hljs-title function_">accounts</span>(&#123;<span class="hljs-attr">val</span>: valueAccount&#125;).<span class="hljs-title function_">rpc</span>();<br>    <span class="hljs-keyword">await</span> program.<span class="hljs-property">methods</span>.<span class="hljs-title function_">set</span>(key1, key2, value).<span class="hljs-title function_">accounts</span>(&#123;<span class="hljs-attr">val</span>: valueAccount&#125;).<span class="hljs-title function_">rpc</span>();<br><br>    <span class="hljs-comment">// 读取账户</span><br>    <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">await</span> program.<span class="hljs-property">account</span>.<span class="hljs-property">val</span>.<span class="hljs-title function_">fetch</span>(valueAccount);<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`值 <span class="hljs-subst">$&#123;result.value&#125;</span> 被存储在 <span class="hljs-subst">$&#123;valueAccount.toBase58()&#125;</span>`</span>);<br>  &#125;);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p><strong>练习</strong> : 修改上述代码以形成一个使用三个键的嵌套映射。</p>
+<h2 id="初始化多个映射"><a href="#初始化多个映射" class="headerlink" title="初始化多个映射"></a>初始化多个映射</h2><p>实现多个映射的一种简单方法是向 <code>seeds</code> 数组中添加另一个变量，并将其视为“索引”第一个映射、第二个映射等等。</p>
+<p>以下代码展示了初始化 <code>which_map</code> 的示例，该映射仅持有一个键。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-meta">#[derive(Accounts)]</span><br><span class="hljs-meta">#[instruction(which_map: u64, key: u64)]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">InitializeMap</span>&lt;<span class="hljs-symbol">&#x27;info</span>&gt; &#123;<br><br>    <span class="hljs-meta">#[account(init,</span><br><span class="hljs-meta">              payer = signer,</span><br><span class="hljs-meta">              space = size_of::&lt;Val1&gt;() + 8,</span><br><span class="hljs-meta">              seeds=[&amp;which_map.to_le_bytes().as_ref(), &amp;key.to_le_bytes().as_ref()]</span>,<br>              bump)]<br>    val: Account&lt;<span class="hljs-symbol">&#x27;info</span>, Val1&gt;,<br><br>    <span class="hljs-meta">#[account(mut)]</span><br>    signer: Signer&lt;<span class="hljs-symbol">&#x27;info</span>&gt;,<br><br>    system_program: Program&lt;<span class="hljs-symbol">&#x27;info</span>, System&gt;,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>练习</strong> : 完成 Rust 和 Typescript 代码以创建一个具有两个映射的程序：第一个映射使用一个键，第二个映射使用两个键。考虑如何在指定第一个映射时，将两个级别的映射转换为单级映射。</p>
+<h1 id="存储成本和容量"><a href="#存储成本和容量" class="headerlink" title="存储成本和容量"></a>存储成本和容量</h1><p>在分配存储空间时，付款方必须支付每字节分配一定数量的SOL。</p>
+<p>Solana称之为“租赁”。这个名称有点误导，因为它暗示需要每月充值，但情况并非总是如此。一旦租金支付，就不再需要支付，即使两年过去了。当支付了两年的租金后，账户被认为是“免租”的。</p>
+<p>这个名称来源于Solana最初按字节每年的形式向账户收费。如果你只支付了半年的租金，那么你的账户将在六个月后被删除。如果你提前支付了两年的租金，账户就会“免租”。该账户将不再需要支付租金。如今，所有账户都必须是免租的；你不能支付少于两年的租金。</p>
+<p>虽然租金是按照“每字节”计算的，但零数据的账户不是免费的；Solana仍需要对其进行索引并存储与之相关的元数据。</p>
+<p><strong>当账户初始化时，所需租金的数量会在后台计算；你无需明确计算租金</strong>。</p>
+<p>然而，你确实想要能够预测存储的成本，以便能够恰当地设计你的应用程序。</p>
+<p>如果你想要一个快速的估算，运行 <code>solana rent &lt;字节数&gt;</code> 在命令行中会给出快速的答案</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">wang@MacBook-Airlocal rustLearning % solana rent 32      <br>Rent-exempt minimum: 0.0011136 SOL<br></code></pre></td></tr></table></figure>
+
+<p>如前所述，分配零字节是非免费的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">wang@MacBook-Airlocal rustLearning % solana rent 0 <br>Rent-exempt minimum: 0.00089088 SOL<br></code></pre></td></tr></table></figure>
+
+<p>让我们看看这个费用是如何计算的。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.rs/solana-program/latest/solana_program/rent/index.html">Anchor Rent Module</a>给我们提供了一些与租金相关的常量：</p>
+<ul>
+<li><code>ACCOUNT_STORAGE_OVERHEAD</code>：该常量的值为128（字节），顾名思义，一个空账户有128字节的开销。</li>
+<li><code>DEFAULT_EXEMPTION_THRESHOLD</code>：该常量的值为2.0（浮点数64），指的是提前支付两年的租金使得账户免于支付进一步的租金。</li>
+<li><code>DEFAULT_LAMPORTS_PER_BYTE_YEAR</code>：该常量的值为3,480，意味着每字节每年需要3,480 lamports。由于我们需要支付两年， 每字节将花费6,960 lamports。</li>
+</ul>
+<p>以下Rust程序打印出一个空账户将花费的金额。请注意，结果与上面的 <code>solana rent 0</code> 截图相符：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-meta">#[program]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">mod</span> learn &#123;<br>    <span class="hljs-keyword">use</span> super::*;<br>    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">initialize</span>(_ctx: Context&lt;Initialize&gt;) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Result</span>&lt;()&gt; &#123;<br>        <span class="hljs-keyword">let</span> <span class="hljs-variable">rent</span> =Rent::<span class="hljs-title function_ invoke__">get</span>()?;<br>        <span class="hljs-keyword">let</span> <span class="hljs-variable">empty_account_size</span> = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">let</span> <span class="hljs-variable">lamports</span> = rent.<span class="hljs-title function_ invoke__">minimum_balance</span>(empty_account_size);<br><br>        msg!(<span class="hljs-string">&quot;创建空账户的最小租金 : &#123;&#125; lamports&quot;</span>, lamports);<br>        msg!(<span class="hljs-string">&quot;约等于: &#123;&#125; SOL &quot;</span>, lamports <span class="hljs-keyword">as</span> <span class="hljs-type">f64</span> / <span class="hljs-number">1_000_000_000.0</span>);<br>        <span class="hljs-keyword">let</span> <span class="hljs-variable">account_size</span> = <span class="hljs-number">3</span>;<br>        <span class="hljs-keyword">let</span> <span class="hljs-variable">lamports_byte</span> = rent.<span class="hljs-title function_ invoke__">minimum_balance</span>(account_size);<br>        msg!(<span class="hljs-string">&quot;创建 &#123;&#125; 个字节的账户的租金 : &#123;&#125; lamports&quot;</span>, account_size,lamports_byte);<br>        msg!(<span class="hljs-string">&quot;约等于: &#123;&#125; SOL &quot;</span>, lamports_byte <span class="hljs-keyword">as</span> <span class="hljs-type">f64</span> / <span class="hljs-number">1_000_000_000.0</span>);<br>        <span class="hljs-title function_ invoke__">Ok</span>(())<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>运行后 查看日志</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">Log Messages:<br>  Program 8sm8zjwUwhvBLxhv1RHd64fQvdAasxoE3j57NrqSxJdr invoke [1]<br>  Program <span class="hljs-built_in">log</span>: Instruction: Initialize<br>  Program <span class="hljs-built_in">log</span>: 创建空账户的最小租金 : 890880 lamports<br>  Program <span class="hljs-built_in">log</span>: 约等于: 0.00089088 SOL <br>  Program <span class="hljs-built_in">log</span>: 创建 3 个字节的账户的租金 : 911760 lamports<br>  Program <span class="hljs-built_in">log</span>: 约等于: 0.00091176 SOL <br></code></pre></td></tr></table></figure>
+
+<h2 id="比较存储成本与ETH"><a href="#比较存储成本与ETH" class="headerlink" title="比较存储成本与ETH"></a>比较存储成本与ETH</h2><p>截至本文写成时，ETH的价值约为 $2,425。初始化一个新账户的费用为22,100 gas，因此我们可以计算32字节的gas成本为$0.80，假设gas费为15 gwei。</p>
+<p>目前，Solana的价格为90&#x2F;SOL，因此支付1,113,600lamports以初始化32字节存储将花费90&#x2F;<em>SO**L</em>，因此支付1,113,600<em>l<strong>am</strong>p<strong>or</strong>t**s</em>以初始化32字节存储将花费0.10。</p>
+<p>然而，ETH的市场资本是SOL的7.5倍，因此如果SOL的市场资本与ETH相同，SOL的当前价格将为$675，而32字节的存储将花费 $0.75。</p>
+<p>Solana有一个永久的通胀模型，最终将收敛到每年1.5%，这应有助于反映出存储随着时间的推移变得更便宜，根据摩尔定律，成本相同的晶体管密度每18个月翻倍。</p>
+<p>请记住，从字节到加密的转换是协议中设置的常量，可能在任何时候由于硬分叉而改变。</p>
+<h2 id="余额低于2年免租阈值的账户会减少直到账户被删除"><a href="#余额低于2年免租阈值的账户会减少直到账户被删除" class="headerlink" title="余额低于2年免租阈值的账户会减少直到账户被删除"></a>余额低于2年免租阈值的账户会减少直到账户被删除</h2><p>可以在这里阅读一个用户钱包账户逐渐被“耗尽”的趣味Reddit帖子：<a target="_blank" rel="noopener" href="https://www.reddit.com/r/solana/comments/qwin1h/my_sol_balance_in_the_wallet_is_decreasing/">https://www.reddit.com/r/solana/comments/qwin1h/my_sol_balance_in_the_wallet_is_decreasing/</a></p>
+<p>原因是该钱包的余额低于租赁豁免阈值，Solana运行时正在慢慢减少账户余额以支付租金。</p>
+<p>如果由于余额低于免租阈值而导致钱包最终被删除，可以通过向其发送更多SOL进行“复活”，但如果数据存储在账户中，则该数据将会丢失。</p>
+<h2 id="大小限制"><a href="#大小限制" class="headerlink" title="大小限制"></a>大小限制</h2><p>当我们初始化一个账户时，大小不得超过10,240字节。 否则就会报错</p>
+<p><strong>练习</strong>：创建一个基本的存储初始化程序并设置<code>space=10241</code>。这比限制高出1字节。你应该会看到类似以下的错误：</p>
+<h2 id="更改账户大小"><a href="#更改账户大小" class="headerlink" title="更改账户大小"></a>更改账户大小</h2><p>如果你需要增加账户的大小，可以使用<code>realloc</code>宏。这在账户存储一个向量并需要更多空间时可能会很方便。增加1000字节的代码在<code>increase_account_size</code>函数和<code>IncreaseAccountSize</code>上下文结构中可以找到（请查看以下代码中的大写注释）：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">use</span> anchor_lang::prelude::*;<br><span class="hljs-keyword">use</span> std::mem::size_of;<br><br>declare_id!(<span class="hljs-string">&quot;GLKUcCtHx6nkuDLTz5TNFrR4tt4wDNuk24Aid2GrDLC6&quot;</span>);<br><br><span class="hljs-meta">#[program]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">mod</span> basic_storage &#123;<br>    <span class="hljs-keyword">use</span> super::*;<br><br>    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">initialize</span>(ctx: Context&lt;Initialize&gt;) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Result</span>&lt;()&gt; &#123;<br>        <span class="hljs-title function_ invoke__">Ok</span>(())<br>    &#125;<br><br>    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">increase_account_size</span>(ctx: Context&lt;IncreaseAccountSize&gt;) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Result</span>&lt;()&gt; &#123;<br>        <span class="hljs-title function_ invoke__">Ok</span>(())<br>    &#125;<br>&#125;<br><br><br><span class="hljs-meta">#[derive(Accounts)]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">IncreaseAccountSize</span>&lt;<span class="hljs-symbol">&#x27;info</span>&gt; &#123;<br><br>    <span class="hljs-meta">#[account(mut,</span><br><span class="hljs-meta">              // ***** 增加1,000 BYTE点在这里 *****</span><br><span class="hljs-meta">              realloc = size_of::&lt;MyStorage&gt;() + 8 + 1000,</span><br><span class="hljs-meta">              realloc::payer = signer,</span><br><span class="hljs-meta">              realloc::zero = false,</span><br><span class="hljs-meta">              seeds = []</span>,<br>              bump)]<br>    <span class="hljs-keyword">pub</span> my_storage: Account&lt;<span class="hljs-symbol">&#x27;info</span>, MyStorage&gt;,<br><br>    <span class="hljs-meta">#[account(mut)]</span><br>    <span class="hljs-keyword">pub</span> signer: Signer&lt;<span class="hljs-symbol">&#x27;info</span>&gt;,<br><br>    <span class="hljs-keyword">pub</span> system_program: Program&lt;<span class="hljs-symbol">&#x27;info</span>, System&gt;,<br>&#125;<br><br><span class="hljs-meta">#[derive(Accounts)]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">Initialize</span>&lt;<span class="hljs-symbol">&#x27;info</span>&gt; &#123;<br><br>    <span class="hljs-meta">#[account(init,</span><br><span class="hljs-meta">              payer = signer,</span><br><span class="hljs-meta">              space=size_of::&lt;MyStorage&gt;() + 8,</span><br><span class="hljs-meta">              seeds = []</span>,<br>              bump)]<br>    <span class="hljs-keyword">pub</span> my_storage: Account&lt;<span class="hljs-symbol">&#x27;info</span>, MyStorage&gt;,<br><br>    <span class="hljs-meta">#[account(mut)]</span><br>    <span class="hljs-keyword">pub</span> signer: Signer&lt;<span class="hljs-symbol">&#x27;info</span>&gt;,<br><br>    <span class="hljs-keyword">pub</span> system_program: Program&lt;<span class="hljs-symbol">&#x27;info</span>, System&gt;,<br>&#125;<br><br><span class="hljs-meta">#[account]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">MyStorage</span> &#123;<br>    x: <span class="hljs-type">u64</span>,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在增加账户大小时，如果你不想删除账户数据，请确保设置<code>realloc::zero = false</code>（在上面的代码中）。如果你希望账户数据被设置为全零，请使用<code>realloc::zero = true</code>。你不需要更改测试。该宏会为你在后台处理这些。</p>
+<p><strong>练习</strong>：在测试中初始化一个账户，然后调用<code>increase_account_size</code>函数。通过在命令行中执行<code>solana account &lt;addr&gt;</code> 查看账户大小。你需要在本地验证器上执行此操作，以使账户持续存在。</p>
+<h2 id="最大Solana账户大小"><a href="#最大Solana账户大小" class="headerlink" title="最大Solana账户大小"></a>最大Solana账户大小</h2><p>每次重新分配的最大账户增加为10240。Solana中账户的最大大小为10MB。</p>
+<h2 id="预测程序部署的成本"><a href="#预测程序部署的成本" class="headerlink" title="预测程序部署的成本"></a>预测程序部署的成本</h2><p>部署Solana程序的主要费用来自支付存储字节码的租金。字节码存储在与<code>anchor deploy</code>返回的地址不同的单独账户中。</p>
+<p>下面的屏幕截图展示了如何获取此信息：</p>
+<p>目前，简单的Hello World程序的部署费用略高于2.47 SOL。通过直接编写原生Rust代码而不是使用Anchor框架，费用可以显著降低，但我们不建议在你完全理解Anchor默认消除的所有安全风险之前这样做。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs bash">wang@MacBook-Airlocal learn % anchor deploy                                                           <br>Deploying cluster: http://127.0.0.1:8899<br>Upgrade authority: /Users/wang/.config/solana/id.json<br>Deploying program <span class="hljs-string">&quot;learn&quot;</span>...<br>Program path: /Users/wang/code/rustLearning/learn/target/deploy/learn.so...<br>Program Id: 8sm8zjwUwhvBLxhv1RHd64fQvdAasxoE3j57NrqSxJdr<br><br>Signature: 5Pu4JaanvKqQ3th2GAhMqBoyurvu3FSLjEuLwwM9iX5v2HbUnRPAHk3AQKpB2rFsh5wZknC8uDVBWvzvhzB7XZ5N<br><br>Waiting <span class="hljs-keyword">for</span> program 8sm8zjwUwhvBLxhv1RHd64fQvdAasxoE3j57NrqSxJdr to be confirmed...<br>Program confirmed on-chain<br>Idl data length: 212 bytes<br>Step 0/212 <br>Idl account 8hxRqKSvwG4VQEvW4RA244jN5SVFGxZ2i1ZSYVS1BXUu successfully upgraded<br>Deploy success<br>wang@MacBook-Airlocal learn % solana program show 8sm8zjwUwhvBLxhv1RHd64fQvdAasxoE3j57NrqSxJdr        <br><br>Program Id: 8sm8zjwUwhvBLxhv1RHd64fQvdAasxoE3j57NrqSxJdr<br>Owner: BPFLoaderUpgradeab1e11111111111111111111111<br>ProgramData Address: Cg1KkwbSzks8EqfpAyuRehjypLFRnEt2uNRgSyaFX33M<br>Authority: 28QdAWmR5Tn5NsifTBvB8DxJDXN5eaQbFVwHactRxmff<br>Last Deployed In Slot: 13656<br>Data Length: 221576 (0x36188) bytes<br>Balance: 1.54337304 SOL<br><br>wang@MacBook-Airlocal learn % solana account Cg1KkwbSzks8EqfpAyuRehjypLFRnEt2uNRgSyaFX33M | <span class="hljs-built_in">head</span> -n 10<br><br>Public Key: Cg1KkwbSzks8EqfpAyuRehjypLFRnEt2uNRgSyaFX33M<br>Balance: 1.54337304 SOL<br>Owner: BPFLoaderUpgradeab1e11111111111111111111111<br>Executable: <span class="hljs-literal">false</span><br>Rent Epoch: 18446744073709551615<br>Length: 221621 (0x361b5) bytes<br>0000:   03 00 00 00  58 35 00 00  00 00 00 00  01 10 c1 76   ....X5.........v<br>0010:   ba b4 55 ae  2e b0 e8 4e  2e 61 cf 77  88 15 1b 7d   ..U....N.a.w...&#125;<br>0020:   be 10 30 7d  42 45 54 9f  fb 28 67 53  2a 7f 45 4c   ..0&#125;BET..(gS*.EL<br><br>thread <span class="hljs-string">&#x27;main&#x27;</span> panicked at library/std/src/io/stdio.rs:1123:9:<br>failed printing to stdout: Broken pipe (os error 32)<br>note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace<br></code></pre></td></tr></table></figure>
+
+<p>Balance: 1.54337304 SOL</p>
+<h1 id="账户余额"><a href="#账户余额" class="headerlink" title="账户余额"></a>账户余额</h1><p>读取账户余额</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">pub</span> <span class="hljs-keyword">fn</span> <span class="hljs-title function_">read_balance</span>(ctx: Context&lt;ReadBalance&gt;) <span class="hljs-punctuation">-&gt;</span> <span class="hljs-type">Result</span>&lt;()&gt; &#123;<br>        <span class="hljs-keyword">let</span> <span class="hljs-variable">balance</span> = ctx.accounts.acct.<span class="hljs-title function_ invoke__">to_account_info</span>().<span class="hljs-title function_ invoke__">lamports</span>();<br><br>        msg!(<span class="hljs-string">&quot;余额以 Lamports 表示为&#123;&#125;&quot;</span>,balance);<br>        msg!(<span class="hljs-string">&quot;约等于: &#123;&#125; SOL &quot;</span>, balance <span class="hljs-keyword">as</span> <span class="hljs-type">f64</span> / <span class="hljs-number">1_000_000_000.0</span>);<br><br>        <span class="hljs-title function_ invoke__">Ok</span>(())<br><br>    &#125;<br><span class="hljs-meta">#[derive(Accounts)]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">ReadBalance</span> &lt;<span class="hljs-symbol">&#x27;info</span>&gt; &#123;<br>    <span class="hljs-comment">/// CHECK:` 尽管我们读取了这个账户的余额，但是并没有用到这个信息</span><br>    <span class="hljs-keyword">pub</span> acct:UncheckedAccount&lt;<span class="hljs-symbol">&#x27;info</span>&gt;,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>调用</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript">  <br><span class="hljs-keyword">const</span> defaultKeyPair = <span class="hljs-keyword">new</span> anchor.<span class="hljs-property">web3</span>.<span class="hljs-title class_">PublicKey</span>(<span class="hljs-string">&quot;28QdAWmR5Tn5NsifTBvB8DxJDXN5eaQbFVwHactRxmff&quot;</span>)<br>  <br><span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;查看账户余额&#x27;</span>,<span class="hljs-keyword">async</span> () =&gt; &#123;<br>      <span class="hljs-keyword">const</span> tx=<span class="hljs-keyword">await</span> program.<span class="hljs-property">methods</span>.<span class="hljs-title function_">readBalance</span>().<span class="hljs-title function_">accounts</span>(&#123;<span class="hljs-attr">acct</span>:defaultKeyPair&#125;).<span class="hljs-title function_">rpc</span>();<br>  &#125;);<br></code></pre></td></tr></table></figure>
+
+<p>运行结果</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs smali">Log Messages:<br>  Program 8sm8zjwUwhvBLxhv1RHd64fQvdAasxoE3j57NrqSxJdr<span class="hljs-built_in"> invoke </span>[1]<br>  Program log: Instruction: ReadBalance<br>  Program log: 余额以 Lamports 表示为499999997083932000<br>  Program log: 约等于: 499999997.08393204 SOL <br></code></pre></td></tr></table></figure>
+
+<h2 id="在Solana-Anchor中什么是UncheckedAccount？"><a href="#在Solana-Anchor中什么是UncheckedAccount？" class="headerlink" title="在Solana Anchor中什么是UncheckedAccount？"></a>在Solana Anchor中什么是<code>UncheckedAccount</code>？</h2><p><code>UncheckedAccount</code>类型通知Anchor不检查正在读取的账户是否被该程序拥有。</p>
+<p>注意，我们通过<code>Context</code>结构传递的账户并不是该程序初始化的账户，因此该程序并不拥有它。</p>
+<p>当Anchor读取<code>#[derive(Accounts)]</code>中的<code>Account</code>类型账户时，它会检查（在后台）该账户是否被该程序拥有。如果不拥有，执行将会停止。</p>
+<p>这作为一个重要的安全检查。</p>
+<p><strong>如果恶意用户构造了一个该程序未创建的账户，并将其传递给Solana程序，而Solana程序盲目信任该账户中的数据，就可能发生严重错误。</strong></p>
+<p>例如，如果该程序是一个银行，而该账户存储了用户的余额，那么黑客可以提供一个<strong>不同的</strong>账户，其人工作高于实际余额。</p>
+<p>不过，要实施这个黑客，用户必须在单独的交易中创建虚假账户，然后将其传递给Solana程序。然而，Anchor框架会在后台检查该账户是否不被程序拥有，并拒绝读取该账户。</p>
+<p><code>UncheckedAccount</code>绕过了这个安全检查。</p>
+<p><strong>重要</strong>：<code>AccountInfo</code>和<code>UncheckedAccount</code>是彼此的别名，并且<code>AccountInfo</code>具有相同的安全性考虑。</p>
+<p>在我们的案例中，我们传递的账户显然不被程序拥有——我们想检查一个<strong>任意账户</strong>的余额。因此，我们必须确保移除这个安全检查后没有关键逻辑可以被篡改。</p>
+<p>在我们的案例中，我们只是将余额记录到控制台，但大多数现实案例会有更复杂的逻辑。</p>
+<h3 id="什么是-CHECK-？"><a href="#什么是-CHECK-？" class="headerlink" title="什么是/// CHECK:？"></a>什么是<code>/// CHECK:</code>？</h3><p>由于使用<code>UncheckedAccount</code>的危险性，Anchor强制你包括此注释，以鼓励你不要忽视安全考虑。</p>
+<p><strong>练习</strong>：删除<code>/// CHECK:</code>注释并运行<code>anchor build</code>，你应该看到构建停止，并要求你添加回注释并解释为什么未经检查的账户是安全的。也就是说，读取不可信的账户可能是危险的，Anchor希望确保你不对账户中的数据执行任何关键操作。</p>
+<h2 id="为什么程序中没有-account-结构？"><a href="#为什么程序中没有-account-结构？" class="headerlink" title="为什么程序中没有#[account]结构？"></a>为什么程序中没有<code>#[account]</code>结构？</h2><p><code>#[account]</code>结构告诉Anchor如何反序列化持有数据的账户。例如，以下看似的账户结构将通知Anchor将存储在账户中的数据反序列化为一个单一的<code>u64</code>：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-meta">#[account]</span><br><span class="hljs-keyword">pub</span> <span class="hljs-keyword">struct</span> <span class="hljs-title class_">Counter</span> &#123;<br>    counter: <span class="hljs-type">u64</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>然而，在我们的案例中，我们并不想从账户中读取数据——我们只想读取余额。这类似于我们可以读取以太坊地址的余额，而无法读取其代码。由于我们<strong>不</strong>想反序列化数据，因此我们不提供<code>#[account]</code>结构。</p>
+<h2 id="并非所有账户中的SOL都是可支配的"><a href="#并非所有账户中的SOL都是可支配的" class="headerlink" title="并非所有账户中的SOL都是可支配的"></a>并非所有账户中的SOL都是可支配的</h2><p>回忆一下我们关于<a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/11420">Solana账户租金</a>的讨论，账户必须保持一定的SOL余额以便“免租”，否则运行时将删除该账户。仅仅因为账户中有“1 SOL”并不一定意味着该账户可以支配全部1 SOL。</p>
+<p>例如，如果你正在构建一个质押或银行应用程序，其中用户存入的SOL存放在单独的账户中，那么简单地测量这些账户的SOL余额并不准确，因为租金将包含在余额中。</p>
+<h1 id="功能修饰符（view、pure、payable）和回退函数在-Solana-中不存在的原因"><a href="#功能修饰符（view、pure、payable）和回退函数在-Solana-中不存在的原因" class="headerlink" title="功能修饰符（view、pure、payable）和回退函数在 Solana 中不存在的原因"></a>功能修饰符（view、pure、payable）和回退函数在 Solana 中不存在的原因</h1><h2 id="Solana-没有-fallback-或-receive-函数"><a href="#Solana-没有-fallback-或-receive-函数" class="headerlink" title="Solana 没有 fallback 或 receive 函数"></a>Solana 没有 fallback 或 receive 函数</h2><p>Solana 交易必须预先指定它将修改或读取的账户作为交易的一部分。如果“fallback”函数访问了一个不确定的账户，那么整个交易将失败。这将使用户不得不预测 fallback 函数将访问的账户。因此，直接不允许这种类型的函数更为简单。</p>
+<h2 id="Solana-没有“view”或“pure”函数的概念"><a href="#Solana-没有“view”或“pure”函数的概念" class="headerlink" title="Solana 没有“view”或“pure”函数的概念"></a>Solana 没有“view”或“pure”函数的概念</h2><p>Solidity 中的“view”函数通过两种机制保证状态不会改变：</p>
+<ul>
+<li>view 函数中的所有外部调用都是 <a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/11233">静态调用</a>（如果发生状态更改，调用将回滚）</li>
+<li>如果编译器检测到状态更改的操作码，它将抛出错误</li>
+</ul>
+<p>纯函数更进一步，编译器会检查是否存在查看状态的操作码。</p>
+<p>这些函数限制主要发生在编译器层面，而 Anchor 没有实现任何这些编译器检查。Anchor 并不是构建 Solana 程序的唯一框架。<a target="_blank" rel="noopener" href="https://www.seahorse.dev/">Seahorse</a> 是另一个框架。也许其他框架会带有明确说明函数可以做什么和不能做什么的函数注解，但目前我们可以依赖以下保证：如果某个账户未包含在 Context 结构体定义中，该函数将不会访问该账户。</p>
+<p>这<strong>并不</strong>意味着该账户完全无法被访问。例如，我们可以编写一个单独的程序来读取账户，并以某种方式将该数据转发给相关函数。</p>
+<p>最后，Solana 虚拟机或运行时中没有 <code>staticcall</code> 这样的东西。</p>
+<h2 id="无论如何，view-函数在-Solana-中并不必要"><a href="#无论如何，view-函数在-Solana-中并不必要" class="headerlink" title="无论如何，view 函数在 Solana 中并不必要"></a>无论如何，view 函数在 Solana 中并不必要</h2><p>因为 Solana 程序可以读取传递给它的任何账户，所以它可以读取另一个程序拥有的账户。</p>
+<p>拥有账户的程序不需要实现 view 函数来允许另一个程序查看该账户。web3 js 客户端或其他程序可以直接<a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/11427">查看 Solana 账户数据</a>。</p>
+<p>这有一个非常重要的含义：</p>
+<p><strong>无法使用重入锁来直接防御 Solana 中的只读重入。程序必须为读者暴露一个标志，以知道数据是否可靠。</strong></p>
+<p><a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/10525">只读重入</a>发生在受害合约访问显示被操纵数据的 view 函数时。在 Solidity 中，可以通过在 view 函数中添加 nonReentrant 修饰符来防御。然而，在 Solana 中，无法阻止另一个程序查看账户中的数据。</p>
+<p>然而，Solana 程序仍然可以实现重入防护使用的标志。消费另一个程序账户的程序可以检查这些标志，以查看账户是否可能处于重入状态，从而不应被信任。</p>
+<h2 id="Rust-中没有自定义修饰符"><a href="#Rust-中没有自定义修饰符" class="headerlink" title="Rust 中没有自定义修饰符"></a>Rust 中没有自定义修饰符</h2><p>像 <code>onlyOwner</code> 或 <code>nonReentrant</code> 这样的自定义修饰符是 Solidity 的构造，而不是 Rust 中可用的功能。</p>
+<h2 id="Rust-或-Anchor-中不可用自定义单位"><a href="#Rust-或-Anchor-中不可用自定义单位" class="headerlink" title="Rust 或 Anchor 中不可用自定义单位"></a>Rust 或 Anchor 中不可用自定义单位</h2><p>由于 Solidity 与以太坊紧密相关，它有方便的像 <code>ethers</code> 或 <code>wei</code> 这样的关键字来衡量以太币。不出所料，<code>LAMPORTS_PER_SOL</code> 在 Rust 中没有定义，但让人有些惊讶的是，它在 Anchor Rust 框架中也没有定义。不过，它在 Solana web3 js 库中是可用的。</p>
+<p>同样，Solidity 中有 <code>days</code> 作为 84,600 秒的方便别名，但在 Rust&#x2F;Anchor 中没有这样的等价物。</p>
+<h2 id="Solana-中没有所谓的“payable”函数。程序从用户那里转移-SOL，用户不将-SOL-转移给程序"><a href="#Solana-中没有所谓的“payable”函数。程序从用户那里转移-SOL，用户不将-SOL-转移给程序" class="headerlink" title="Solana 中没有所谓的“payable”函数。程序从用户那里转移 SOL，用户不将 SOL 转移给程序"></a>Solana 中没有所谓的“payable”函数。程序从用户那里转移 SOL，用户不将 SOL 转移给程序</h2>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>09-4Solana开发之Solana和Anchor 账户机制</div>
+      <div>http://example.com/2026/03/20/09-4Solana开发之Solana和Anchor-账户机制/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Wangxiaowang</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年3月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/03/17/09-3Solana%E5%BC%80%E5%8F%91%E4%B9%8BSolana%E7%B3%BB%E7%BB%9F%E5%8F%98%E9%87%8F%E5%92%8C%E5%8C%BA%E5%9D%97%E4%BF%A1%E6%81%AF/" title="09-3Solana开发之Solana系统变量和区块信息">
+                        <span class="hidden-mobile">09-3Solana开发之Solana系统变量和区块信息</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/waline.css')
+      Fluid.utils.createScript('https://registry.npmmirror.com/@waline/client/2.15.8/files/dist/waline.js', function() {
+        var options = Object.assign(
+          {"serverURL":"https://my-waline-rosy-one.vercel.app","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":[],"lang":"zh-cn","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo"],"dark":"auto","wordLimit":0,"pageSize":10,"enable":true,"placeholder":"欢迎留下评论，嘿嘿！","avatar":"mm","visitor":true,"comment_count":true,"libUrl":null},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
