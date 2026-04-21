@@ -19,14 +19,16 @@
   <meta name="author" content="Wangxiaowang">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="article">
+    <meta name="description" content="SPL Token 的运作方式Solana Program Library Token (SPL Token) 是 Solana 的代币标准：如何创建代币以及它们应该如何运作。它相当于 Solana 的以太坊代币标准，如 ERC-20（同质化代币）和 ERC-721 (NFTs)。 与以太坊为每个代币标准使用单独的智能合约不同，Solana 上的所有 SPL 代币都使用相同的程序。这意味着 Sol">
+<meta property="og:type" content="article">
 <meta property="og:title" content="09-6Solana开发之代币">
 <meta property="og:url" content="http://example.com/2026/04/17/09-6Solana%E5%BC%80%E5%8F%91%E4%B9%8B%E4%BB%A3%E5%B8%81/index.html">
 <meta property="og:site_name" content="Wang">
+<meta property="og:description" content="SPL Token 的运作方式Solana Program Library Token (SPL Token) 是 Solana 的代币标准：如何创建代币以及它们应该如何运作。它相当于 Solana 的以太坊代币标准，如 ERC-20（同质化代币）和 ERC-721 (NFTs)。 与以太坊为每个代币标准使用单独的智能合约不同，Solana 上的所有 SPL 代币都使用相同的程序。这意味着 Sol">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/img/rust/rust3.png">
 <meta property="article:published_time" content="2026-04-17T10:05:35.000Z">
-<meta property="article:modified_time" content="2026-04-17T10:05:47.634Z">
+<meta property="article:modified_time" content="2026-04-21T13:54:45.075Z">
 <meta property="article:author" content="Wangxiaowang">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/img/rust/rust3.png">
@@ -248,7 +250,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 字
+          2.4k 字
         
       </span>
     
@@ -259,7 +261,7 @@
         
         
         
-          1 分钟
+          20 分钟
         
       </span>
     
@@ -301,7 +303,115 @@
             
               <div class="markdown-body">
                 
-                
+                <h1 id="SPL-Token-的运作方式"><a href="#SPL-Token-的运作方式" class="headerlink" title="SPL Token 的运作方式"></a>SPL Token 的运作方式</h1><p>Solana Program Library Token (SPL Token) 是 Solana 的代币标准：如何创建代币以及它们应该如何运作。它相当于 Solana 的以太坊代币标准，如 ERC-20（同质化代币）和 ERC-721 (NFTs)。</p>
+<p>与以太坊为每个代币标准使用单独的智能合约不同，Solana 上的所有 SPL 代币都使用相同的程序。这意味着 Solana 上的所有代币都共享相同的底层逻辑，代币特定的参数在创建期间设置，而不是通过不同的程序代码设置。SPL Token 程序仅包含逻辑，而所有代币数据都单独存储。这与 Solana 如何将逻辑与状态分离到不同的帐户中是一致的。</p>
+<p>以下是一种思考 SPL 代币与以太坊对比的方式：在以太坊上，你通常为每个独特的代币部署一个新的智能合约（如 ERC-20）。在 Solana 上，你不是部署新代码，而是与这个单一的 SPL 程序交互，该程序包含定义代币、铸造、转移、批准和销毁所需的所有指令</p>
+<blockquote>
+<p>一句话总结</p>
+<p>▎ ERC20 &#x3D; 一个代币一个合约，状态集中在合约 storage<br>▎ SPL Token &#x3D; 所有代币共用一个程序，状态分散在各自的链上账户（Mint + Token Accounts）</p>
+</blockquote>
+<h2 id="代币程序"><a href="#代币程序" class="headerlink" title="代币程序"></a><strong>代币程序</strong></h2><p>SPL Token 程序是负责管理 SPL 代币功能的核心链上程序。它包含创建 SPL 代币的逻辑，并定义它们如何运作。SPL Token 程序位于一个固定的地址：**<code>TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA</code>**。</p>
+<p>代币程序拥有所有存储 SPL 代币状态的帐户（我们将在进展过程中介绍这些帐户）。这种所有权意味着代币程序是唯一可以修改这些帐户中数据的程序。</p>
+<h2 id="Mint-帐户"><a href="#Mint-帐户" class="headerlink" title="Mint 帐户"></a><strong>Mint 帐户</strong></h2><p>每个单独的 SPL 代币都有一个唯一的 Mint 帐户，该帐户存储关于该代币的全局信息。它保存着诸如代币的总供应量、小数位数以及哪些地址（如果有）有权铸造代币和冻结帐户（即列入黑名单）等数据。如上所述，代币的核心逻辑保留在 SPL Token 程序中。</p>
+<p>每个 mint 帐户都是唯一的，并且在初始化新的 SPL 代币时通过 SPL Token 程序创建。当我们在 Solana 中引用代币地址时，我们也指的是它的 mint 帐户地址，因为它们是相同的。例如，以下分别是 USDC 和 USDT 的代币地址（mint 帐户）： <a target="_blank" rel="noopener" href="https://explorer.solana.com/address/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v">EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v</a> 和 <a target="_blank" rel="noopener" href="https://explorer.solana.com/address/Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB">Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB</a>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs bash">┌─────────────────────────────────────────────────────┐<br>│                    spl-token 程序                    │<br>│         TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss4        │<br>└──────────────┬──────────────────────────────────────┘<br>               │ 管理<br>               ▼<br>┌─────────────────────────┐<br>│      Mint Account        │  ← 代币本身的定义<br>│  - supply (总供应量)      │<br>│  - decimals              │<br>│  - mint_authority        │  ← 谁能增发<br>│  - freeze_authority      │  ← 谁能冻结<br>└──────────┬──────────────┘<br>           │ 1:N<br>           ▼<br>┌─────────────────────────┐<br>│     Token Account        │  ← 某个用户持有该代币的<span class="hljs-string">&quot;口袋&quot;</span><br>│  - mint (属于哪个代币)    │<br>│  - owner (谁控制这个账户) │<br>│  - amount (余额)         │<br>│  - delegate              │<br>│  - state (frozen?)       │<br>└─────────────────────────┘<br><br>---<br></code></pre></td></tr></table></figure>
+
+<h3 id="Mint-帐户详细信息"><a href="#Mint-帐户详细信息" class="headerlink" title="Mint 帐户详细信息"></a>Mint 帐户详细信息</h3><p>像所有 Solana 帐户一样，mint 帐户具有标准的元数据字段，分别是：</p>
+<ul>
+<li>Lamports ( <a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/11420">用于租金</a>)</li>
+<li>Owner（在这种情况下是 Token Program 地址）</li>
+<li>Executable 状态（值为 <code>false</code>，因为它用于数据存储）</li>
+</ul>
+<h3 id="Mint-Account-详解"><a href="#Mint-Account-详解" class="headerlink" title="Mint Account 详解"></a>Mint Account 详解</h3><p>地址: 任意公钥（创建时生成）<br>大小: 82 bytes（固定）<br>数据:</p>
+<ul>
+<li>mint_authority: Option<Pubkey>   &#x2F;&#x2F; 增发权限，None &#x3D; 永久锁死供应量</li>
+<li>supply:         u64              &#x2F;&#x2F; 当前流通总量</li>
+<li>decimals:       u8               &#x2F;&#x2F; 精度，如 USDC &#x3D; 6</li>
+<li>is_initialized: bool</li>
+<li>freeze_authority: Option<Pubkey> &#x2F;&#x2F; 冻结权限</li>
+</ul>
+<p>创建 Mint 的本质是：</p>
+<ol>
+<li>创建一个普通账户（分配 82 bytes 空间，支付 rent ~0.0015 SOL）</li>
+<li>调用 spl-token 的 InitializeMint 指令初始化它</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs"><br></code></pre></td></tr></table></figure>
+
+<h3 id="Token-Account-详解"><a href="#Token-Account-详解" class="headerlink" title="Token Account 详解"></a>Token Account 详解</h3><p>地址: 任意公钥（通常用 ATA 派生）<br>大小: 165 bytes（固定）<br>数据:</p>
+<ul>
+<li>mint:                 Pubkey       &#x2F;&#x2F; 对应哪个 Mint</li>
+<li>owner:                Pubkey       &#x2F;&#x2F; 谁有控制权</li>
+<li>amount:               u64          &#x2F;&#x2F; 余额（注意是整数，要除以 10^decimals）</li>
+<li>delegate:             Option<Pubkey></li>
+<li>state:                AccountState &#x2F;&#x2F; Initialized &#x2F; Frozen &#x2F; Uninitialized</li>
+<li>is_native:            Option<u64>  &#x2F;&#x2F; 是否是 Wrapped SOL</li>
+<li>delegated_amount:     u64</li>
+<li>close_authority:      Option<Pubkey></li>
+</ul>
+<hr>
+<h3 id="Token-帐户"><a href="#Token-帐户" class="headerlink" title="Token 帐户"></a>Token 帐户</h3><p>Token 帐户是 Solana 帐户，用于存储用户的代币余额、帐户关联的 mint 地址以及可以授权转帐的所有者，以及我们稍后将详细介绍的其他字段。</p>
+<p>按照设计，用户可以拥有同一代币的多个 Token 帐户，这些帐户在不同的地址创建。正如 Solana 程序库文档所述，这会带来挑战：</p>
+<p><em>“用户可以拥有任意数量的属于同一 mint 的代币帐户，这使得其他用户很难知道他们应该将代币发送到哪个帐户。”</em></p>
+<p>这意味着用户的一个代币余额可以分散在多个帐户中，而不是位于一个地方。</p>
+<p>例如：</p>
+<ul>
+<li>Alice 在一个代币帐户中有 5 个代币，在另一个代币帐户中有 15 个代币。这两个代币帐户都属于同一个 mint，因此她总共拥有该 mint 的 20 个代币。</li>
+<li>但是，如果 Bob 想向 Alice 发送更多代币，他没有简单的方法知道她更喜欢在哪个帐户中接收它们。</li>
+</ul>
+<p>这就是 SPL 文档所说的“任意数量的代币帐户”的挑战。余额不是冗余副本，而是 <strong>分散在多个帐户中的总余额的一部分</strong>。</p>
+<p>为了解决这个问题，Solana 引入了关联 Token 帐户 (ATA)。</p>
+<h3 id="ATA（Associated-Token-Account）"><a href="#ATA（Associated-Token-Account）" class="headerlink" title="ATA（Associated Token Account）"></a>ATA（Associated Token Account）</h3><p>每个用户对每种代币只需要一个”标准口袋”，ATA 就是这个标准口袋：</p>
+<p>ATA 地址 &#x3D; PDA(<br>    seeds &#x3D; [owner_pubkey, token_program_id, mint_pubkey],<br>    program &#x3D; associated_token_program<br>)</p>
+<p>特点：</p>
+<ul>
+<li>地址完全确定性派生，任何人都能算出你对某个代币的 ATA 地址</li>
+<li>不存在时需要创建（付 rent ~0.002 SOL）</li>
+<li>可以 close_account 回收 rent（余额清零后）</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">用户 Alice (wallet: AAAx...)<br>  ├── USDC ATA:  PDA(AAAx... + USDC mint)  → amount: 100_000000<br>  ├── SOL ATA:   native wallet 本身<br>  └── JUP ATA:   PDA(AAAx... + JUP mint)   → amount: 50_000000000<br></code></pre></td></tr></table></figure>
+
+<p>与常规 Token 帐户（用户可以为每个 mint 拥有多个帐户）不同，ATA 是特殊的 Token 帐户（具有用于查找地址的<strong>确定性规则</strong>），它强制用户钱包地址和 mint 之间存在一对一的关系。这确保：</p>
+<ol>
+<li>每个用户每个代币类型只有一个可预测的 ATA</li>
+<li>任何应用程序都可以轻松找到用户的代币余额，而无需事先了解，因为地址是确定性的。我们将在下面解释如何操作。</li>
+</ol>
+<p>本文主要关注 ATA，因为由于上述常规 Token 地址的挑战，它们已成为 Solana 中管理代币的标准方法。</p>
+<h3 id="ATA-地址是如何推导出来的？"><a href="#ATA-地址是如何推导出来的？" class="headerlink" title="ATA 地址是如何推导出来的？"></a>ATA 地址是如何推导出来的？</h3><p>ATA 地址是 <a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/11399">程序派生地址 (PDA)</a>，它是从两个输入确定性地派生出来的：</p>
+<ol>
+<li>用户&#x2F;签名者钱包的地址（预期的权限）。</li>
+<li>代币的 mint 帐户的地址。</li>
+</ol>
+<p>我们可以将关联 Token 帐户与以太坊的 ERC20 <code>mapping(address =&gt; uint256) public balanceOf</code> 进行比较，因为它们都用作跟踪用户拥有多少代币的方式。</p>
+<p>因为用户可以有多个 SPL 代币，所以仅使用用户的地址作为密钥不足以区分不同代币的余额。这就是为什么在推导中也包含 <strong>mint 地址</strong>的原因。通过结合用户的钱包地址和代币的 mint 地址，Solana 确保每个（用户，代币）对都获得一个 <strong>唯一</strong> 的 ATA 地址。</p>
+<p>此设计避免了冲突并强制执行一致的结构：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">user_wallet_address + token_mint_address =&gt; associated_token_account_address<br></code></pre></td></tr></table></figure>
+
+<p>ATA 保存用户特定代币&#x2F;mint 余额的详细信息。其关键字段包括：</p>
+<ul>
+<li><code>mint</code>：此帐户持有的代币（Mint 帐户）的地址。例如，如果这表示 USDC 余额，那么这将是 USDC mint 帐户的地址</li>
+<li><code>owner</code>：虽然这被标记为“owner”，但它是 ATA 的权限。每个 ATA 的真正所有者始终是代币程序，因为它强制执行所有规则。此处的 <code>owner</code> 字段告诉代币程序必须由哪个权限签名才能进行更新或转帐。请记住 <a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/11400"><em>Owner vs Authority</em></a> 文章，帐户的所有者强制执行其规则，而权限是唯一可以发送指令来修改帐户的有效签名者，除非此权限已通过代币程序委派了签名权。</li>
+<li><code>amount</code>：此余额中持有的代币数量。</li>
+<li><code>delegate</code>：已批准转帐代币的委托帐户的地址。<strong>对于一个代币帐户，一次只能存在一个委托，因为只有一个 <code>delegate</code> 字段。这与 ERC-20 不同，在 ERC-20 中，所有者可以批准多个消费方。</strong></li>
+<li><code>state</code>：代币帐户的状态，例如，这是一个 <a target="_blank" rel="noopener" href="https://github.com/solana-program/token/blob/main/interface/src/state.rs#L185">枚举</a>，可以是 <code>Uninitialized</code>、<code>Initialized</code> 或 <code>Frozen</code>。</li>
+<li><code>close_authority</code>：允许关闭帐户的地址，默认为与 <code>owner</code> 相同的公钥，但 <code>owner</code> 可以指定另一个 <code>close_authority</code>。当代币帐户的余额达到零时，所有者可以关闭它以收回用于租金的 SOL。诸如 <a target="_blank" rel="noopener" href="https://www.solflare.com/">Solflare 钱包</a> 和 <a target="_blank" rel="noopener" href="https://sol-incinerator.com/">Sol-Incinerator</a> 等多种 Web 工具提供了关闭空代币帐户的便捷方式。</li>
+</ul>
+<ol>
+<li>为什么要创建 ATA？                                                                       Solana 余额不像 ERC20 那样隐式存在于合约里，必须显式创建账户才能持有代币。所以转账前必须确认接收方已有该代币的 ATA，否则没地方存。        </li>
+<li>安全问题：任何人都能帮别人创建 ATA，会不会被劫持？     不会。 ATA 程序在代码层面强制规定：<ol>
+<li>ATA.owner         &#x3D; 被创建的那个钱包地址（Bob）      </li>
+<li>ATA.close_authority &#x3D; Bob      </li>
+<li>不管是谁付钱创建的，owner 永远是 Bob，不是付款人</li>
+</ol>
+</li>
+<li>转账完整流程       Alice → Bob 转代币：                                                   <ol>
+<li>用 Bob 钱包地址 + Mint 地址  离线推导出 Bob 的 ATA 地址                                   </li>
+<li>检查该 ATA 是否存在  不存在 → Alice 出钱帮 Bob 创建（付 ~0.002 SOL rent） </li>
+<li>调用 Transfer 指令，目标 &#x3D; Bob 的 ATA</li>
+</ol>
+</li>
+</ol>
+<p>一句话总结：Solana 转账的额外成本来自于可能需要帮对方建”口袋”，但口袋的控制权永远属于对方，付钱的人拿不走。                                                                                                                                                  </p>
+
                 
               </div>
             
